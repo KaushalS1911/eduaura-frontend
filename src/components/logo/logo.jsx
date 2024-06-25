@@ -3,6 +3,7 @@ import { forwardRef, useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import { useGetConfigs } from 'src/api/config';
+import defaultLogo from 'src/assets/logo/jbs.png'
 // ----------------------------------------------------------------------
 const Logo = forwardRef(({ disabledLink = false,navWidth, sx, ...other }, ref) => {
   const { configs } = useGetConfigs();
@@ -12,7 +13,7 @@ const Logo = forwardRef(({ disabledLink = false,navWidth, sx, ...other }, ref) =
   }, [configs]);
   const logo1 = company?.company_details?.logo
     ? `${company?.company_details?.logo}`
-    : 'public/logo/jbs.png';
+    : defaultLogo;
   const logo = (
     <Box
       ref={ref}
