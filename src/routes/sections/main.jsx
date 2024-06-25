@@ -5,7 +5,7 @@ import MainLayout from 'src/layouts/main';
 import SimpleLayout from 'src/layouts/simple';
 import CompactLayout from 'src/layouts/compact';
 
-import { SplashScreen } from 'src/components/loading-screen';
+import { LoadingScreen } from 'src/components/loading-screen';
 
 // ----------------------------------------------------------------------
 
@@ -34,7 +34,7 @@ export const mainRoutes = [
   {
     element: (
       <MainLayout>
-        <Suspense fallback={<SplashScreen />}>
+        <Suspense fallback={<LoadingScreen />}>
           <Outlet />
         </Suspense>
       </MainLayout>
@@ -65,7 +65,7 @@ export const mainRoutes = [
   {
     element: (
       <SimpleLayout>
-        <Suspense fallback={<SplashScreen />}>
+        <Suspense fallback={<LoadingScreen />}>
           <Outlet />
         </Suspense>
       </SimpleLayout>
@@ -78,7 +78,7 @@ export const mainRoutes = [
   {
     element: (
       <CompactLayout>
-        <Suspense fallback={<SplashScreen />}>
+        <Suspense fallback={<LoadingScreen />}>
           <Outlet />
         </Suspense>
       </CompactLayout>

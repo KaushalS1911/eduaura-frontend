@@ -12,7 +12,7 @@ const Logo = forwardRef(({ disabledLink = false,navWidth, sx, ...other }, ref) =
   }, [configs]);
   const logo1 = company?.company_details?.logo
     ? `${company?.company_details?.logo}`
-    : '../../../public/logo/jbs.png';
+    : 'public/logo/jbs.png';
   const logo = (
     <Box
       ref={ref}

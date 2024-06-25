@@ -7,7 +7,7 @@ import { fetcher } from '../utils/axios';
 
 export function useGetEmployees() {
   const { user } = useAuthContext();
-  const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user.company_id}/employee`;
+  const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/employee`;
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
   const memoizedValue = useMemo(
     () => ({
@@ -27,7 +27,7 @@ export function useGetEmployees() {
 export function useGetSingleEmployee(employeId) {
   const { user } = useAuthContext();
 
-  const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user.company_id}/employee`;
+  const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/employee`;
 
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
   const singleEmployee = data?.data?.find((data) => data?._id === employeId);

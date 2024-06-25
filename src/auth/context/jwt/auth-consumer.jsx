@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-import { SplashScreen } from 'src/components/loading-screen';
+import { LoadingScreen } from 'src/components/loading-screen';
 
 import { AuthContext } from './auth-context';
 
@@ -9,7 +9,7 @@ import { AuthContext } from './auth-context';
 export function AuthConsumer({ children }) {
   return (
     <AuthContext.Consumer>
-      {(auth) => (auth.loading ? <SplashScreen /> : children)}
+      {(auth) => (auth.loading ? <LoadingScreen /> : children)}
     </AuthContext.Consumer>
   );
 }
