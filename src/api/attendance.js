@@ -7,7 +7,7 @@ import { useAuthContext } from '../auth/hooks';
 
 export function useGetAllAttendance() {
   const { user } = useAuthContext();
-  const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user.company_id}/attendance`;
+  const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/attendance`;
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 
 

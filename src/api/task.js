@@ -7,7 +7,7 @@ import { useAuthContext } from '../auth/hooks/index.js';
 export function useGetTasks() {
   const { user } = useAuthContext();
 
-  const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/company/task/${user._id}`;
+  const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/company/task/${user?._id}`;
 
   const { data, isLoading, error, isValidating,mutate } = useSWR(URL, fetcher);
   const memoizedValue = useMemo(

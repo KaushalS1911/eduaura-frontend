@@ -8,7 +8,7 @@ import { useAuthContext } from '../auth/hooks/index.js';
 export function useGetStudents() {
   const { user } = useAuthContext();
 
-  const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/${user.company_id}/student`;
+  const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/${user?.company_id}/student`;
 
   const { data, isLoading, error, isValidating , mutate } = useSWR(URL, fetcher);
 
@@ -50,7 +50,7 @@ export function useGetSingleStudent(studentId) {
   // const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/student/${studentId}`;
   const { user } = useAuthContext();
 
-  const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/${user.company_id}/student`;
+  const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/${user?.company_id}/student`;
 
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
   const singleStudent = data?.students.find((data) => data?._id === studentId);

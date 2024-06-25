@@ -6,7 +6,7 @@ import { fetcher } from '../utils/axios';
 
 export function useGetBatches() {
   const { user } = useAuthContext();
-  const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user.company_id}/batch`;
+  const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/batch`;
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
   const memoizedValue = useMemo(
     () => ({
