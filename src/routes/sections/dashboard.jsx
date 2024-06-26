@@ -94,7 +94,6 @@ const EmployeeEditPage = lazy(() => import('src/pages/dashboard/employee/edit'))
 
 // APP
 const CalendarPage = lazy(() => import('src/pages/dashboard/calendar'));
-const KanbanPage = lazy(() => import('src/pages/dashboard/kanban'));
 
 // ACCOUNT
 const AccountListPage = lazy(() => import('src/pages/dashboard/account/account'));
@@ -259,8 +258,6 @@ export const dashboardRoutes = [
         ],
       },
       { path: 'calendar', element: <CalendarPage /> },
-      { path: 'kanban', element: <KanbanPage /> },
-      { path: 'permission', element: <PermissionDeniedPage /> },
       { path: 'setting', element: <SettingsPage /> },
     ],
   },
