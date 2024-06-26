@@ -7,7 +7,6 @@ import Tabs, { tabsClasses } from '@mui/material/Tabs';
 
 import { paths } from 'src/routes/paths';
 
-
 import { _userAbout, _userFeeds, _userFriends, _userGallery, _userFollowers } from 'src/_mock';
 
 import Iconify from 'src/components/iconify';
@@ -24,6 +23,7 @@ import ProfileFriends from '../profile-friends';
 import ProfileGallery from '../profile-gallery';
 
 import ProfileFollowers from '../profile-followers';
+import { Button } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
@@ -73,10 +73,26 @@ export default function UserProfileView() {
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
         heading="Profile"
-        links={[{ name: 'Dashboard', href: paths.dashboard.root }, { name: user.firstName }]}
+        links={[
+          {
+            name: 'Dashboard',
+            href: paths.dashboard.root,
+          },
+          { name: user.firstName },
+        ]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
+        action={
+          <Button
+            component={RouterLink}
+            href={paths.dashboard.profile.new}
+            variant="contained"
+            startIcon={<Iconify icon="mingcute:add-line" />}
+          >
+            Edit Profile
+          </Button>
+        }
       />
 
       <Card

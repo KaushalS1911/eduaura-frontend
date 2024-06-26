@@ -18,7 +18,6 @@ import {
   _lastNames,
   _fullNames,
   _tourNames,
-  _jobTitles,
   _taskNames,
   _postTitles,
   _firstNames,
@@ -39,7 +38,6 @@ export const _mock = {
   // Text
   taskNames: (index) => _taskNames[index],
   postTitle: (index) => _postTitles[index],
-  jobTitle: (index) => _jobTitles[index],
   tourName: (index) => _tourNames[index],
   productName: (index) => _productNames[index],
   sentence: (index) => _sentences[index],

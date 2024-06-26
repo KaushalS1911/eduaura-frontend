@@ -30,6 +30,7 @@ export default function BatchTableRow({
   selected,
   onViewRow,
   onSelectRow,
+  onEditRow,
   onDeleteRow,
   index,
 }) {
@@ -83,7 +84,6 @@ export default function BatchTableRow({
     </TableRow>
   );
 
- 
   const renderSecondary = (
     <TableRow>
       <TableCell sx={{ p: 0, border: 'none' }} colSpan={8}>
@@ -93,7 +93,6 @@ export default function BatchTableRow({
           unmountOnExit
           sx={{ bgcolor: 'background.neutral' }}
         >
-
           <Stack component={Paper} sx={{ m: 1.5 }}>
             {batch_members?.map((item) => (
               <Stack
@@ -127,7 +126,7 @@ export default function BatchTableRow({
                   }}
                   sx={{ width: '100%' }}
                 />
-               
+
                 <Box sx={{ width: '100%' }}>{item?.enrollment_no}</Box>
                 <Box sx={{ width: '100%' }}>{item?.contact}</Box>
                 <Box sx={{ width: '100%' }}>{item?.course}</Box>
@@ -163,8 +162,7 @@ export default function BatchTableRow({
 
         <MenuItem
           onClick={() => {
-            onEditRow();
-            popover.onClose();
+            onEditRow(), popover.onClose();
           }}
         >
           <Iconify icon="solar:pen-bold" />

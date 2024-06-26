@@ -7,7 +7,6 @@ import Tabs, { tabsClasses } from '@mui/material/Tabs';
 
 import { paths } from 'src/routes/paths';
 
-
 import { useMockedUser } from 'src/hooks/use-mocked-user';
 
 import { _userAbout, _userFeeds, _userFriends, _userGallery, _userFollowers } from 'src/_mock';
@@ -20,7 +19,6 @@ import ProfileHome from 'src/sections/employee/profile-home';
 import ProfileFollowers from 'src/sections/employee/profile-followers';
 import ProfileFriends from 'src/sections/employee/profile-friends';
 import ProfileGallery from 'src/sections/employee/profile-gallery';
-
 
 // ----------------------------------------------------------------------
 
@@ -72,7 +70,7 @@ export default function UserProfileView() {
         heading="Profile"
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
-          { name: 'User', href: paths.dashboard.user.root },
+          { name: 'User', href: paths.dashboard.profile.root },
           { name: user?.displayName },
         ]}
         sx={{

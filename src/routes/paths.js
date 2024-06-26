@@ -1,12 +1,12 @@
 import { paramCase } from 'src/utils/change-case';
 
-import { _id, _postTitles } from 'src/_mock/assets';
+// import { _id, _postTitles } from 'src/_mock/assets';
 
 // ----------------------------------------------------------------------
 
-const MOCK_ID = _id[1];
+// const MOCK_ID = _id[1];
 
-const MOCK_TITLE = _postTitles[2];
+// const MOCK_TITLE = _postTitles[2];
 
 const ROOTS = {
   AUTH: '/auth',
@@ -35,21 +35,21 @@ export const paths = {
   freeUI: 'https://mui.com/store/items/minimal-dashboard-free/',
   figma:
     'https://www.figma.com/file/hjxMnGUJCjY7pX8lQbS7kn/%5BPreview%5D-Minimal-Web.v5.4.0?type=design&node-id=0-1&mode=design&t=2fxnS70DuiTLGzND-0',
-  product: {
-    root: `/product`,
-    checkout: `/product/checkout`,
-    details: (id) => `/product/${id}`,
-    demo: {
-      details: `/product/${MOCK_ID}`,
-    },
-  },
-  post: {
-    root: `/post`,
-    details: (title) => `/post/${paramCase(title)}`,
-    demo: {
-      details: `/post/${paramCase(MOCK_TITLE)}`,
-    },
-  },
+  // product: {
+  //   root: `/product`,
+  //   checkout: `/product/checkout`,
+  //   details: (id) => `/product/${id}`,
+  //   demo: {
+  //     details: `/product/${MOCK_ID}`,
+  //   },
+  // },
+  // post: {
+  //   root: `/post`,
+  //   details: (title) => `/post/${paramCase(title)}`,
+  //   demo: {
+  //     details: `/post/${paramCase(MOCK_TITLE)}`,
+  //   },
+  // },
   // AUTH
   auth: {
     amplify: {
@@ -105,12 +105,6 @@ export const paths = {
     setting: `${ROOTS.DASHBOARD}/setting`,
 
     general: {
-      app: `${ROOTS.DASHBOARD}/app`,
-      ecommerce: `${ROOTS.DASHBOARD}/ecommerce`,
-      analytics: `${ROOTS.DASHBOARD}/analytics`,
-      banking: `${ROOTS.DASHBOARD}/banking`,
-      booking: `${ROOTS.DASHBOARD}/booking`,
-
       fees: `${ROOTS.DASHBOARD}/fees`,
       feesInvoice: `${ROOTS.DASHBOARD}/fees/fee-invoice`,
     },
@@ -150,20 +144,6 @@ export const paths = {
       profile: `${ROOTS.DASHBOARD}/employee/profile`,
       account: `${ROOTS.DASHBOARD}/employee/account`,
       edit: (id) => `${ROOTS.DASHBOARD}/employee/${id}/edit`,
-      demo: {
-        edit: `${ROOTS.DASHBOARD}/employee/${MOCK_ID}/edit`,
-      },
-    },
-
-    product: {
-      root: `${ROOTS.DASHBOARD}/product`,
-      new: `${ROOTS.DASHBOARD}/product/new`,
-      details: (id) => `${ROOTS.DASHBOARD}/product/${id}`,
-      edit: (id) => `${ROOTS.DASHBOARD}/product/${id}/edit`,
-      demo: {
-        details: `${ROOTS.DASHBOARD}/product/${MOCK_ID}`,
-        edit: `${ROOTS.DASHBOARD}/product/${MOCK_ID}/edit`,
-      },
     },
 
     seminar: {
@@ -172,39 +152,17 @@ export const paths = {
       list: `${ROOTS.DASHBOARD}/seminar/list`,
       edit: (id) => `${ROOTS.DASHBOARD}/seminar/${id}/edit`,
     },
+    profile: {
+      root: `${ROOTS.DASHBOARD}/profile`,
+      list: `${ROOTS.DASHBOARD}/profile/list`,
+      new: `${ROOTS.DASHBOARD}/profile/new`,
+    },
 
     invoice: {
       root: `${ROOTS.DASHBOARD}/invoice`,
       new: `${ROOTS.DASHBOARD}/invoice/new`,
       details: (id) => `${ROOTS.DASHBOARD}/invoice/${id}`,
       edit: (id) => `${ROOTS.DASHBOARD}/invoice/${id}/edit`,
-      demo: {
-        details: `${ROOTS.DASHBOARD}/invoice/${MOCK_ID}`,
-        edit: `${ROOTS.DASHBOARD}/invoice/${MOCK_ID}/edit`,
-      },
-    },
-
-    post: {
-      root: `${ROOTS.DASHBOARD}/post`,
-      new: `${ROOTS.DASHBOARD}/post/new`,
-      details: (title) => `${ROOTS.DASHBOARD}/post/${paramCase(title)}`,
-      edit: (title) => `${ROOTS.DASHBOARD}/post/${paramCase(title)}/edit`,
-      demo: {
-        details: `${ROOTS.DASHBOARD}/post/${paramCase(MOCK_TITLE)}`,
-        edit: `${ROOTS.DASHBOARD}/post/${paramCase(MOCK_TITLE)}/edit`,
-      },
-    },
-
-    order: {
-      root: `${ROOTS.DASHBOARD}/order`,
-      details: (id) => `${ROOTS.DASHBOARD}/order/${id}`,
-      demo: {
-        details: `${ROOTS.DASHBOARD}/order/${MOCK_ID}`,
-      },
-    },
-
-    profile: {
-      root: `${ROOTS.DASHBOARD}/profile`,
     },
 
     expenses: {
@@ -235,9 +193,6 @@ export const paths = {
     batches: {
       root: `${ROOTS.DASHBOARD}/batches`,
       details: (id) => `${ROOTS.DASHBOARD}/batches/${id}`,
-      demo: {
-        details: `${ROOTS.DASHBOARD}/batches/${MOCK_ID}`,
-      },
       new: `${ROOTS.DASHBOARD}/batches/new`,
       edit: (id) => `${ROOTS.DASHBOARD}/batches/${id}/edit`,
     },

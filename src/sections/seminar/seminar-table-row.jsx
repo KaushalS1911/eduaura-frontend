@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+
 import {
   Box,
   Button,
@@ -14,11 +15,13 @@ import Collapse from '@mui/material/Collapse';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { fDate } from 'src/utils/format-time';
 import Paper from '@mui/material/Paper';
+
 import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { Stack } from '@mui/system';
 import { TableHeadCustom } from 'src/components/table';
+
 export default function SeminarTableRow({
   row,
   index,
@@ -27,26 +30,33 @@ export default function SeminarTableRow({
   onSelectRow,
   onDeleteRow,
 }) {
-  const { title, desc, date_time, schedule_by, attended_by } = row;
+  const { title, desc, date_time, schedule_by, details, attended_by } = row;
+
   const confirm = useBoolean();
   const popover = usePopover();
   const collapse = useBoolean();
+
   const TABLE_HEAD = [
-    { id: 'srNo', label: 'Sr No', width: '240px', align: 'center' },
-    { id: 'Image', label: 'image', width: '250px', align: 'center' },
-    { id: 'Role', label: 'Role', width: '250px', align: 'center' },
-    { id: ' Name', label: ' Name', width: '250px', align: 'center' },
-    { id: 'Contact', label: 'Contact', width: '250px', align: 'center' },
-    { id: 'email', label: 'Email', width: '250px', align: 'center' },
+    { id: 'srNo', label: 'Sr No', width: '280px', align: 'center' },
+    { id: 'Image', label: 'image', width: '295px', align: 'center' },
+    { id: 'Role', label: 'Role', width: '295px', align: 'center' },
+    { id: ' Name', label: ' Name', width: '295px', align: 'center' },
+    { id: 'Contact', label: 'Contact', width: '295px', align: 'center' },
+    { id: 'email', label: 'Email', width: '295px', align: 'center' },
   ];
+
   return (
     <>
       <TableRow hover selected={selected}>
-        <TableCell align="center">{index + 1}</TableCell>
+        <TableCell>{index + 1}</TableCell>
+
         <TableCell>{title}</TableCell>
+
         <TableCell> {desc} </TableCell>
         <TableCell align="center">{fDate(date_time)}</TableCell>
+
         <TableCell align="center"> {`${schedule_by.firstName} ${schedule_by.lastName}`} </TableCell>
+
         <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
           <IconButton
             color={collapse.value ? 'inherit' : 'default'}
@@ -60,12 +70,14 @@ export default function SeminarTableRow({
             <Iconify icon="eva:arrow-ios-downward-fill" />
           </IconButton>
         </TableCell>
+
         <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
         </TableCell>
       </TableRow>
+
       <TableRow>
         <TableCell sx={{ p: 0, border: 'none' }} colSpan={8}>
           <Collapse
@@ -74,38 +86,52 @@ export default function SeminarTableRow({
             unmountOnExit
             sx={{ bgcolor: 'background.neutral' }}
           >
-            <Stack component={Paper} sx={{ m: 1.5 }}>
-              {attended_by.map((item, index) => (
-                <Stack
-                  key={item.id}
-                  direction="row"
-                  justifyContent={'space-around'}
-                  alignItems="center"
-                  sx={{
-                    p: (theme) => theme.spacing(1.5, 2, 1.5, 1.5),
-                    '&:not(:last-of-type)': {
-                      borderBottom: (theme) => `solid 2px ${theme.palette.background.neutral}`,
-                    },
-                  }}
-                >
-                  <Box align="center">{index + 1}</Box>
-                  <Box align="center">
-                    <Avatar
-                      src={item.avatar_url}
-                      variant="rounded"
-                      sx={{ width: 50, height: 50, m: 'auto' }}
-                    />
-                  </Box>
-                  <Box align="center">{item.role}</Box>
-                  <Box align="center">{item.firstName + ' ' + item.lastName}</Box>
-                  <Box align="center">{item.contact}</Box>
-                  <Box align="center">{item.email}</Box>
-                </Stack>
-              ))}
-            </Stack>
+            <Table sx={{ width: '100%', display: 'unset' }}>
+              <TableHeadCustom headLabel={TABLE_HEAD} />
+              <Stack component={Paper} sx={{ m: 1.5 }}>
+                {attended_by.map((item, index) => (
+                  <Stack
+                    key={item.id}
+                    direction="row"
+                    alignItems="center"
+                    sx={{
+                      p: (theme) => theme.spacing(1.5, 2, 1.5, 1.5),
+                      '&:not(:last-of-type)': {
+                        borderBottom: (theme) => `solid 2px ${theme.palette.background.neutral}`,
+                      },
+                    }}
+                  >
+                    <TableCell sx={{ width: '100%' }} align="center">
+                      {index + 1}
+                    </TableCell>
+                    <TableCell sx={{ width: '100%' }} align="center">
+                      <Avatar
+                        src={item.avatar_url}
+                        variant="rounded"
+                        sx={{ width: 50, height: 50, m: 'auto' }}
+                      />
+                    </TableCell>
+
+                    <TableCell sx={{ width: '100%' }} align="center">
+                      {item.role}
+                    </TableCell>
+                    <TableCell sx={{ width: '100%' }} align="center">
+                      {item.firstName + ' ' + item.lastName}
+                    </TableCell>
+                    <TableCell sx={{ width: '100%' }} align="center">
+                      {item.contact}
+                    </TableCell>
+                    <TableCell sx={{ width: '100%' }} align="center">
+                      {item.email}
+                    </TableCell>
+                  </Stack>
+                ))}
+              </Stack>
+            </Table>
           </Collapse>
         </TableCell>
       </TableRow>
+
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
@@ -122,6 +148,7 @@ export default function SeminarTableRow({
           <Iconify icon="solar:trash-bin-trash-bold" />
           Delete
         </MenuItem>
+
         <MenuItem
           onClick={() => {
             onEditRow();
@@ -132,6 +159,7 @@ export default function SeminarTableRow({
           Edit
         </MenuItem>
       </CustomPopover>
+
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
@@ -146,6 +174,7 @@ export default function SeminarTableRow({
     </>
   );
 }
+
 SeminarTableRow.propTypes = {
   row: PropTypes.shape({
     title: PropTypes.string.isRequired,

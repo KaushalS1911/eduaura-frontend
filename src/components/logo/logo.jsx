@@ -3,24 +3,25 @@ import { forwardRef, useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import { useGetConfigs } from 'src/api/config';
-import defaultLogo from 'src/assets/logo/jbs.png'
+import defaultLogo from 'src/assets/logo/jbs.png';
 // ----------------------------------------------------------------------
-const Logo = forwardRef(({ disabledLink = false,navWidth, sx, ...other }, ref) => {
+const Logo = forwardRef(({ disabledLink = false, navWidth, sx, ...other }, ref) => {
   const { configs } = useGetConfigs();
   const [company, setCompany] = useState({});
   useEffect(() => {
     setCompany(configs);
   }, [configs]);
-  const logo1 = company?.company_details?.logo
-    ? `${company?.company_details?.logo}`
-    : defaultLogo;
+  const logo1 = company?.company_details?.logo ? `${company?.company_details?.logo}` : defaultLogo;
   const logo = (
     <Box
       ref={ref}
       component="div"
       sx={{
         display: 'inline-flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         ...sx,
+        margin: '30px 0 30px 0',
       }}
       {...other}
     >
@@ -29,8 +30,8 @@ const Logo = forwardRef(({ disabledLink = false,navWidth, sx, ...other }, ref) =
         alt={logo1}
         style={{
           borderRadius: '50%',
-          width: navWidth ? '75px' : '96px',
-          height: navWidth ? '75px' : '96px',
+          width: navWidth ? '75px' : '124px',
+          height: navWidth ? '75px' : '124px',
         }}
       />
     </Box>

@@ -15,7 +15,7 @@ export default function SeminarCreateView() {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <CustomBreadcrumbs
-        heading="Create a new employee"
+        heading="Create a new Seminar"
         links={[
           {
             name: 'Dashboard',

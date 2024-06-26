@@ -21,7 +21,7 @@ import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
-export default function StudentGuardianDetails({ currentStudent , mutate}) {
+export default function StudentGuardianDetails({ currentStudent, mutate }) {
   const [addressId, setAddressId] = useState('');
   const [editAddressId, setEditAddressId] = useState(null);
 
@@ -37,17 +37,17 @@ export default function StudentGuardianDetails({ currentStudent , mutate}) {
     (id) => {
       // handleClose();
       setAddressId(id);
-        const filteredGuardian = currentStudent?.guardian_detail?.filter((item) => item._id !== id);
-      console.log("fil ",filteredGuardian);
-        const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/student/${currentStudent?._id}`;
-        try {
-          axios
-            .put(URL, { ...currentStudent, guardian_detail: filteredGuardian })
-            .then((res) => mutate(), setDeletedGuardian(null))
-            .catch((err) => console.log(err));
-        } catch (error) {
-          console.error(error);
-        }
+      const filteredGuardian = currentStudent?.guardian_detail?.filter((item) => item._id !== id);
+      console.log('fil ', filteredGuardian);
+      const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/student/${currentStudent?._id}`;
+      try {
+        axios
+          .put(URL, { ...currentStudent, guardian_detail: filteredGuardian })
+          .then((res) => mutate(), setDeletedGuardian(null))
+          .catch((err) => console.log(err));
+      } catch (error) {
+        console.error(error);
+      }
     },
     [popover]
   );
@@ -138,6 +138,7 @@ export default function StudentGuardianDetails({ currentStudent , mutate}) {
       </CustomPopover> */}
 
       <GuardianAddForm
+        mutate={mutate}
         open={GuardianNewForm.value}
         onClose={GuardianNewForm.onFalse}
         onCreate={handleAddNewAddress}

@@ -51,31 +51,41 @@ export default function EmployeeNewEditForm({ employee }) {
     technology: Yup.string().required('Technology is required'),
     joining_date: Yup.date().required('Joining date is required'),
     qualification: Yup.string().required('Qualification is required'),
+    avatar_url: Yup.mixed().required('A profile picture is required'),
+    address_1: Yup.string().required('Address line 1 is required'),
+    address_2: Yup.string(),
+    country: Yup.string().required('Country is required'),
+    state: Yup.string().required('State is required'),
+    city: Yup.string().required('City is required'),
+    zipcode: Yup.string().required('Zip code is required'),
   });
 
-  const defaultValues = useMemo(() => ({
-    firstName: employee?.firstName || '',
-    lastName: employee?.lastName || '',
-    contact: employee?.contact || '',
-    dob: new Date(employee?.dob) || null,
-    email: employee?.email || '',
-    gender: employee?.gender || '',
-    role: employee?.role || '',
-    qualification: employee?.qualification || '',
-    technology: employee?.technology || '',
-    experience: employee?.experience || 0,
-    joining_date: new Date(employee?.joining_date) || null,
-    address_1: employee?.address_detail?.address_1 || '',
-    address_2: employee?.address_detail?.address_2 || '',
-    country: employee?.address_detail?.country || '',
-    state: employee?.address_detail?.state || '',
-    city: employee?.address_detail?.city || '',
-    zipcode: employee?.address_detail?.zipcode || '',
-    avatar_url: employee?.avatar_url || null,
-  }));
+  const defaultValues = useMemo(
+    () => ({
+      firstName: employee?.firstName || '',
+      lastName: employee?.lastName || '',
+      contact: employee?.contact || '',
+      dob: employee?.dob ? new Date(employee?.dob) : null,
+      email: employee?.email || '',
+      gender: employee?.gender || '',
+      role: employee?.role || '',
+      qualification: employee?.qualification || '',
+      technology: employee?.technology || '',
+      experience: employee?.experience || 0,
+      joining_date: employee?.joining_date ? new Date(employee?.joining_date) : null,
+      address_1: employee?.address_detail?.address_1 || '',
+      address_2: employee?.address_detail?.address_2 || '',
+      country: employee?.address_detail?.country || '',
+      state: employee?.address_detail?.state || '',
+      city: employee?.address_detail?.city || '',
+      zipcode: employee?.address_detail?.zipcode || '',
+      avatar_url: employee?.avatar_url || null,
+    }),
+    [employee]
+  );
 
   const methods = useForm({
-    // resolver: yupResolver(NewEmployeeSchema),
+    resolver: yupResolver(NewEmployeeSchema),
     defaultValues,
   });
 
@@ -85,7 +95,7 @@ export default function EmployeeNewEditForm({ employee }) {
     control,
     setValue,
     watch,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = methods;
 
   const createEmployee = async (formData) => {
@@ -104,6 +114,7 @@ export default function EmployeeNewEditForm({ employee }) {
       throw new Error('Creation failed. Please try again.');
     }
   };
+
   const updateEmployee = async (id, formData) => {
     try {
       const URL = `${import.meta.env.VITE_AUTH_API}/api/company/employee/${employee._id}`;
@@ -118,6 +129,7 @@ export default function EmployeeNewEditForm({ employee }) {
       throw error;
     }
   };
+
   const onSubmit = handleSubmit(async (data) => {
     const addemployee = {
       firstName: data.firstName,
@@ -148,20 +160,14 @@ export default function EmployeeNewEditForm({ employee }) {
       formData.append('profile-pic', profilePic);
     }
 
-    let formDataObject = {};
-    formData.forEach((value, key) => {
-      formDataObject[key] = value;
-    });
-
     try {
       let response;
       if (employee) {
         response = await updateEmployee(employee._id, formData);
-        router.push(paths.dashboard.employee.list);
       } else {
         response = await createEmployee(formData);
-        router.push(paths.dashboard.employee.list);
       }
+      router.push(paths.dashboard.employee.list);
       enqueueSnackbar(response.message, {
         variant: 'success',
       });
@@ -221,10 +227,12 @@ export default function EmployeeNewEditForm({ employee }) {
               }}
             >
               <RHFTextField name="firstName" label="First Name" />
-              <RHFTextField name="lastName" label="Last Name" />
-              <RHFTextField name="email" label="Email Address" />
-              <RHFTextField name="contact" label="Phone Number" />
 
+              <RHFTextField name="lastName" label="Last Name" />
+
+              <RHFTextField name="email" label="Email Address" />
+
+              <RHFTextField name="contact" label="Phone Number" />
               <RHFAutocomplete
                 name="gender"
                 type="gender"
@@ -277,6 +285,7 @@ export default function EmployeeNewEditForm({ employee }) {
               />
 
               <RHFTextField name="qualification" label="Qualification" />
+
               {configs?.developer_type && (
                 <RHFAutocomplete
                   name="technology"
@@ -335,6 +344,7 @@ export default function EmployeeNewEditForm({ employee }) {
 
           <Stack spacing={3} sx={{ p: 3 }}>
             <RHFTextField name="address_1" label="Address line 1" />
+
             <RHFTextField name="address_2" label="Address line 2" />
 
             <Box
@@ -349,13 +359,19 @@ export default function EmployeeNewEditForm({ employee }) {
               <Controller
                 name="country"
                 control={control}
-                render={({ field }) => (
+                render={({ field, fieldState: { error } }) => (
                   <Autocomplete
                     {...field}
                     options={countrystatecity.map((country) => country.name)}
                     onChange={(event, value) => field.onChange(value)}
                     renderInput={(params) => (
-                      <TextField {...params} label="Country" variant="outlined" />
+                      <TextField
+                        {...params}
+                        label="Country"
+                        variant="outlined"
+                        error={!!error}
+                        helperText={error?.message}
+                      />
                     )}
                   />
                 )}
@@ -363,7 +379,7 @@ export default function EmployeeNewEditForm({ employee }) {
               <Controller
                 name="state"
                 control={control}
-                render={({ field }) => (
+                render={({ field, fieldState: { error } }) => (
                   <Autocomplete
                     {...field}
                     options={
@@ -375,15 +391,22 @@ export default function EmployeeNewEditForm({ employee }) {
                     }
                     onChange={(event, value) => field.onChange(value)}
                     renderInput={(params) => (
-                      <TextField {...params} label="State" variant="outlined" />
+                      <TextField
+                        {...params}
+                        label="State"
+                        variant="outlined"
+                        error={!!error}
+                        helperText={error?.message}
+                      />
                     )}
                   />
                 )}
               />
+
               <Controller
                 name="city"
                 control={control}
-                render={({ field }) => (
+                render={({ field, fieldState: { error } }) => (
                   <Autocomplete
                     {...field}
                     options={
@@ -396,7 +419,13 @@ export default function EmployeeNewEditForm({ employee }) {
                     }
                     onChange={(event, value) => field.onChange(value)}
                     renderInput={(params) => (
-                      <TextField {...params} label="City" variant="outlined" />
+                      <TextField
+                        {...params}
+                        label="City"
+                        variant="outlined"
+                        error={!!error}
+                        helperText={error?.message}
+                      />
                     )}
                   />
                 )}
@@ -432,5 +461,5 @@ export default function EmployeeNewEditForm({ employee }) {
 }
 
 EmployeeNewEditForm.propTypes = {
-  employee: PropTypes.string,
+  employee: PropTypes.object,
 };

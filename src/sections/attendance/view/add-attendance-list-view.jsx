@@ -206,13 +206,13 @@ export default function AddAttendanceListView() {
     setAttendanceData([...filteredData, student]);
   };
 
-
   async function attendancePost(attendanceData) {
     try {
       const responce = await useGetAttendanceAdd(attendanceData);
       if (responce && responce.status === 200) {
         setResponce1(responce);
         enqueueSnackbar('Attendance submitted successfully!', { variant: 'success' });
+        router.push(paths.dashboard.attendance.root);
       } else {
         throw new Error('Failed to submit attendance');
       }

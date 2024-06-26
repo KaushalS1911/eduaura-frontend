@@ -84,7 +84,7 @@ export default function StudentCreateView({ currentStudent, mutate }) {
           }}
         />
       )}
-      {currentStudent &&
+      {currentStudent && (
         <Tabs
           value={currentTab}
           onChange={handleChangeTab}
@@ -96,7 +96,7 @@ export default function StudentCreateView({ currentStudent, mutate }) {
             <Tab key={tab.value} label={tab.label} icon={tab.icon} value={tab.value} />
           ))}
         </Tabs>
-      }
+      )}
       {currentTab === 'Personal Details' && (
         <StudentNewEditForm currentStudent={currentStudent} mutate={mutate} />
       )}

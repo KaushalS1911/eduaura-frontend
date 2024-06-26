@@ -21,21 +21,6 @@ import { useRouter, useSearchParams } from 'src/routes/hooks';
 
 // ----------------------------------------------------------------------
 
-const OPTIONS = [
-  {
-    label: 'Home',
-    linkTo: '/',
-  },
-  {
-    label: 'Profile',
-    linkTo: paths.dashboard.profile.root,
-  },
-  {
-    label: 'Settings',
-    linkTo: paths.dashboard.setting,
-  },
-];
-
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
@@ -43,6 +28,23 @@ export default function AccountPopover() {
   const searchParams = useSearchParams();
   const returnTo = searchParams.get('returnTo');
   const { user, logout } = useAuthContext();
+  const OPTIONS = [
+    {
+      label: 'Home',
+      linkTo: '/',
+    },
+    {
+      label: 'Profile',
+      linkTo:
+        (user?.role === 'Admin' && paths.dashboard.profile.root) ||
+        (user?.role === 'Student' && paths.dashboard.student.edit(user?._id)) ||
+        paths.dashboard.employee.edit(user?._id),
+    },
+    {
+      label: 'Settings',
+      linkTo: paths.dashboard.setting,
+    },
+  ];
 
   const { enqueueSnackbar } = useSnackbar();
 

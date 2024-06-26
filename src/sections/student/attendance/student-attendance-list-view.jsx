@@ -194,7 +194,7 @@ export default function StudentAttendanceListView({ attendance }) {
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
-        <CustomBreadcrumbs
+        {/* <CustomBreadcrumbs
           heading="List"
           links={[
             {
@@ -202,17 +202,14 @@ export default function StudentAttendanceListView({ attendance }) {
               href: paths.dashboard.root,
             },
             {
-              name: 'Invoice',
+              name: 'student',
               href: paths.dashboard.invoice.root,
-            },
-            {
-              name: 'List',
             },
           ]}
           sx={{
             mb: { xs: 3, md: 5 },
           }}
-        />
+        /> */}
 
         <Card>
           <Tabs
@@ -369,18 +366,18 @@ export default function StudentAttendanceListView({ attendance }) {
 // ----------------------------------------------------------------------
 
 function applyFilter({ inputData, comparator, filters, dateError }) {
-  console.log(filters," fil");
-  const { startDate, endDate , status } = filters;
+  console.log(filters, ' fil');
+  const { startDate, endDate, status } = filters;
 
   if (!dateError) {
     if (startDate && endDate) {
       inputData = inputData.filter((invoice) => isBetween(invoice.date, startDate, endDate));
-      console.log("res ",inputData);
+      console.log('res ', inputData);
     }
   }
- if (status !== 'all') {
-   inputData = inputData.filter((item) => item.status === status);
- }
+  if (status !== 'all') {
+    inputData = inputData.filter((item) => item.status === status);
+  }
 
   return inputData;
 }

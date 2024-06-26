@@ -6,7 +6,6 @@ import { useRouter } from 'src/routes/hooks';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Typography,
-  Button,
   TextField,
   Grid,
   Box,
@@ -24,7 +23,6 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import axios from 'axios';
 import { useSnackbar } from 'src/components/snackbar';
 import { paths } from 'src/routes/paths';
-import ComponentBlock from '../_examples/component-block';
 import { MobileDateTimePicker } from '@mui/x-date-pickers';
 export default function SeminarNewEditForm({ SeminarId }) {
   const { user } = useAuthContext();
@@ -34,8 +32,6 @@ export default function SeminarNewEditForm({ SeminarId }) {
   const router = useRouter();
   const [allUser, setAllUser] = useState([]);
   const [dateTime, setDateTime] = useState(null);
-  const [valueResponsive, setValueResponsive] = useState();
-  const [dateValue, setDateValue] = useState();
   const { enqueueSnackbar } = useSnackbar();
   const NewUserSchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),

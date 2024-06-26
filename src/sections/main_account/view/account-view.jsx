@@ -12,7 +12,6 @@ import AccountNewInvoice from '../account-new-invoice';
 
 import { useGetAccount, useGetAccountOverDue } from 'src/api/account';
 import { BookingIllustration } from 'src/assets/illustrations';
-import { _appInvoices } from 'src/_mock';
 
 const SPACING = 3;
 
@@ -70,7 +69,11 @@ export default function AccountView() {
           <AccountSalesOverview title="Account Overview" data={_ecommerceSalesOverview} />
         </Grid>
         <Grid item xs={12} md={4}>
-          <AccountWidgetSummary title="Today's Income" total={10000} icon={<BookingIllustration />} />
+          <AccountWidgetSummary
+            title="Today's Income"
+            total={10000}
+            icon={<BookingIllustration />}
+          />
         </Grid>
         {data.map((item, index) => (
           <Grid key={index} item xs={12} md={6} lg={4}>
@@ -82,7 +85,7 @@ export default function AccountView() {
             title="Overdue payments"
             tableData={overdue}
             tableLabels={[
-              { id: 'id', label: '#', align:"center" },
+              { id: 'id', label: '#', align: 'center' },
               { id: 'category', label: 'Name' },
               { id: 'price', label: 'Fee' },
               { id: 'status', label: 'Contact' },

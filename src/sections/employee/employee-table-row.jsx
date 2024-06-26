@@ -42,9 +42,9 @@ export default function EmployeeTableRow({
   return (
     <>
       <TableRow hover selected={selected}>
-        {/* <TableCell padding="checkbox">
+        <TableCell padding="checkbox">
           <Checkbox checked={selected} onClick={onSelectRow} />
-        </TableCell> */}
+        </TableCell>
 
         <TableCell>
           <Box>{index + 1}</Box>
@@ -75,7 +75,7 @@ export default function EmployeeTableRow({
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{moment(dob).format('DD/MM/YYYY')}</TableCell>
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
-          <Tooltip title="Quick Edit" placement="top" arrow>
+          {/* <Tooltip title="Quick Edit" placement="top" arrow>
             <IconButton
               color={quickEdit.value ? 'inherit' : 'default'}
               onClick={() => {
@@ -84,11 +84,11 @@ export default function EmployeeTableRow({
             >
               <Iconify icon="solar:pen-bold" />
             </IconButton>
-          </Tooltip>
+          </Tooltip> */}
 
-          {/* <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
+          <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
             <Iconify icon="eva:more-vertical-fill" />
-          </IconButton> */}
+          </IconButton>
         </TableCell>
       </TableRow>
 
@@ -101,9 +101,6 @@ export default function EmployeeTableRow({
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
-        onClick={() => {
-          onEditRow();
-        }}
         arrow="right-top"
         sx={{ width: 140 }}
       >

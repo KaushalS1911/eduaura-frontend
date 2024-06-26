@@ -23,7 +23,7 @@ import Scrollbar from 'src/components/scrollbar';
 import { useSnackbar } from 'src/components/snackbar';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-import  {useGetAllAttendance}  from 'src/api/attendance';
+import { useGetAllAttendance } from 'src/api/attendance';
 import { RouterLink } from 'src/routes/components';
 import {
   useTable,

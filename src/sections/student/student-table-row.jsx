@@ -22,15 +22,8 @@ import StudentQuickEditForm from './student-quick-edit-form';
 
 // ----------------------------------------------------------------------
 
-export default function StudentTableRow({
-  row,
-  selected,
-  onEditRow,
-  onSelectRow,
-  onDeleteRow,
-}) {
-  const { firstName, lastName, profile_pic, course, joining_date, email, contact } =row;
-
+export default function StudentTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
+  const { firstName, lastName, profile_pic, course, joining_date, email, contact } = row;
 
   const confirm = useBoolean();
 
@@ -45,9 +38,7 @@ export default function StudentTableRow({
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell>
 
-        <TableCell >
-          {row.enrollment_no}
-        </TableCell>
+        <TableCell>{row.enrollment_no}</TableCell>
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
           <Avatar alt={`${firstName} ${lastName}`} src={profile_pic} sx={{ mr: 2 }} />
 
@@ -85,7 +76,6 @@ export default function StudentTableRow({
         </TableCell>
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
-
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
@@ -120,14 +110,14 @@ export default function StudentTableRow({
           <Iconify icon="solar:pen-bold" />
           Edit
         </MenuItem>
-        <MenuItem
+        {/* <MenuItem
           onClick={() => {
             popover.onClose();
           }}
         >
           <Iconify icon="solar:pen-bold" />
           Guardian
-        </MenuItem>
+        </MenuItem> */}
       </CustomPopover>
 
       <ConfirmDialog

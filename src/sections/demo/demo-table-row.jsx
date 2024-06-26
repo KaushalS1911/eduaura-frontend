@@ -12,7 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
 import Button from '@mui/material/Button';
 import { useBoolean } from 'src/hooks/use-boolean';
-import { fDate } from 'src/utils/format-time';
+import { fDate, fTime } from 'src/utils/format-time';
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import DemoFormDialog from './demo-form-dialog';
@@ -20,6 +20,7 @@ import { useState } from 'react';
 import { usePopover } from 'src/components/custom-popover';
 import { useDeleteDemo } from 'src/api/demo';
 import { ConfirmDialog } from 'src/components/custom-dialog';
+import moment from 'moment';
 // ----------------------------------------------------------------------
 export default function DemoTableRow({
   row,
@@ -95,87 +96,93 @@ export default function DemoTableRow({
           sx={{ bgcolor: 'background.neutral' }}
         >
           <Stack component={Paper} sx={{ m: 1.5 }}>
-            {demos.map((item) => (
-              <Stack
-                key={item._id}
-                direction="row"
-                alignItems="center"
-                sx={{
-                  p: (theme) => theme.spacing(1.5, 2, 1.5, 1.5),
-                  '&:not(:last-of-type)': {
-                    borderBottom: (theme) => `solid 2px ${theme.palette.background.neutral}`,
-                  },
-                }}
-              >
-                <Avatar
-                  src={item?.faculty_id?.avatar_url}
-                  variant="rounded"
-                  sx={{ width: 48, height: 48, mr: 2 }}
-                />
-                <ListItemText
-                  primary={`${item.faculty_id.firstName} ${item.faculty_id.lastName}`}
-                  secondary={item.faculty_id.email}
-                  primaryTypographyProps={{
-                    variant: 'body2',
-                  }}
-                  secondaryTypographyProps={{
-                    component: 'span',
-                    color: 'text.disabled',
-                    mt: 0.5,
-                  }}
-                />
-                <TableCell sx={{ mx: 5 }}>
-                  <ListItemText
-                    primary={fDate(item.date)}
-                    primaryTypographyProps={{ variant: 'body2', noWrap: true }}
-                    secondaryTypographyProps={{
-                      mt: 0.5,
-                      component: 'span',
-                      variant: 'caption',
+            {demos.map(
+              (item) => (
+                console.log(item),
+                (
+                  <Stack
+                    key={item._id}
+                    direction="row"
+                    alignItems="center"
+                    sx={{
+                      p: (theme) => theme.spacing(1.5, 2, 1.5, 1.5),
+                      '&:not(:last-of-type)': {
+                        borderBottom: (theme) => `solid 2px ${theme.palette.background.neutral}`,
+                      },
                     }}
-                  />
-                </TableCell>
-                <TableCell sx={{ mx: 5 }}>
-                  <Box>{item.technology}</Box>
-                </TableCell>
-                <TableCell sx={{ mx: 5 }}>
-                  <Box>{item.detail}</Box>
-                </TableCell>
-                <TableCell sx={{ mx: 5 }}>
-                  <Label
-                    variant="soft"
-                    color={
-                      (item.status === 'completed' && 'success') ||
-                      (item.status === 'pending' && 'warning') ||
-                      (item.status === 'cancelled' && 'error') ||
-                      'default'
-                    }
                   >
-                    {item.status}
-                  </Label>
-                </TableCell>
-                <MenuItem
-                  onClick={() => {
-                    setOpen(true);
-                    setDemosID(row._id);
-                    setDemoID(item._id);
-                  }}
-                >
-                  <Iconify icon="solar:eye-bold" />
-                </MenuItem>
-                <MenuItem
-                  sx={{ mx: 2 }}
-                  onClick={() => {
-                    confirm.onTrue();
-                    popover.onClose();
-                    setDemosID(row._id);
-                    setDemoID(item._id);
-                  }}
-                >
-                  <Iconify icon="solar:trash-bin-trash-bold" />
-                </MenuItem>
-              </Stack>
-            ))}
+                    <Avatar
+                      src={item?.faculty_id?.avatar_url}
+                      variant="rounded"
+                      sx={{ width: 48, height: 48, mr: 2 }}
+                    />
+                    <ListItemText
+                      primary={`${item.faculty_id.firstName} ${item.faculty_id.lastName}`}
+                      secondary={item.faculty_id.email}
+                      primaryTypographyProps={{
+                        variant: 'body2',
+                      }}
+                      secondaryTypographyProps={{
+                        component: 'span',
+                        color: 'text.disabled',
+                        mt: 0.5,
+                      }}
+                    />
+                    <TableCell sx={{ mx: 5 }}>
+                      <ListItemText
+                        primary={fDate(item.date)}
+                        secondary={moment(item.date).format('h:mm A')}
+                        primaryTypographyProps={{ variant: 'body2', noWrap: true }}
+                        secondaryTypographyProps={{
+                          mt: 0.5,
+                          component: 'span',
+                          variant: 'caption',
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell sx={{ mx: 5 }}>
+                      <Box>{item.technology}</Box>
+                    </TableCell>
+                    <TableCell sx={{ mx: 5 }}>
+                      <Box>{item.detail}</Box>
+                    </TableCell>
+                    <TableCell sx={{ mx: 5 }}>
+                      <Label
+                        variant="soft"
+                        color={
+                          (item.status === 'Completed' && 'success') ||
+                          (item.status === 'pending' && 'warning') ||
+                          (item.status === 'cancelled' && 'error') ||
+                          'default'
+                        }
+                      >
+                        {item.status}
+                      </Label>
+                    </TableCell>
+                    <MenuItem
+                      onClick={() => {
+                        setOpen(true);
+                        setDemosID(row._id);
+                        setDemoID(item._id);
+                      }}
+                    >
+                      <Iconify icon="solar:eye-bold" />
+                    </MenuItem>
+                    <MenuItem
+                      sx={{ mx: 2 }}
+                      onClick={() => {
+                        confirm.onTrue();
+                        popover.onClose();
+                        setDemosID(row._id);
+                        setDemoID(item._id);
+                      }}
+                    >
+                      <Iconify icon="solar:trash-bin-trash-bold" />
+                    </MenuItem>
+                  </Stack>
+                )
+              )
+            )}
           </Stack>
         </Collapse>
       </TableCell>

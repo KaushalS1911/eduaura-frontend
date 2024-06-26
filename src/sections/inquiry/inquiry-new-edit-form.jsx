@@ -51,7 +51,14 @@ export default function InquiryNewEditForm({ inquiryId }) {
       occupation: '',
       email: '',
       education: '',
-      address: { address_line1: '', address_line2: '', country: '', state: '', city: '',zip_code:'' },
+      address: {
+        address_line1: '',
+        address_line2: '',
+        country: '',
+        state: '',
+        city: '',
+        zip_code: '',
+      },
       fatherName: '',
       father_contact: '',
       father_occupation: '',
@@ -376,8 +383,7 @@ export default function InquiryNewEditForm({ inquiryId }) {
             >
               <Stack spacing={1}>
                 <Typography variant="subtitle2">How did you come to know about JBS IT?</Typography>
-                <RHFRadioGroup row spacing={4} name="reference_by" 
-                options={INQUIRY_REFERENCE_BY} />
+                <RHFRadioGroup row spacing={4} name="reference_by" options={INQUIRY_REFERENCE_BY} />
               </Stack>
               <Stack spacing={1}>
                 <Typography variant="subtitle2">Why did you choose this Course?</Typography>

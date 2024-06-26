@@ -179,12 +179,7 @@ export function useNavData() {
             path: paths.dashboard.complain.root,
             icon: ICONS.file,
           },
-          // KANBAN
-          // {
-          //   title: t('kanban'),
-          //   path: paths.dashboard.kanban,
-          //   icon: ICONS.kanban,
-          // },
+         
         ],
       },
     ],

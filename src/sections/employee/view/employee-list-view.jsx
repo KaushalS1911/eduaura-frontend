@@ -44,12 +44,12 @@ import { useGetEmployees } from '../../../api/employee';
 const TABLE_HEAD = [
   { id: '', label: '#' },
   { id: 'name', label: 'Name' },
-  { id: 'contact', label: 'Phone Number', width: 180 },
-  { id: 'technology', label: 'Technology', width: 220 },
-  { id: 'role', label: 'Role', width: 180 },
-  { id: 'joiningDate', label: 'Joining Date', width: 120 },
-  { id: 'dob', label: 'Birth Date', width: 100 },
-  { id: '', width: 100 },
+  { id: 'contact', label: 'Phone Number' },
+  { id: 'technology', label: 'Technology' },
+  { id: 'role', label: 'Role' },
+  { id: 'joiningDate', label: 'Joining Date' },
+  { id: 'dob', label: 'Birth Date' },
+  { id: '' },
 ];
 
 const defaultFilters = {
@@ -113,7 +113,7 @@ export default function EmployeeListView() {
         enqueueSnackbar('Failed to delete Employee', { variant: 'error' });
       }
     },
-    [enqueueSnackbar, mutate, confirm,user.company_id]
+    [enqueueSnackbar, mutate, confirm, user.company_id]
   );
 
   // Multiple Delete
@@ -124,7 +124,7 @@ export default function EmployeeListView() {
       const sortedSelectedIds = [...table.selected].sort();
       await Promise.all(
         sortedSelectedIds.map(async (selectedId) => {
-          const response = await axios.delete(URL,{data: { ids: [selectedId] }});
+          const response = await axios.delete(URL, { data: { ids: [selectedId] } });
           if (response.status === 200) {
             enqueueSnackbar(response.data.data.message, { variant: 'success' });
             mutate();
@@ -211,13 +211,13 @@ export default function EmployeeListView() {
                   headLabel={TABLE_HEAD}
                   rowCount={dataFiltered.length}
                   numSelected={table.selected.length}
-                  // onSort={table.onSort}
-                  // onSelectAllRows={(checked) =>
-                  //   table.onSelectAllRows(
-                  //     checked,
-                  //     dataFiltered.map((row) => row._id)
-                  //   )
-                  // }
+                  onSort={table.onSort}
+                  onSelectAllRows={(checked) =>
+                    table.onSelectAllRows(
+                      checked,
+                      dataFiltered.map((row) => row._id)
+                    )
+                  }
                 />
                 <TableBody>
                   {dataFiltered

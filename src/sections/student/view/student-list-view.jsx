@@ -51,13 +51,13 @@ import axios from 'axios';
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'enrollment_no', label: 'Enroll No',width:120},
+  { id: 'enrollment_no', label: 'Enroll No', width: 120 },
   { id: 'name', label: 'Name' },
-  { id: 'contact', label: 'Phone Number'},
-  { id: 'course', label: 'Course'},
-  { id: 'joining_date', label: 'Joining date'},
-  { id: 'status', label: 'Status'},
-  { id: ''},
+  { id: 'contact', label: 'Phone Number' },
+  { id: 'course', label: 'Course' },
+  { id: 'joining_date', label: 'Joining date' },
+  { id: 'status', label: 'Status' },
+  { id: '' },
 ];
 
 const defaultFilters = {

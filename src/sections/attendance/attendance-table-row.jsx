@@ -32,8 +32,7 @@ export default function AttendanceTableRow({
   onEditRow,
   onDeleteRow,
 }) {
-  const {  date, status, student_id, index } = row;
-
+  const { date, status, student_id, index } = row;
   const confirm = useBoolean();
 
   const popover = usePopover();
@@ -47,12 +46,8 @@ export default function AttendanceTableRow({
 
         <TableCell align="center">{index + 1}</TableCell>
 
-
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-          {/* <Avatar alt={invoiceTo.name} sx={{ mr: 2 }}>
-            {invoiceTo.name.charAt(0).toUpperCase()}
-          </Avatar> */}
-          <Avatar alt={student_id?.firstName} sx={{ mr: 2 }}>
+          <Avatar alt={student_id.profile_pic} src={student_id.profile_pic} sx={{ mr: 2 }}>
             {student_id?.profile_pic || student_id?.firstName?.charAt(0).toUpperCase()}
           </Avatar>
 
@@ -60,7 +55,7 @@ export default function AttendanceTableRow({
             disableTypography
             primary={
               <Typography variant="body2" noWrap>
-                {(student_id?.firstName + ' ' + student_id?.lastName) || ''}
+                {student_id?.firstName + ' ' + student_id?.lastName || ''}
               </Typography>
             }
             secondary={
@@ -75,7 +70,6 @@ export default function AttendanceTableRow({
             }
           />
         </TableCell>
-
 
         <TableCell>{student_id?.enrollment_no}</TableCell>
 
