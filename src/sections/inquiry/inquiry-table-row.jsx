@@ -18,6 +18,7 @@ import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import DemoNewEditForm from './Demo-new-edit-form';
+import moment from 'moment';
 
 export default function InquiryTableRow({
   row,
@@ -41,30 +42,30 @@ export default function InquiryTableRow({
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell> */}
 
-        <TableCell>
-          <Box>{index + 1}</Box>
+        <TableCell align={"center"}>
+          {index + 1}
         </TableCell>
 
         <TableCell>{firstName + lastName}</TableCell>
 
-        <TableCell>{fDate(dob)}</TableCell>
 
-        <TableCell align="center"> {contact} </TableCell>
+        <TableCell > {contact} </TableCell>
 
-        <TableCell align="center"> {email} </TableCell>
+        <TableCell> {email} </TableCell>
 
-        <TableCell align="center">
+        <TableCell>{moment(dob).format("DD/MM/YYYY")}</TableCell>
+        <TableCell >
           {/* <Tooltip title="Demo" placement="top" arrow>
             <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={quickEdit.onTrue}>
               <Iconify icon="solar:pen-bold" />
             </IconButton>
           </Tooltip> */}
           <Button variant="contained" onClick={quickEdit.onTrue}>
-            + Demo
+            + Add Demo
           </Button>
         </TableCell>
 
-        <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
+        <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
@@ -104,8 +105,8 @@ export default function InquiryTableRow({
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
-        content="Are you sure you want to delete?"
+        title="Delete Inquiry"
+        content="Are you sure you want to delete selected inquiry?"
         action={
           <Button variant="contained" color="error" onClick={onDeleteRow}>
             Delete

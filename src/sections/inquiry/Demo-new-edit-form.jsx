@@ -111,7 +111,7 @@ export default function DemoNewEditForm({ open, onClose, currentId }) {
         sx: { maxWidth: 420 },
       }}
     >
-      <DialogTitle sx={{ textAlign: 'center' }}>Demo Add</DialogTitle>
+      <DialogTitle>Add Demo</DialogTitle>
       <DialogContent sx={{ pb: 3 }}>
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>

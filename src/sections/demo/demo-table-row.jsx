@@ -54,24 +54,20 @@ export default function DemoTableRow({
       {/* <TableCell padding="checkbox">
         <Checkbox checked={selected} onClick={onSelectRow} />
       </TableCell> */}
-      <TableCell>
-        <Box>{srNumber}</Box>
+      <TableCell align="center">
+        {srNumber}
       </TableCell>
-      <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-        <ListItemText
-          primary={`${firstName} ${lastName}`}
-          secondary={email}
-          primaryTypographyProps={{ variant: 'body2' }}
-          secondaryTypographyProps={{
-            component: 'span',
-            color: 'text.disabled',
-          }}
-        />
+      <TableCell >
+        {`${firstName} ${lastName}`}
+      </TableCell>
+
+      <TableCell>
+        {contact}
       </TableCell>
       <TableCell>
-        <Box>{contact}</Box>
+        {email}
       </TableCell>
-      <TableCell align="right" sx={{ px: 3, whiteSpace: 'nowrap' }}>
+      <TableCell align="center" sx={{ px: 3, whiteSpace: 'nowrap' }}>
         <IconButton
           color={collapse.value ? 'inherit' : 'default'}
           onClick={collapse.onToggle}
@@ -98,13 +94,13 @@ export default function DemoTableRow({
           <Stack component={Paper} sx={{ m: 1.5 }}>
             {demos.map(
               (item) => (
-                console.log(item),
                 (
                   <Stack
                     key={item._id}
                     direction="row"
                     alignItems="center"
                     sx={{
+                      px: 1,
                       p: (theme) => theme.spacing(1.5, 2, 1.5, 1.5),
                       '&:not(:last-of-type)': {
                         borderBottom: (theme) => `solid 2px ${theme.palette.background.neutral}`,
@@ -113,7 +109,7 @@ export default function DemoTableRow({
                   >
                     <Avatar
                       src={item?.faculty_id?.avatar_url}
-                      variant="rounded"
+                      variant="circular"
                       sx={{ width: 48, height: 48, mr: 2 }}
                     />
                     <ListItemText
@@ -128,10 +124,12 @@ export default function DemoTableRow({
                         mt: 0.5,
                       }}
                     />
-                    <TableCell sx={{ mx: 5 }}>
+                    <TableCell>
+                      <Box>{item.technology}</Box>
+                    </TableCell>
+                    <TableCell >
                       <ListItemText
                         primary={fDate(item.date)}
-                        secondary={moment(item.date).format('h:mm A')}
                         primaryTypographyProps={{ variant: 'body2', noWrap: true }}
                         secondaryTypographyProps={{
                           mt: 0.5,
@@ -140,13 +138,8 @@ export default function DemoTableRow({
                         }}
                       />
                     </TableCell>
-                    <TableCell sx={{ mx: 5 }}>
-                      <Box>{item.technology}</Box>
-                    </TableCell>
-                    <TableCell sx={{ mx: 5 }}>
-                      <Box>{item.detail}</Box>
-                    </TableCell>
-                    <TableCell sx={{ mx: 5 }}>
+
+                    <TableCell sx={{width: 114}}>
                       <Label
                         variant="soft"
                         color={
@@ -169,7 +162,6 @@ export default function DemoTableRow({
                       <Iconify icon="solar:eye-bold" />
                     </MenuItem>
                     <MenuItem
-                      sx={{ mx: 2 }}
                       onClick={() => {
                         confirm.onTrue();
                         popover.onClose();

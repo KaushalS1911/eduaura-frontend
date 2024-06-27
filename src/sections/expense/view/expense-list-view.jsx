@@ -49,11 +49,11 @@ import ExpenseTableFiltersResult from '../expenses-table-filters-result';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'srNo', label: 'Sr No' },
+  { id: 'srNo', label: '#' },
+  { id: 'date', label: 'Date' },
   { id: 'type', label: 'Type' },
-  { id: 'description', label: 'Description' },
   { id: 'amount', label: 'Amount' },
-  { id: 'date', label: 'Date date' },
+  { id: 'description', label: 'Description' },
   { id: '' },
 ];
 
@@ -184,11 +184,10 @@ export default function ExpenseListView() {
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="List"
+          heading="Expense"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
             { name: 'Expense', href: paths.dashboard.expenses.root },
-            { name: 'List' },
           ]}
           action={
             <Button

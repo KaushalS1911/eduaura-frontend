@@ -44,11 +44,10 @@ import { useGetEmployees } from '../../../api/employee';
 const TABLE_HEAD = [
   { id: '', label: '#' },
   { id: 'name', label: 'Name' },
-  { id: 'contact', label: 'Phone Number' },
+  { id: 'contact', label: 'Contact' },
   { id: 'technology', label: 'Technology' },
   { id: 'role', label: 'Role' },
   { id: 'joiningDate', label: 'Joining Date' },
-  { id: 'dob', label: 'Birth Date' },
   { id: '' },
 ];
 
@@ -151,11 +150,10 @@ export default function EmployeeListView() {
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="List"
+          heading="Employee"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
             { name: 'Employee', href: paths.dashboard.employee.list },
-            { name: 'Employee' },
           ]}
           action={
             <Button
@@ -263,10 +261,10 @@ export default function EmployeeListView() {
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
+        title="Delete Employee"
         content={
           <>
-            Are you sure want to delete <strong> {table.selected.length} </strong> items?
+            Are you sure want to delete <strong> {table.selected.length} </strong> employee?
           </>
         }
         action={

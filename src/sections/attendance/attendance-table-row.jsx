@@ -27,22 +27,12 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 export default function AttendanceTableRow({
   row,
   selected,
-  onSelectRow,
-  onViewRow,
-  onEditRow,
-  onDeleteRow,
 }) {
-  const { date, status, student_id, index } = row;
-  const confirm = useBoolean();
-
-  const popover = usePopover();
+  const {  status, student_id, index } = row;
 
   return (
     <>
       <TableRow hover selected={selected}>
-        {/* <TableCell padding="checkbox">
-          <Checkbox checked={selected} onClick={onSelectRow} />
-        </TableCell> */}
 
         <TableCell align="center">{index + 1}</TableCell>
 
@@ -58,16 +48,16 @@ export default function AttendanceTableRow({
                 {student_id?.firstName + ' ' + student_id?.lastName || ''}
               </Typography>
             }
-            secondary={
-              <Link
-                noWrap
-                variant="body2"
-                onClick={onViewRow}
-                sx={{ color: 'text.disabled', cursor: 'pointer' }}
-              >
-                {student_id?.email}
-              </Link>
-            }
+            // secondary={
+            //   <Link
+            //     noWrap
+            //     variant="body2"
+            //     onClick={onViewRow}
+            //     sx={{ color: 'text.disabled', cursor: 'pointer' }}
+            //   >
+            //     {student_id?.email}
+            //   </Link>
+            // }
           />
         </TableCell>
 

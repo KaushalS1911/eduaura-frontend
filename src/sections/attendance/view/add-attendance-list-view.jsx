@@ -1,32 +1,26 @@
-import sumBy from 'lodash/sumBy';
-import { useState, useCallback, useEffect } from 'react';
+import { useForm, FormProvider } from 'react-hook-form';
+import { useState, useEffect, useCallback } from 'react';
 
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
+import { Box } from '@mui/system';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
-import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
-import Tooltip from '@mui/material/Tooltip';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
-import IconButton from '@mui/material/IconButton';
-import { alpha, useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import TableContainer from '@mui/material/TableContainer';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
-import { RouterLink } from 'src/routes/components';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
 import { isAfter, isBetween } from 'src/utils/format-time';
 
-import { _invoices, INVOICE_SERVICE_OPTIONS } from 'src/_mock';
+import { useAuthContext } from 'src/auth/hooks';
+import { GetAttendanceAdd } from 'src/api/attendance';
+import { useGetBatches, useGetSingleBatches } from 'src/api/batch';
 
-import Label from 'src/components/label';
-import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useSnackbar } from 'src/components/snackbar';
 import { ConfirmDialog } from 'src/components/custom-dialog';
@@ -39,26 +33,19 @@ import {
   getComparator,
   TableEmptyRows,
   TableHeadCustom,
-  TableSelectedAction,
-  TablePaginationCustom,
 } from 'src/components/table';
 
-import attendanceAddAnalytic from '../attendance-add-invoice-analytic';
 import AttendanceAddTableRow from '../attendance-add-table-row';
 import AttendanceAddTableToolbar from '../attendance-add-table-toolbar';
-import AttendanceAddTableFiltersResult from '../attendance-add-table-filters-result';
-import { Box } from '@mui/system';
-import { FormProvider, useForm } from 'react-hook-form';
-import { useGetBatches, useGetSingleBatches } from 'src/api/batch';
-import { useAuthContext } from 'src/auth/hooks';
-import { useGetAttendanceAdd } from 'src/api/attendance';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'invoiceNumber', label: 'Customer' },
-  { id: 'Contact', label: 'Contact' },
-  { id: 'status', label: 'options', width: 280 },
+  { id: 'srNo', label: '#' },
+  { id: 'studentName', label: 'Name' },
+  { id: 'contact', label: 'Contact' },
+  { id: 'email', label: 'Email' },
+  { id: 'status', label: 'Options' },
 ];
 
 const defaultFilters = {
@@ -182,7 +169,7 @@ export default function AddAttendanceListView() {
   const { user } = useAuthContext();
   const [todayDate, setTodayDate] = useState();
   const [attendanceData, setAttendanceData] = useState([]);
-  const [responce1, setResponce1] = useState({ status: null });
+  const [response, setResponse] = useState({ status: null });
 
   const handleAttendanceChange = ({ id, status }) => {
     // Check if the record exists
@@ -206,18 +193,18 @@ export default function AddAttendanceListView() {
     setAttendanceData([...filteredData, student]);
   };
 
-  async function attendancePost(attendanceData) {
+  async function attendancePost(data) {
     try {
-      const responce = await useGetAttendanceAdd(attendanceData);
-      if (responce && responce.status === 200) {
-        setResponce1(responce);
+      const res = await GetAttendanceAdd(data);
+      if (res && res.status === 200) {
+        setResponse(res);
         enqueueSnackbar('Attendance submitted successfully!', { variant: 'success' });
         router.push(paths.dashboard.attendance.root);
       } else {
         throw new Error('Failed to submit attendance');
       }
     } catch (error) {
-      setResponce1(null);
+      setResponse(null);
       enqueueSnackbar('Failed to submit attendance', { variant: 'error' });
     }
   }
@@ -226,7 +213,7 @@ export default function AddAttendanceListView() {
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="List"
+          heading="Add Attendance"
           sx={{ marginBottom: 4 }}
           links={[
             {
@@ -234,11 +221,8 @@ export default function AddAttendanceListView() {
               href: paths.dashboard.root,
             },
             {
-              name: 'Attendance',
+              name: 'Add Attendance',
               href: paths.dashboard.attendance.root,
-            },
-            {
-              name: 'List',
             },
           ]}
         />
@@ -276,9 +260,10 @@ export default function AddAttendanceListView() {
                         table.page * table.rowsPerPage,
                         table.page * table.rowsPerPage + table.rowsPerPage
                       )
-                      .map((row) => (
+                      .map((row, index) => (
                         <AttendanceAddTableRow
                           key={row.id}
+                          index={index}
                           row={row}
                           selected={table.selected.includes(row.id)}
                           onSelectRow={() => table.onSelectRow(row.id)}
@@ -286,7 +271,7 @@ export default function AddAttendanceListView() {
                           onEditRow={() => handleEditRow(row.id)}
                           onDeleteRow={() => handleDeleteRow(row.id)}
                           onAttendanceChange={handleAttendanceChange}
-                          responce1={responce1}
+                          response={response}
                         />
                       ))}
                     <TableEmptyRows

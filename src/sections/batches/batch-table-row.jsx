@@ -100,16 +100,17 @@ export default function BatchTableRow({
                 direction="row"
                 alignItems="center"
                 sx={{
+                  px: 1,
                   p: (theme) => theme.spacing(1.5, 2, 1.5, 1.5),
                   '&:not(:last-of-type)': {
                     borderBottom: (theme) => `solid 2px ${theme.palette.background.neutral}`,
                   },
-                  pl: 3,
                 }}
               >
+                <TableCell sx={{width: 88}}><Box >{item?.enrollment_no}</Box></TableCell>
                 <Avatar
                   src={item?.profile_pic}
-                  variant="rounded"
+                  variant="circular"
                   sx={{ width: 48, height: 48, mr: 2 }}
                 />
 
@@ -124,12 +125,10 @@ export default function BatchTableRow({
                     color: 'text.disabled',
                     mt: 0.5,
                   }}
-                  sx={{ width: '100%' }}
                 />
 
-                <Box sx={{ width: '100%' }}>{item?.enrollment_no}</Box>
-                <Box sx={{ width: '100%' }}>{item?.contact}</Box>
-                <Box sx={{ width: '100%' }}>{item?.course}</Box>
+                <TableCell sx={{width: 260}}>{item?.course}</TableCell>
+                <TableCell sx={{width: 126}}>{item?.contact}</TableCell>
               </Stack>
             ))}
           </Stack>
