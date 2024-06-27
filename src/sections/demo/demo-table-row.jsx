@@ -18,7 +18,7 @@ import Iconify from 'src/components/iconify';
 import DemoFormDialog from './demo-form-dialog';
 import { useState } from 'react';
 import { usePopover } from 'src/components/custom-popover';
-import { useDeleteDemo } from 'src/api/demo';
+import { DeleteDemo } from 'src/api/demo';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import moment from 'moment';
 // ----------------------------------------------------------------------
@@ -41,7 +41,7 @@ export default function DemoTableRow({
   const popover = usePopover();
   const handleDelete = async (demoId) => {
     try {
-      await useDeleteDemo(demoId);
+      await DeleteDemo(demoId);
       mutate();
       onDeleteRow(demoId);
       confirm.onFalse();
@@ -93,7 +93,7 @@ export default function DemoTableRow({
         >
           <Stack component={Paper} sx={{ m: 1.5 }}>
             {demos.map(
-              (item) => (
+              (item, index) => (
                 (
                   <Stack
                     key={item._id}
@@ -107,6 +107,9 @@ export default function DemoTableRow({
                       },
                     }}
                   >
+                    <TableCell sx={{mr: 3}}>
+                      {index + 1}
+                    </TableCell>
                     <Avatar
                       src={item?.faculty_id?.avatar_url}
                       variant="circular"
@@ -152,14 +155,14 @@ export default function DemoTableRow({
                         {item.status}
                       </Label>
                     </TableCell>
-                    <MenuItem
-                      onClick={() => {
+                    <MenuItem>
+                      <IconButton color='default' onClick={() => {
                         setOpen(true);
                         setDemosID(row._id);
                         setDemoID(item._id);
-                      }}
-                    >
-                      <Iconify icon="solar:eye-bold" />
+                      }}>
+                        <Iconify icon="solar:pen-bold" />
+                      </IconButton>
                     </MenuItem>
                     <MenuItem
                       onClick={() => {
@@ -169,7 +172,9 @@ export default function DemoTableRow({
                         setDemoID(item._id);
                       }}
                     >
-                      <Iconify icon="solar:trash-bin-trash-bold" />
+                      <IconButton color='default'>
+                        <Iconify icon="solar:trash-bin-trash-bold" />
+                      </IconButton>
                     </MenuItem>
                   </Stack>
                 )
@@ -187,8 +192,8 @@ export default function DemoTableRow({
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
-        content="Are you sure you want to delete?"
+        title="Delete Demo"
+        content="Are you sure you want to delete selected demo?"
         action={
           <Button variant="contained" color="error" onClick={() => handleDelete(demoID)}>
             Delete

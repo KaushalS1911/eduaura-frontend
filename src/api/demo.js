@@ -25,7 +25,7 @@ export function useGetAllDemos() {
 }
 
 // Hook to delete a demo
-export async function useDeleteDemo(deleteID) {
+export async function DeleteDemo(deleteID) {
   const deleteURL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/demo/${deleteID}`;
   try {
     await axios.delete(deleteURL);

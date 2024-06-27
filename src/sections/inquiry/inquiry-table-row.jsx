@@ -55,14 +55,12 @@ export default function InquiryTableRow({
 
         <TableCell>{moment(dob).format("DD/MM/YYYY")}</TableCell>
         <TableCell >
-          {/* <Tooltip title="Demo" placement="top" arrow>
-            <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={quickEdit.onTrue}>
-              <Iconify icon="solar:pen-bold" />
-            </IconButton>
-          </Tooltip> */}
-          <Button variant="contained" onClick={quickEdit.onTrue}>
-            + Add Demo
-          </Button>
+          <Tooltip title="Add a new Demo" placement="top" arrow>
+            <Button variant="outlined" onClick={quickEdit.onTrue}>
+              + Demo
+            </Button>
+          </Tooltip>
+
         </TableCell>
 
         <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
