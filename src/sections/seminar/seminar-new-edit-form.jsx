@@ -240,6 +240,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
                     multiple
                     options={users}
                     value={field.value || []}
+                    disableCloseOnSelect
                     getOptionLabel={(option) => `${option.firstName} ${option.lastName}`}
                     onChange={(event, newValue) => field.onChange(newValue)}
                     isOptionEqualToValue={(option, value) => option._id === value._id}

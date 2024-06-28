@@ -40,6 +40,14 @@ export default function DashboardCourseChart({ title, subheader, chart, ...other
     },
     tooltip: {
       fillSeriesColor: false,
+      y: {
+        formatter: function (val) {
+          return Math.round(val);
+        },
+      },
+    },
+    dataLabels: {
+      enabled: false,
     },
     responsive: [
       {
@@ -82,28 +90,6 @@ export default function DashboardCourseChart({ title, subheader, chart, ...other
           height={smUp ? 240 : 360}
         />
       </Box>
-
-      {/* <Divider sx={{ borderStyle: 'dashed' }} /> */}
-
-      {/* <Box
-        display="grid"
-        gridTemplateColumns="repeat(2, 1fr)"
-        sx={{ textAlign: 'center', typography: 'h4' }}
-      >
-        <Stack sx={{ py: 2, borderRight: `dashed 1px ${theme.palette.divider}` }}>
-          <Box component="span" sx={{ mb: 1, typography: 'body2', color: 'text.secondary' }}>
-            Courses
-          </Box>
-          {chart.series.length}
-        </Stack>
-
-        <Stack sx={{ py: 2 }}>
-          <Box component="span" sx={{ mb: 1, typography: 'body2', color: 'text.secondary' }}>
-            Categories
-          </Box>
-          $18,765
-        </Stack>
-      </Box> */}
     </Card>
   );
 }

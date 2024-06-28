@@ -37,8 +37,7 @@ export default function InquiryNewEditForm({ inquiryId }) {
   const NewUserSchema = Yup.object().shape({
     firstName: Yup.string().required('First name is required'),
     lastName: Yup.string().required('Last name is required'),
-    email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    contact: Yup.string().required('Phone number is required'),
+    contact: Yup.string().required('Phone number is required').max(10).min(10),
   });
 
   const methods = useForm({
