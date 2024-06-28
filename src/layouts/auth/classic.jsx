@@ -113,9 +113,13 @@ export default function AuthClassicLayout({ children, image, title }) {
             md={7}
             lg={8}
             sx={{
-              backgroundColor: '#11161F',
+              background: "linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),url('https://media.istockphoto.com/id/1756562035/photo/university-campus.webp?b=1&s=170667a&w=0&k=20&c=y1T0bSXoIjeaDaazxJfr6WmtBRv_GDHg4Vw1Pn3E4q4=')",
+              // background:
+              //   linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+              // url('https://media.istockphoto.com/id/1756562035/photo/university-campus.webp?b=1&s=170667a&w=0&k=20&c=y1T0bSXoIjeaDaazxJfr6WmtBRv_GDHg4Vw1Pn3E4q4=')
+              backgroundRepeat:"no-repeat",
+              backgroundSize:"cover",
               color: 'white',
-              display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
               display:{md:"flex",xs:"none"}
@@ -207,7 +211,7 @@ export default function AuthClassicLayout({ children, image, title }) {
     <Stack
       component="main"
       direction="row"
-     
+
     >
       {/* {renderLogo} */}
 

@@ -59,7 +59,8 @@ export function useNavData() {
   const { user } = useAuthContext();
   const { t } = useTranslate();
 
-  const data = useMemo(
+
+  const navigationData = useMemo(
     () => [
       // OVERVIEW
       // ----------------------------------------------------------------------
@@ -201,18 +202,24 @@ export function useNavData() {
     [t, user?.role], // Include user.role as a dependency
     )
   ;
-  if(user?.role === "Admin"){
-    data.push(     {
-      subheader: t('config'),
-      items: [
-        // SETTING
-        user?.role === 'Admin' && {
-          title: t('setting'),
-          path: paths.dashboard.setting,
-          icon: ICONS.setting,
-        },
-      ].filter(Boolean),
-    },)
-  }
-  return data;
+  const adminNavData = useMemo(
+    () => [
+      // OVERVIEW
+      // ----------------------------------------------------------------------
+      ...navigationData, {
+        subheader: t('config'),
+        items: [
+          // SETTING
+          {
+            title: t('setting'),
+            path: paths.dashboard.setting,
+            icon: ICONS.setting,
+          },
+        ].filter(Boolean),
+      },
+    ],
+    [t], // Include user.role as a dependency
+    )
+  ;
+  return user?.role === "Admin" ? adminNavData : navigationData;
 }
