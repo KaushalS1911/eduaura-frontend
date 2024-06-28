@@ -40,14 +40,14 @@ export default function ExpenseTableRow({
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell> */}
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{index + 1}</TableCell>
+        <TableCell>{index + 1}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{type}</TableCell>
+        <TableCell>{moment(date).format('DD/MM/YYYY')}</TableCell>
+        <TableCell>{type}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{desc}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{amount}</TableCell>
+        <TableCell>{amount}</TableCell>
+        <TableCell>{desc}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{moment(date).format('DD/MM/YYYY')}</TableCell>
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
 
@@ -85,7 +85,7 @@ export default function ExpenseTableRow({
           <Iconify icon="solar:pen-bold" />
           Edit
         </MenuItem>
-        
+
       </CustomPopover>
       <ConfirmDialog
         open={confirm.value}

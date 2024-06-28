@@ -34,7 +34,7 @@ export function useGetSingleStudentAttendance(studentId) {
   return data;
 }
 
-export async function useGetAttendanceAdd(postData) {
+export async function GetAttendanceAdd(postData) {
   try {
     const URL = `${import.meta.env.VITE_AUTH_API}/api/company/attendance`;
     const response = await axios.post(URL, postData);

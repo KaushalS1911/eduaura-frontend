@@ -91,17 +91,6 @@ export default function StudentTableRow({ row, selected, onEditRow, onSelectRow,
         sx={{ width: 140 }}
       >
         <MenuItem
-          onClick={(row) => {
-            confirm.onTrue();
-            popover.onClose();
-          }}
-          sx={{ color: 'error.main' }}
-        >
-          <Iconify icon="solar:trash-bin-trash-bold" />
-          Delete
-        </MenuItem>
-
-        <MenuItem
           onClick={() => {
             onEditRow();
             popover.onClose();

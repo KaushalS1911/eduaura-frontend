@@ -40,13 +40,13 @@ import InquiryTableToolbar from '../inquiry-table-toolbar';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'Sr no', label: 'Sr No' },
-  { id: 'studentName', label: 'Student Name' },
-  { id: 'appointment', label: 'Appointment' },
-  { id: 'contact', label: 'Contact', align: 'center' },
-  { id: 'email', label: 'Email', align: 'center' },
-  { id: 'demo', label: 'Demo', align: 'center' },
-  { id: '', width: 88 },
+  { id: 'Sr no', label: '#', align: "center" },
+  { id: 'studentName', label: 'Name' },
+  { id: 'contact', label: 'Contact' },
+  { id: 'email', label: 'Email' },
+  { id: 'appointment', label: 'Date' },
+  { id: 'demo', label: 'Action' },
+  { id: '' , align: 'center'},
 ];
 
 const defaultFilters = {
@@ -157,11 +157,10 @@ export default function InquiryListView() {
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="Inquiry List"
+          heading="Inquiries"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
-            { name: 'Inquiry', href: paths.dashboard.inquiry.list },
-            { name: 'Inquiry' },
+            { name: 'Inquiries', href: paths.dashboard.inquiry.list },
           ]}
           action={
             <Button

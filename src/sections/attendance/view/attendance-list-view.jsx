@@ -204,7 +204,7 @@ export default function AttendanceListView() {
               href: paths.dashboard.root,
             },
             {
-              name: 'Attendance logs',
+              name: 'Attendance',
             },
           ]}
           action={

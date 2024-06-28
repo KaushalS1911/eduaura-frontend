@@ -69,16 +69,16 @@ export default function AttendanceTableRow({
                 {student_id?.firstName + ' ' + student_id?.lastName || ''}
               </Typography>
             }
-            secondary={
-              <Link
-                noWrap
-                variant="body2"
-                onClick={onViewRow}
-                sx={{ color: 'text.disabled', cursor: 'pointer' }}
-              >
-                {student_id?.email}
-              </Link>
-            }
+            // secondary={
+            //   <Link
+            //     noWrap
+            //     variant="body2"
+            //     onClick={onViewRow}
+            //     sx={{ color: 'text.disabled', cursor: 'pointer' }}
+            //   >
+            //     {student_id?.email}
+            //   </Link>
+            // }
           />
         </TableCell>
 

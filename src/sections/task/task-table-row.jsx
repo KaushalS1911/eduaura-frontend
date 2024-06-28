@@ -26,7 +26,7 @@ export default function TaskTableRow({
   onDeleteRow,
   index,
 }) {
-  const { assigned_to,  desc, title } = row;
+  const { assigned_to,  desc, title, createdAt } = row;
   const confirm = useBoolean();
   const quickEdit = useBoolean();
 
@@ -34,22 +34,16 @@ export default function TaskTableRow({
 
   return (
     <>
-      <TableRow hover selected={selected}>
-        {/* <TableCell padding="checkbox" sx={{ width: '90px' }}>
-          <Checkbox checked={selected} onClick={onSelectRow} />
-        </TableCell> */}
+      <TableRow hover selected={selected} >
+        <TableCell >{index + 1}</TableCell>
+        <TableCell >{moment(createdAt).format("DD/MM/YYYY")}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{index + 1}</TableCell>
+        <TableCell >{title}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{title}</TableCell>
+        <TableCell>{`${assigned_to?.firstName} ${assigned_to?.lastName}`}</TableCell>
+        <TableCell >{desc} </TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{desc} </TableCell>
-      
-        <TableCell
-          sx={{ whiteSpace: 'nowrap' }}
-        >{`${assigned_to?.firstName} ${assigned_to?.lastName}`}</TableCell>
 
-        {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>{moment(date).format('DD/MM/YYYY')}</TableCell> */}
         <TableCell>
           <Label
             variant="soft"
@@ -101,14 +95,15 @@ export default function TaskTableRow({
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
-        content="Are you sure want to delete?"
+        title="Delete Task"
+        content="Are you sure want to delete selected task?"
         action={
           <Button
             variant="contained"
             color="error"
             onClick={() => {
-              onDeleteRow(), confirm.onFalse();
+              onDeleteRow();
+              confirm.onFalse();
             }}
           >
             Delete

@@ -101,7 +101,7 @@ export default function DemoEditPop({ open, onClose, currentId }) {
         sx: { maxWidth: 420 },
       }}
     >
-      <DialogTitle sx={{ textAlign: 'center' }}>Demo Add</DialogTitle>
+      <DialogTitle >Add Demo</DialogTitle>
       <DialogContent>
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>

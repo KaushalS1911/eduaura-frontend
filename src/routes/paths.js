@@ -99,9 +99,7 @@ export const paths = {
   // DASHBOARD
   dashboard: {
     root: ROOTS.DASHBOARD,
-    kanban: `${ROOTS.DASHBOARD}/kanban`,
     calendar: `${ROOTS.DASHBOARD}/calendar`,
-    permission: `${ROOTS.DASHBOARD}/permission`,
     setting: `${ROOTS.DASHBOARD}/setting`,
 
     general: {

@@ -45,10 +45,6 @@ const InvoiceDetailsView = lazy(() => import('src/sections/overview/fees/invoice
 
 // OVERVIEW
 const IndexPage = lazy(() => import('src/pages/dashboard/dashboard'));
-const OverviewEcommercePage = lazy(() => import('src/pages/dashboard/ecommerce'));
-const OverviewAnalyticsPage = lazy(() => import('src/pages/dashboard/analytics'));
-const OverviewBankingPage = lazy(() => import('src/pages/dashboard/banking'));
-const OverviewBookingPage = lazy(() => import('src/pages/dashboard/booking'));
 
 //COMPLAIN
 // const StudentComplainCreateView = lazy(() => import('src/sections/student/view/student-complain-create-view'));
@@ -94,13 +90,11 @@ const EmployeeEditPage = lazy(() => import('src/pages/dashboard/employee/edit'))
 
 // APP
 const CalendarPage = lazy(() => import('src/pages/dashboard/calendar'));
-const KanbanPage = lazy(() => import('src/pages/dashboard/kanban'));
 
 // ACCOUNT
 const AccountListPage = lazy(() => import('src/pages/dashboard/account/account'));
 
 // TEST RENDER PAGE BY ROLE
-const PermissionDeniedPage = lazy(() => import('src/pages/dashboard/permission'));
 
 // ----------------------------------------------------------------------
 
@@ -118,10 +112,7 @@ export const dashboardRoutes = [
     ),
     children: [
       { element: <IndexPage />, index: true },
-      { path: 'ecommerce', element: <OverviewEcommercePage /> },
-      { path: 'analytics', element: <OverviewAnalyticsPage /> },
-      { path: 'banking', element: <OverviewBankingPage /> },
-      { path: 'booking', element: <OverviewBookingPage /> },
+
       { path: 'fees', element: <FeesPage /> },
       { path: 'complain', element: <ComplainListView /> },
       {
@@ -259,8 +250,6 @@ export const dashboardRoutes = [
         ],
       },
       { path: 'calendar', element: <CalendarPage /> },
-      { path: 'kanban', element: <KanbanPage /> },
-      { path: 'permission', element: <PermissionDeniedPage /> },
       { path: 'setting', element: <SettingsPage /> },
     ],
   },

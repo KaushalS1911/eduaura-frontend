@@ -44,13 +44,13 @@ import { useGetVisits } from 'src/api/visit';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'srNo', label: 'Sr No', width: 150 },
+  { id: 'srNo', label: '#', align: "center" },
   { id: 'name', label: 'Name' },
-  { id: 'contact', label: 'Contact', width: 230 },
-  { id: 'reference', label: 'Reference', width: 230 },
-  { id: 'notes', label: 'Notes', width: 230 },
-  { id: 'address', label: 'Address', width: 230 },
-  { id: '' },
+  { id: 'contact', label: 'Contact'},
+  { id: 'reference', label: 'Reference' },
+  { id: 'notes', label: 'Notes' },
+  { id: 'address', label: 'Address' },
+  { id: '', align: "center" },
 ];
 
 const defaultFilters = {
@@ -180,7 +180,7 @@ export default function VisitListView() {
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="List"
+          heading="Visits"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
             { name: 'Visit', href: paths.dashboard.visit.root },
