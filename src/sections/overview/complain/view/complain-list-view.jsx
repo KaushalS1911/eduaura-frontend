@@ -38,10 +38,10 @@ import ComplainTableFiltersResult from '../complain-table-filters-result';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: '', label: 'Sr no.' },
-  { id: '', label: 'Name' },
-  { id: 'title', label: 'Title' },
+  { id: '', label: '#' },
+  { id: 'name', label: 'Name' },
   { id: 'date', label: 'Date' },
+  { id: 'title', label: 'Title' },
   { id: 'status', label: 'Status' },
 ];
 
@@ -171,18 +171,15 @@ export default function ComplainListView() {
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="List"
+          heading="Complain"
           links={[
             {
               name: 'Dashboard',
               href: paths.dashboard.root,
             },
             {
-              name: 'complain',
+              name: 'Complain',
               href: paths.dashboard.complain.root,
-            },
-            {
-              name: 'List',
             },
           ]}
           sx={{

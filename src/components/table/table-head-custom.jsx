@@ -59,7 +59,6 @@ export default function TableHeadCustom({
                 active={orderBy === headCell.id}
                 direction={orderBy === headCell.id ? order : 'asc'}
                 onClick={() => onSort(headCell.id)}
-                sx={{ mx: '10px' }}
               >
                 {headCell.label}
 

@@ -115,17 +115,18 @@ export function useNavData() {
             path: paths.dashboard.employee.list,
             icon: ICONS.employee,
           },
-        ].filter(Boolean), // Filter out any falsy values
-      },
-      {
-        subheader: t('management'),
-        items: [
           // BATCH
           {
             title: t('batches'),
             path: paths.dashboard.batches.root,
             icon: ICONS.batches,
           },
+        ].filter(Boolean), // Filter out any falsy values
+      },
+      {
+        subheader: t('academic'),
+        items: [
+
           // ATTENDANCE
           {
             title: t('attendance'),
@@ -144,22 +145,17 @@ export function useNavData() {
             path: paths.dashboard.seminar.list,
             icon: ICONS.seminar,
           },
+        ],
+      },
+      {
+        subheader: t('finance'),
+        items: [
+
           // FEES
           {
             title: t('fees'),
             path: paths.dashboard.general.fees,
             icon: ICONS.invoice,
-          },
-        ],
-      },
-      {
-        subheader: t('management'),
-        items: [
-          // CALENDAR
-          {
-            title: t('calendar'),
-            path: paths.dashboard.calendar,
-            icon: ICONS.calendar,
           },
           // EXPENSES
           {
@@ -167,19 +163,36 @@ export function useNavData() {
             path: paths.dashboard.expenses.list,
             icon: ICONS.expenses,
           },
+        ],
+      },
+      {
+        subheader: t('productivity'),
+        items: [
+
+          // CALENDAR
+          {
+            title: t('calendar'),
+            path: paths.dashboard.calendar,
+            icon: ICONS.calendar,
+          },
           // TASK
           {
             title: t('task'),
             path: paths.dashboard.task.list,
             icon: ICONS.task,
           },
+        ],
+      },
+      {
+        subheader: t('support'),
+        items: [
           // COMPLAIN
           {
             title: t('Complaints'),
             path: paths.dashboard.complain.root,
             icon: ICONS.file,
           },
-         
+
         ],
       },
     ],

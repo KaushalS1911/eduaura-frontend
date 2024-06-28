@@ -21,6 +21,9 @@ import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
+import { useState } from 'react';
+import AttendanceFormDialog from './attendance-form-dialog';
+import { useDeleteSingleAttendance } from 'src/api/attendance';
 
 // ----------------------------------------------------------------------
 
@@ -31,19 +34,27 @@ export default function AttendanceTableRow({
   onViewRow,
   onEditRow,
   onDeleteRow,
+  mutate,
 }) {
-  const { date, status, student_id, index } = row;
+  const { date, status, student_id, index, _id } = row;
   const confirm = useBoolean();
-
+  const [open, setOpen] = useState(false);
+  const [singleAttendanceID, setsingleAttendanceID] = useState();
   const popover = usePopover();
+  const handleDelete = async (singleAttendanceID) => {
+    try {
+      await useDeleteSingleAttendance(singleAttendanceID);
+      mutate();
+      onDeleteRow(singleAttendanceID);
+      confirm.onFalse();
+    } catch (error) {
+      console.error('Failed to delete demo:', error);
+    }
+  };
 
   return (
     <>
       <TableRow hover selected={selected}>
-        {/* <TableCell padding="checkbox">
-          <Checkbox checked={selected} onClick={onSelectRow} />
-        </TableCell> */}
-
         <TableCell align="center">{index + 1}</TableCell>
 
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
@@ -58,16 +69,16 @@ export default function AttendanceTableRow({
                 {student_id?.firstName + ' ' + student_id?.lastName || ''}
               </Typography>
             }
-            secondary={
-              <Link
-                noWrap
-                variant="body2"
-                onClick={onViewRow}
-                sx={{ color: 'text.disabled', cursor: 'pointer' }}
-              >
-                {student_id?.email}
-              </Link>
-            }
+            // secondary={
+            //   <Link
+            //     noWrap
+            //     variant="body2"
+            //     onClick={onViewRow}
+            //     sx={{ color: 'text.disabled', cursor: 'pointer' }}
+            //   >
+            //     {student_id?.email}
+            //   </Link>
+            // }
           />
         </TableCell>
 
@@ -91,14 +102,14 @@ export default function AttendanceTableRow({
           </Label>
         </TableCell>
 
-        {/* <TableCell align="right" sx={{ px: 1 }}>
+        <TableCell align="right" sx={{ px: 3 }}>
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
-        </TableCell> */}
+        </TableCell>
       </TableRow>
 
-      {/* <CustomPopover
+      <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
         arrow="right-top"
@@ -106,29 +117,19 @@ export default function AttendanceTableRow({
       >
         <MenuItem
           onClick={() => {
-            onViewRow();
-            popover.onClose();
-          }}
-        >
-          <Iconify icon="solar:eye-bold" />
-          View
-        </MenuItem>
-
-        <MenuItem
-          onClick={() => {
-            onEditRow();
+            setOpen(true);
+            setsingleAttendanceID(_id);
             popover.onClose();
           }}
         >
           <Iconify icon="solar:pen-bold" />
           Edit
         </MenuItem>
-
         <Divider sx={{ borderStyle: 'dashed' }} />
-
         <MenuItem
           onClick={() => {
             confirm.onTrue();
+            setsingleAttendanceID(_id);
             popover.onClose();
           }}
           sx={{ color: 'error.main' }}
@@ -136,19 +137,28 @@ export default function AttendanceTableRow({
           <Iconify icon="solar:trash-bin-trash-bold" />
           Delete
         </MenuItem>
-      </CustomPopover> */}
-
-      {/* <ConfirmDialog
+      </CustomPopover>
+      <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
         title="Delete"
         content="Are you sure want to delete?"
         action={
-          <Button variant="contained" color="error" onClick={onDeleteRow}>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => handleDelete(singleAttendanceID)}
+          >
             Delete
           </Button>
         }
-      /> */}
+      />
+      <AttendanceFormDialog
+        open={open}
+        setOpen={setOpen}
+        singleAttendanceID={singleAttendanceID}
+        mutate={mutate}
+      />
     </>
   );
 }

@@ -42,6 +42,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
       setProfilePic(currentStudent?.profile_pic);
     }
   }, [currentStudent]);
+
   const NewUserSchema = Yup.object().shape({
     firstName: Yup.string().required('First Name is required'),
     lastName: Yup.string().required('Last Name is required'),
@@ -69,6 +70,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
     //   .required('Upcoming Installment Date is required'),
     profile_pic: Yup.mixed().required('Profile Picture is required'),
   });
+
   const defaultValues = useMemo(
     () => ({
       profile_pic: currentStudent?.profile_pic || '',
@@ -93,24 +95,27 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
       total_amount: currentStudent?.fee_detail?.total_amount || '',
       discount: currentStudent?.fee_detail?.discount || '',
       amount_paid: currentStudent?.fee_detail?.amount_paid || '',
-      no_of_installments: currentStudent?.fee_detail?.no_of_installments || '',
+      no_of_installments: currentStudent?.fee_detail?.no_of_installments || 0,
       upcoming_installment_date: currentStudent?.fee_detail?.upcoming_installment_date
         ? new Date(currentStudent?.fee_detail?.upcoming_installment_date)
-        : null,
+        : new Date(),
     }),
     [currentStudent]
   );
+
   const methods = useForm({
     resolver: yupResolver(NewUserSchema),
     defaultValues,
   });
+
   const {
     reset,
     watch,
     control,
     handleSubmit,
     formState: { isSubmitting, errors },
-  } = methods
+  } = methods;
+
   const values = watch();
   const createStudent = async (studentPayload) => {
     const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/${user?.company_id}/student`;
@@ -129,6 +134,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
       throw error;
     }
   };
+
   const updateStudent = async (studentPayload) => {
     const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/student/${currentStudent?._id}`;
     const formData = new FormData();
@@ -146,6 +152,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
       throw error;
     }
   };
+
   const onSubmit = handleSubmit(async (data) => {
     const studentPayload = {
       firstName: data.firstName,
@@ -169,9 +176,10 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
       total_amount: Number(data.total_amount),
       amount_paid: Number(data.amount_paid),
       discount: Number(data.discount),
-      upcoming_installment_date: data.upcoming_installment_date,
-      no_of_installments: data.no_of_installments,
+      upcoming_installment_date: data.upcoming_installment_date || new Date(),
+      no_of_installments: Number(data.no_of_installments) || 0,
     };
+
     try {
       if (currentStudent?.firstName) {
         await updateStudent(studentPayload);

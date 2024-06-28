@@ -51,9 +51,9 @@ import axios from 'axios';
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'enrollment_no', label: 'Enroll No', width: 120 },
+  { id: 'enrollment_no', label: '#' },
   { id: 'name', label: 'Name' },
-  { id: 'contact', label: 'Phone Number' },
+  { id: 'contact', label: 'Contact' },
   { id: 'course', label: 'Course' },
   { id: 'joining_date', label: 'Joining date' },
   { id: 'status', label: 'Status' },
@@ -192,7 +192,6 @@ export default function StudentListView() {
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
             { name: 'Student', href: paths.dashboard.student.list },
-            { name: 'List' },
           ]}
           action={
             <Button
@@ -344,10 +343,10 @@ export default function StudentListView() {
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
+        title="Delete Student"
         content={
           <>
-            Are you sure want to delete <strong> {table.selected.length} </strong> items?
+            Are you sure want to delete <strong> {table.selected.length} </strong> student?
           </>
         }
         action={

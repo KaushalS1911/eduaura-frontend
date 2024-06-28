@@ -47,14 +47,11 @@ import DemoTableFiltersResult from '../demo-table-filters-result';
 // const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...ORDER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'orderNumber', label: 'Sr No', width: 116 },
-  { id: 'name', label: 'Inquiry Student' },
-  { id: 'totalAmount', label: 'Contact', width: 160 },
-  // { id: 'createdAt', label: 'Date', width: 200 },
-  // { id: 'totalQuantity', label: 'Items', width: 120, align: 'center' },
-  // { id: 'totalAmount', label: 'Price', width: 140 },
-  // { id: 'status', label: 'Status', width: 210 },
-  { id: '', width: 88 },
+  { id: 'srNo', label: '#', align: "center"},
+  { id: 'name', label: 'Name' },
+  { id: 'contact', label: 'Contact' },
+  { id: 'email', label: 'Email' },
+  { id: '', label: "Demo", align: "center" },
 ];
 
 const defaultFilters = {
@@ -169,17 +166,16 @@ export default function DemoListView() {
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="List"
+          heading="Demo"
           links={[
             {
               name: 'Dashboard',
               href: paths.dashboard.root,
             },
             {
-              name: 'demo',
+              name: 'Demo',
               href: paths.dashboard.demo.root,
             },
-            { name: 'List' },
           ]}
           sx={{
             mb: { xs: 3, md: 5 },

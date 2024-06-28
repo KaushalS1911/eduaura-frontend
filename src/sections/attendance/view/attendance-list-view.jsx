@@ -46,6 +46,7 @@ const TABLE_HEAD = [
   { id: 'email', label: 'Email' },
   { id: 'course', label: 'Course' },
   { id: 'status', label: 'Status' },
+  { id: '', label: '' },
 ];
 
 const defaultFilters = {
@@ -62,7 +63,7 @@ export default function AttendanceListView() {
 
   const theme = useTheme();
 
-  const { attendance } = useGetAllAttendance();
+  const { attendance, mutate } = useGetAllAttendance();
 
   const settings = useSettingsContext();
 
@@ -203,7 +204,7 @@ export default function AttendanceListView() {
               href: paths.dashboard.root,
             },
             {
-              name: 'Attendance logs',
+              name: 'Attendance',
             },
           ]}
           action={
@@ -296,6 +297,7 @@ export default function AttendanceListView() {
                         onViewRow={() => handleViewRow(row.id)}
                         onEditRow={() => handleEditRow(row.id)}
                         onDeleteRow={() => handleDeleteRow(row.id)}
+                        mutate={mutate}
                       />
                     ))}
 

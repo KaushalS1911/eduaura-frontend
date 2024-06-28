@@ -18,7 +18,7 @@ import Iconify from 'src/components/iconify';
 import DemoFormDialog from './demo-form-dialog';
 import { useState } from 'react';
 import { usePopover } from 'src/components/custom-popover';
-import { useDeleteDemo } from 'src/api/demo';
+import { DeleteDemo } from 'src/api/demo';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import moment from 'moment';
 // ----------------------------------------------------------------------
@@ -41,7 +41,7 @@ export default function DemoTableRow({
   const popover = usePopover();
   const handleDelete = async (demoId) => {
     try {
-      await useDeleteDemo(demoId);
+      await DeleteDemo(demoId);
       mutate();
       onDeleteRow(demoId);
       confirm.onFalse();
@@ -54,24 +54,20 @@ export default function DemoTableRow({
       {/* <TableCell padding="checkbox">
         <Checkbox checked={selected} onClick={onSelectRow} />
       </TableCell> */}
-      <TableCell>
-        <Box>{srNumber}</Box>
+      <TableCell align="center">
+        {srNumber}
       </TableCell>
-      <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-        <ListItemText
-          primary={`${firstName} ${lastName}`}
-          secondary={email}
-          primaryTypographyProps={{ variant: 'body2' }}
-          secondaryTypographyProps={{
-            component: 'span',
-            color: 'text.disabled',
-          }}
-        />
+      <TableCell >
+        {`${firstName} ${lastName}`}
+      </TableCell>
+
+      <TableCell>
+        {contact}
       </TableCell>
       <TableCell>
-        <Box>{contact}</Box>
+        {email}
       </TableCell>
-      <TableCell align="right" sx={{ px: 3, whiteSpace: 'nowrap' }}>
+      <TableCell align="center" sx={{ px: 3, whiteSpace: 'nowrap' }}>
         <IconButton
           color={collapse.value ? 'inherit' : 'default'}
           onClick={collapse.onToggle}
@@ -97,23 +93,26 @@ export default function DemoTableRow({
         >
           <Stack component={Paper} sx={{ m: 1.5 }}>
             {demos.map(
-              (item) => (
-                console.log(item),
+              (item, index) => (
                 (
                   <Stack
                     key={item._id}
                     direction="row"
                     alignItems="center"
                     sx={{
+                      px: 1,
                       p: (theme) => theme.spacing(1.5, 2, 1.5, 1.5),
                       '&:not(:last-of-type)': {
                         borderBottom: (theme) => `solid 2px ${theme.palette.background.neutral}`,
                       },
                     }}
                   >
+                    <TableCell sx={{mr: 3}}>
+                      {index + 1}
+                    </TableCell>
                     <Avatar
                       src={item?.faculty_id?.avatar_url}
-                      variant="rounded"
+                      variant="circular"
                       sx={{ width: 48, height: 48, mr: 2 }}
                     />
                     <ListItemText
@@ -128,10 +127,12 @@ export default function DemoTableRow({
                         mt: 0.5,
                       }}
                     />
-                    <TableCell sx={{ mx: 5 }}>
+                    <TableCell>
+                      <Box>{item.technology}</Box>
+                    </TableCell>
+                    <TableCell >
                       <ListItemText
                         primary={fDate(item.date)}
-                        secondary={moment(item.date).format('h:mm A')}
                         primaryTypographyProps={{ variant: 'body2', noWrap: true }}
                         secondaryTypographyProps={{
                           mt: 0.5,
@@ -140,13 +141,8 @@ export default function DemoTableRow({
                         }}
                       />
                     </TableCell>
-                    <TableCell sx={{ mx: 5 }}>
-                      <Box>{item.technology}</Box>
-                    </TableCell>
-                    <TableCell sx={{ mx: 5 }}>
-                      <Box>{item.detail}</Box>
-                    </TableCell>
-                    <TableCell sx={{ mx: 5 }}>
+
+                    <TableCell sx={{width: 114}}>
                       <Label
                         variant="soft"
                         color={
@@ -159,17 +155,16 @@ export default function DemoTableRow({
                         {item.status}
                       </Label>
                     </TableCell>
-                    <MenuItem
-                      onClick={() => {
+                    <MenuItem>
+                      <IconButton color='default' onClick={() => {
                         setOpen(true);
                         setDemosID(row._id);
                         setDemoID(item._id);
-                      }}
-                    >
-                      <Iconify icon="solar:eye-bold" />
+                      }}>
+                        <Iconify icon="solar:pen-bold" />
+                      </IconButton>
                     </MenuItem>
                     <MenuItem
-                      sx={{ mx: 2 }}
                       onClick={() => {
                         confirm.onTrue();
                         popover.onClose();
@@ -177,7 +172,9 @@ export default function DemoTableRow({
                         setDemoID(item._id);
                       }}
                     >
-                      <Iconify icon="solar:trash-bin-trash-bold" />
+                      <IconButton color='default'>
+                        <Iconify icon="solar:trash-bin-trash-bold" />
+                      </IconButton>
                     </MenuItem>
                   </Stack>
                 )
@@ -195,8 +192,8 @@ export default function DemoTableRow({
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
-        content="Are you sure you want to delete?"
+        title="Delete Demo"
+        content="Are you sure you want to delete selected demo?"
         action={
           <Button variant="contained" color="error" onClick={() => handleDelete(demoID)}>
             Delete

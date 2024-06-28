@@ -38,12 +38,12 @@ import SeminarTableRow from '../seminar-table-row';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'Sr no', label: 'Sr No' },
+  { id: 'Sr no', label: '#' },
   { id: 'title', label: 'Title' },
-  { id: 'Discription', label: 'Details' },
-  { id: 'Date', label: 'Date', align: 'center' },
-  { id: 'Schedule by', label: 'Schedule by', align: 'center' },
-  { id: 'Attended by', label: 'Attended by', align: 'center' },
+  { id: 'description', label: 'Description' },
+  { id: 'date', label: 'Date' },
+  { id: 'Schedule by', label: 'Schedule by' },
+  { id: 'Attended by', label: 'Attended by', align: "center" },
   { id: '', width: 88 },
 ];
 
@@ -129,11 +129,10 @@ export default function SeminarListView() {
     <>
       <Container maxWidth={settings.themeStretch ? false : 'xl'}>
         <CustomBreadcrumbs
-          heading="Seminar List"
+          heading="Seminar "
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
             { name: 'Seminar', href: paths.dashboard.seminar.list },
-            { name: 'Seminar List' },
           ]}
           action={
             <Button

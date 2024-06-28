@@ -72,7 +72,6 @@ export default function EmployeeTableRow({
         <TableCell sx={{ whiteSpace: 'nowrap' }}>
           {moment(joining_date).format('DD/MM/YYYY')}
         </TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{moment(dob).format('DD/MM/YYYY')}</TableCell>
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
           {/* <Tooltip title="Quick Edit" placement="top" arrow>

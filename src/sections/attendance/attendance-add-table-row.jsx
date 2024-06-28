@@ -18,14 +18,11 @@ const INQUIRY_SUGGESTED_IN = [
 ];
 
 export default function AttendanceAddTableRow({
+  index,
   row,
   selected,
-  onSelectRow,
-  onViewRow,
-  onEditRow,
-  onDeleteRow,
   onAttendanceChange,
-  responce1 = { status: null },
+  response = { status: null },
 }) {
   const { contact, email, firstName, lastName, profile_pic, _id } = row;
   const confirm = useBoolean();
@@ -39,16 +36,17 @@ export default function AttendanceAddTableRow({
   };
 
   useEffect(() => {
-    if (responce1 && responce1.status === 200) {
+    if (response && response.status === 200) {
       setAttendanceStatus('');
     } else {
       setAttendanceStatus('');
     }
-  }, [responce1]);
+  }, [response]);
 
   return (
-    <TableRow hover selected={selected}>
-      <TableCell sx={{ display: 'flex', alignItems: 'center', mx: '10px' }}>
+    <TableRow hover selected={selected} >
+      <TableCell >{index + 1}</TableCell>
+      <TableCell sx={{ display: 'flex', alignItems: 'center'}}>
         <Avatar alt={`${firstName} ${lastName}`} src={profile_pic} sx={{ mr: 2 }}>
           {!profile_pic && firstName.charAt(0).toUpperCase()}
         </Avatar>
@@ -59,14 +57,11 @@ export default function AttendanceAddTableRow({
               {`${firstName} ${lastName}`}
             </Typography>
           }
-          secondary={
-            <Link noWrap variant="body2" sx={{ color: 'text.disabled', cursor: 'pointer' }}>
-              {email}
-            </Link>
-          }
+
         />
       </TableCell>
       <TableCell>{contact}</TableCell>
+      <TableCell>{email}</TableCell>
       <TableCell>
         <RHFRadioGroup
           row
@@ -96,7 +91,7 @@ AttendanceAddTableRow.propTypes = {
     _id: PropTypes.string,
   }).isRequired,
   selected: PropTypes.bool,
-  responce1: PropTypes.shape({
+  response: PropTypes.shape({
     status: PropTypes.number,
   }),
 };

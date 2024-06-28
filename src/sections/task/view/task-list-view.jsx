@@ -49,10 +49,11 @@ import { useGetTasks } from 'src/api/task';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'srNo', label: 'Sr No' },
-  { id: 'title', label: 'Title' },
+  { id: 'srNo', label: '#' },
+  { id: 'date', label: 'Date' },
+  { id: 'title', label: 'Task' },
+  { id: 'assigned_to', label: 'Assigned to' },
   { id: 'description', label: 'Description' },
-  { id: 'assigned_to', label: 'Assigned To' },
   { id: 'status', label: 'Status' },
   { id: '' },
 ];
@@ -184,11 +185,10 @@ export default function TaskListView() {
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="List"
+          heading="Task"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
             { name: 'Task', href: paths.dashboard.task.root },
-            { name: 'List' },
           ]}
           action={
             <Button

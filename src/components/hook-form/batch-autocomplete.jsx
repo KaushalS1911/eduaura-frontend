@@ -15,6 +15,7 @@ const RHFAutocomplete1 = ({ name, control, studentName, labelName }) => (
         value={field.value || []}
         isOptionEqualToValue={(option, value) => option._id === value._id}
         onChange={(event, newValue) => field.onChange(newValue)}
+        disableCloseOnSelect
         renderOption={(props, option, { selected }) => (
           <li {...props}>
             <Checkbox style={{ marginRight: 8 }} checked={selected} />

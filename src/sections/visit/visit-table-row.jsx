@@ -40,16 +40,16 @@ export default function VisitTableRow({
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell> */}
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{index + 1}</TableCell>
+        <TableCell align="center">{index + 1}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${firstName} ${lastName}`}</TableCell>
+        <TableCell>{`${firstName} ${lastName}`}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{contact}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{reference}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{notes}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{address}</TableCell>
+        <TableCell>{contact}</TableCell>
+        <TableCell>{reference}</TableCell>
+        <TableCell>{notes}</TableCell>
+        <TableCell>{address}</TableCell>
 
-        <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
+        <TableCell align="center" >
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
@@ -88,8 +88,8 @@ export default function VisitTableRow({
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
-        content="Are you sure want to delete?"
+        title="Delete Visit"
+        content="Are you sure want to delete selected visit?"
         action={
           <Button
             variant="contained"

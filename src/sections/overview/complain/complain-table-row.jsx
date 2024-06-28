@@ -52,7 +52,7 @@ export default function ComplainTableRow({
 
         <ListItemText
           primary={`${student.firstName} ${student.lastName}`}
-          // secondary={student.email}
+          secondary={student?.email}
           primaryTypographyProps={{ typography: 'body2' }}
           secondaryTypographyProps={{
             component: 'span',
@@ -60,8 +60,8 @@ export default function ComplainTableRow({
           }}
         />
       </TableCell>
-      <TableCell>{title}</TableCell>
       <TableCell> {moment(date).format('DD/MM/YYYY')}</TableCell>
+      <TableCell>{title}</TableCell>
       <TableCell>
         <Label
           variant="soft"

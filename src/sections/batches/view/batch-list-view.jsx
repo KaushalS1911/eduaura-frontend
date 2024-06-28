@@ -51,12 +51,12 @@ import BatchTableFiltersResult from '../batch-table-filters-result';
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...ORDER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'srNo', label: 'Sr No', align: 'center'  },
+  { id: 'srNo', label: '#', align: 'center'  },
   { id: 'faculty', label: 'Faculty' },
-  { id: ' batchName', label: ' Batch Name' },
+  { id: ' batchName', label: ' Batch' },
   { id: 'technology', label: 'Technology' },
   { id: 'time', label: 'Time' },
-  { id: 'Student', label: 'Student', align: 'center' },
+  { id: 'Student', label: 'Students', align: 'center' },
   { id: '', width: 88 },
 ];
 
@@ -192,7 +192,7 @@ export default function BatchListView() {
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="List"
+          heading="Batch"
           links={[
             {
               name: 'Dashboard',
@@ -202,7 +202,6 @@ export default function BatchListView() {
               name: 'Batch',
               href: paths.dashboard.batches.root,
             },
-            { name: 'List' },
           ]}
           action={
             <Button
@@ -211,7 +210,7 @@ export default function BatchListView() {
               variant="contained"
               startIcon={<Iconify icon="mingcute:add-line" />}
             >
-              New Batches
+              New Batch
             </Button>
           }
           sx={{
