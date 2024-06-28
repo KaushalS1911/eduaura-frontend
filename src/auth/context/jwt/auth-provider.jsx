@@ -5,7 +5,6 @@ import { setSession } from './utils';
 import { AuthContext } from './auth-context';
 import { AUTH_API } from '../../../config-global';
 import { enqueueSnackbar } from 'notistack';
-
 // ----------------------------------------------------------------------
 /**
  * NOTE:
@@ -13,12 +12,10 @@ import { enqueueSnackbar } from 'notistack';
  * Customer will need to do some extra handling yourself if you want to extend the logic and other features...
  */
 // ----------------------------------------------------------------------
-
 const initialState = {
   user: null,
   loading: true,
 };
-
 const reducer = (state, action) => {
   if (action.type === 'INITIAL') {
     return {
@@ -46,26 +43,20 @@ const reducer = (state, action) => {
   }
   return state;
 };
-
 // ----------------------------------------------------------------------
-
 const JWT = 'jwt';
 const JWT_REFRESH = 'jwtRefresh';
-
 export function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const initialize = useCallback(async () => {
     try {
       const jwt = sessionStorage.getItem(JWT);
       const jwtRefresh = sessionStorage.getItem(JWT_REFRESH);
-
       if (jwt && jwtRefresh) {
         setSession(jwt, jwtRefresh);
         const url = `${AUTH_API}/api/users/me`;
         const response = await axios.get(url);
-
-        const  user  = response?.data;
-
+        const user = response?.data;
         dispatch({
           type: 'INITIAL',
           payload: {
@@ -94,73 +85,38 @@ export function AuthProvider({ children }) {
       });
     }
   }, []);
-
   useEffect(() => {
     initialize();
   }, [initialize]);
-
   // LOGIN
   const login = useCallback(async (email, password) => {
     const data = {
       email,
       password,
     };
-
     const URL = `${AUTH_API}/api/auth/v2/login`;
-    axios.post(URL, data).then((response) =>{
-      if(response?.data?.data?.status === 200 ){
-        const res = response
-        console.log(res,"reers");
-        const  {user}  = res.data.data;
-        const { jwt, jwtRefresh } = user.other_info;
-
-        setSession(jwt, jwtRefresh);
-        enqueueSnackbar("Login Successfully")
-        dispatch({
-          type: 'LOGIN',
-          payload: {
-            user: {
-              ...user,
-              jwt,jwtRefresh
-            },
-          },
-        });
-      } else {
-        enqueueSnackbar('Invalid credentials', { variant: 'error' });
-        console.log('err');
-      }
-    }).catch((err) =>{
-      console.log(err);
-    })
+     await axios.post(URL, data).then((res) =>{
+       const { user } = res.data.data;
+       enqueueSnackbar("Login Successfully")
+       const { jwt, jwtRefresh } = user.other_info;
+       setSession(jwt, jwtRefresh);
+       dispatch({
+         type: 'LOGIN',
+         payload: {
+           user: {
+             ...user,
+             jwt,
+             jwtRefresh,
+           },
+         },
+       });
+    }).catch((err) => {
+      enqueueSnackbar(`${err.message}`,{variant:"error"})
+       console.log(err);
+     })
 
 
   }, []);
-
-  // REGISTER
-  // const register = useCallback(async (email, password, firstName, lastName) => {
-  //   const data = {
-  //     email,
-  //     password,
-  //     firstName,
-  //     lastName,
-  //   };
-  //
-  //   const response = await axios.post(endpoints.auth.register, data);
-  //
-  //   const { accessToken, user } = response.data;
-  //
-  //   sessionStorage.setItem(STORAGE_KEY, accessToken);
-  //
-  //   dispatch({
-  //     type: 'REGISTER',
-  //     payload: {
-  //       user: {
-  //         ...user,
-  //         accessToken,
-  //       },
-  //     },
-  //   });
-  // }, []);
 
   // LOGOUT
   const logout = useCallback(async () => {
@@ -169,13 +125,9 @@ export function AuthProvider({ children }) {
       type: 'LOGOUT',
     });
   }, []);
-
   // ----------------------------------------------------------------------
-
   const checkAuthenticated = state.user ? 'authenticated' : 'unauthenticated';
-
   const status = state.loading ? 'loading' : checkAuthenticated;
-
   const memoizedValue = useMemo(
     () => ({
       user: state.user,
@@ -190,10 +142,8 @@ export function AuthProvider({ children }) {
     }),
     [login, logout, state.user, status,initialize]
   );
-
   return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;
 }
-
 AuthProvider.propTypes = {
   children: PropTypes.node,
 };

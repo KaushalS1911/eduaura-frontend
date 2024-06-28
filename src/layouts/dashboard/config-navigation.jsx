@@ -21,16 +21,16 @@ const ICONS = {
   chat: icon('ic_chat'),
   mail: icon('ic_mail'),
   user: icon('ic_user'),
-  student: <Iconify icon="ph:student-bold" sx={{ width: 1, height: 1 }} />,
-  employee: <Iconify icon="clarity:employee-solid" sx={{ width: 1, height: 1 }} />,
-  inquiry: <Iconify icon="heroicons-solid:newspaper" sx={{ width: 1, height: 1 }} />,
-  demo: <Iconify icon="material-symbols:demography-outline" sx={{ width: 1, height: 1 }} />,
-  seminar: <Iconify icon="material-symbols:overview-sharp" sx={{ width: 1, height: 1 }} />,
-  attandance: <Iconify icon="fluent:clipboard-task-list-20-filled" sx={{ width: 1, height: 1 }} />,
-  expenses: <Iconify icon="mingcute:wallet-fill" sx={{ width: 1, height: 1 }} />,
-  task: <Iconify icon="fluent:task-list-square-person-20-filled" sx={{ width: 1, height: 1 }} />,
-  visit: <Iconify icon="material-symbols:nest-doorbell-visitor" sx={{ width: 1, height: 1 }} />,
-  exam: <Iconify icon="healthicons:i-exam-multiple-choice-negative" sx={{ width: 1, height: 1 }} />,
+  student: <Iconify icon='ph:student-bold' sx={{ width: 1, height: 1 }} />,
+  employee: <Iconify icon='clarity:employee-solid' sx={{ width: 1, height: 1 }} />,
+  inquiry: <Iconify icon='heroicons-solid:newspaper' sx={{ width: 1, height: 1 }} />,
+  demo: <Iconify icon='material-symbols:demography-outline' sx={{ width: 1, height: 1 }} />,
+  seminar: <Iconify icon='material-symbols:overview-sharp' sx={{ width: 1, height: 1 }} />,
+  attandance: <Iconify icon='fluent:clipboard-task-list-20-filled' sx={{ width: 1, height: 1 }} />,
+  expenses: <Iconify icon='mingcute:wallet-fill' sx={{ width: 1, height: 1 }} />,
+  task: <Iconify icon='fluent:task-list-square-person-20-filled' sx={{ width: 1, height: 1 }} />,
+  visit: <Iconify icon='material-symbols:nest-doorbell-visitor' sx={{ width: 1, height: 1 }} />,
+  exam: <Iconify icon='healthicons:i-exam-multiple-choice-negative' sx={{ width: 1, height: 1 }} />,
   file: icon('ic_file'),
   lock: icon('ic_lock'),
   tour: icon('ic_tour'),
@@ -50,7 +50,8 @@ const ICONS = {
   ecommerce: icon('ic_ecommerce'),
   analytics: icon('ic_analytics'),
   dashboard: icon('ic_dashboard'),
-  batches: <Iconify icon="mdi:google-classroom" sx={{ width: 1, height: 1 }} />,
+  setting: <Iconify icon='solar:settings-bold-duotone' width={24} />,
+  batches: <Iconify icon='mdi:google-classroom' sx={{ width: 1, height: 1 }} />,
 };
 
 // ----------------------------------------------------------------------
@@ -195,9 +196,23 @@ export function useNavData() {
 
         ],
       },
-    ],
-    [t, user?.role] // Include user.role as a dependency
-  );
 
+    ],
+    [t, user?.role], // Include user.role as a dependency
+    )
+  ;
+  if(user?.role === "Admin"){
+    data.push(     {
+      subheader: t('config'),
+      items: [
+        // SETTING
+        user?.role === 'Admin' && {
+          title: t('setting'),
+          path: paths.dashboard.setting,
+          icon: ICONS.setting,
+        },
+      ].filter(Boolean),
+    },)
+  }
   return data;
 }

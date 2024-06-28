@@ -49,7 +49,7 @@ export default function ExaminationTableRow({
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{moment(date).format('ll')}</TableCell>
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-          <Avatar alt={ExamImage(title)} src={dta.image} sx={{ mr: 2 }} />
+          <Avatar alt={ExamImage(title)} src={dta?.image} sx={{ mr: 2 }} />
           <ListItemText
             primary={title}
             // secondary={conducted_by?.email}

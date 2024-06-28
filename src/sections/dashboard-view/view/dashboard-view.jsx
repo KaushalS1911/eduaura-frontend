@@ -24,12 +24,11 @@ export default function DashboardView() {
   const [attendence, setAttendence] = useState({});
   const [course, setCourse] = useState({});
   const [dashboardData, setDashboardData] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   const getDemos = () => {
     return axios
       .get(
-        `https://admin-panel-dmawv.ondigitalocean.app/api/company/${user?.company_id}/upcoming-demo`
+        `https://admin-panel-dmawv.ondigitalocean.app/api/company/${user?.company_id}/upcoming-demo`,
       )
       .then((res) => setDemo(res?.data?.data))
       .catch((err) => console.log(err));
@@ -45,7 +44,7 @@ export default function DashboardView() {
   const getCourse = () => {
     return axios
       .get(
-        `https://admin-panel-dmawv.ondigitalocean.app/api/company/${user?.company_id}/student/course`
+        `https://admin-panel-dmawv.ondigitalocean.app/api/company/${user?.company_id}/student/course`,
       )
       .then((res) => setCourse(res?.data?.data))
       .catch((err) => console.log(err));
@@ -54,16 +53,15 @@ export default function DashboardView() {
   const getAttendence = () => {
     return axios
       .get(
-        `https://admin-panel-dmawv.ondigitalocean.app/api/company/${user?.company_id}/attendance/logs`
+        `https://admin-panel-dmawv.ondigitalocean.app/api/company/${user?.company_id}/attendance/logs`,
       )
       .then((res) => setAttendence(res?.data?.data))
       .catch((err) => console.log(err));
   };
 
   useEffect(() => {
-    Promise.all([getDemos(), dashboard(), getCourse(), getAttendence()]).then(() =>
-      setLoading(false)
-    );
+    getDemos(), dashboard(), getCourse(), getAttendence();
+
   }, []);
 
   const output = [];
@@ -74,58 +72,49 @@ export default function DashboardView() {
 
   const settings = useSettingsContext();
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
-      {/* <Typography */}
-      {/*   variant="h4" */}
-      {/*   sx={{ */}
-      {/*     mb: { xs: 3, md: 5 }, */}
-      {/*   }} */}
-      {/* > */}
-      {/*   Hi, Welcome back */}
-      {/* </Typography> */}
+
       <Grid container spacing={3}>
         <Grid xs={12} sm={6} md={3}>
           <DashboardCount
-            title="Students"
+            title='Students'
             total={dashboardData?.students}
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_bag.png" />}
+            icon={<img alt='icon' src='/assets/icons/glass/ic_glass_bag.png' />}
           />
         </Grid>
         <Grid xs={12} sm={6} md={3}>
           <DashboardCount
-            title="Developers"
+            title='Developers'
             total={dashboardData?.developers}
-            color="info"
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_users.png" />}
+            color='info'
+            icon={<img alt='icon' src='/assets/icons/glass/ic_glass_users.png' />}
           />
         </Grid>
 
         <Grid xs={12} sm={6} md={3}>
           <DashboardCount
-            title="Faculties"
+            title='Faculties'
             total={dashboardData?.faculties}
-            color="warning"
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_buy.png" />}
+            color='warning'
+            icon={<img alt='icon' src='/assets/icons/glass/ic_glass_buy.png' />}
           />
         </Grid>
 
         <Grid xs={12} sm={6} md={3}>
           <DashboardCount
-            title="Labs"
+            title='Labs'
             total={20}
-            color="error"
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_message.png" />}
+            color='error'
+            icon={<img alt='icon' src='/assets/icons/glass/ic_glass_message.png' />}
           />
         </Grid>
         <Grid xs={12} md={8}>
           <Stack spacing={3}>
             <DashboardDemoInquiryChart
-              title="Visits & Inquiry"
+              title='Visits & Inquiry'
               // subheader="(+43% Income | +12% Expense) than last year"
               chart={{
                 categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
@@ -196,7 +185,7 @@ export default function DashboardView() {
         <Grid xs={12} md={4}>
           <Stack spacing={3}>
             <DashboardUpcomingDemo
-              title="Upcoming Demos"
+              title='Upcoming Demos'
               subheader={`You have ${demo.length} demos`}
               list={demo.slice(-5)}
             />
@@ -205,7 +194,7 @@ export default function DashboardView() {
         <Grid xs={12} md={8}>
           <Stack spacing={3}>
             <DashboardCourseChart
-              title="Courses analytics"
+              title='Courses analytics'
               chart={{
                 series: output,
                 colors: [

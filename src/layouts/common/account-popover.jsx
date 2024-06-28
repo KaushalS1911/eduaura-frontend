@@ -29,21 +29,15 @@ export default function AccountPopover() {
   const returnTo = searchParams.get('returnTo');
   const { user, logout } = useAuthContext();
   const OPTIONS = [
-    {
-      label: 'Home',
-      linkTo: '/',
-    },
+
     {
       label: 'Profile',
       linkTo:
-        (user?.role === 'Admin' && paths.dashboard.profile.root) ||
+        (user?.role === 'Admin' && paths.dashboard.setting) ||
         (user?.role === 'Student' && paths.dashboard.student.edit(user?._id)) ||
         paths.dashboard.employee.edit(user?._id),
     },
-    {
-      label: 'Settings',
-      linkTo: paths.dashboard.setting,
-    },
+
   ];
 
   const { enqueueSnackbar } = useSnackbar();
