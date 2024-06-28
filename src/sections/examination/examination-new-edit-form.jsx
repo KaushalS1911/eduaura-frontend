@@ -23,6 +23,7 @@ import { useGetStudentsList } from 'src/api/student';
 import RHFAutocomplete1 from 'src/components/hook-form/batch-autocomplete';
 import { useGetFaculty } from 'src/api/faculty';
 import { mutate } from 'swr';
+import { programmingLanguages } from '../../_mock/_inquiry';
 
 // ----------------------------------------------------------------------
 
@@ -47,7 +48,7 @@ export default function ExaminationNewEditForm({ examinationId }) {
     }
   }, [students, faculty]);
   const NewBlogSchema = Yup.object().shape({
-    title: Yup.string().required('Title is required'),
+    title: Yup.object().required('Title is required'),
     desc: Yup.string().required('Description is required'),
     date: Yup.date().required('Date is required'),
     total_marks: Yup.string().required('Total marks is required'),
@@ -56,7 +57,7 @@ export default function ExaminationNewEditForm({ examinationId }) {
   const methods = useForm({
     resolver: yupResolver(NewBlogSchema),
     defaultValues: {
-      title: '',
+      title: null,
       desc: '',
       date: null,
       total_marks: '',
@@ -82,7 +83,7 @@ export default function ExaminationNewEditForm({ examinationId }) {
           const { exam } = response?.data?.data;
           const stu = exam.students.map((data) => data?.student_id);
           reset({
-            title: exam?.title,
+            title: programmingLanguages.find((data) => data.label === exam?.title),
             total_marks: exam?.total_marks,
             desc: exam?.desc,
             conducted_by: exam?.conducted_by,
@@ -99,6 +100,7 @@ export default function ExaminationNewEditForm({ examinationId }) {
   }, [examinationId, reset]);
 
   const onSubmit = handleSubmit(async (data) => {
+
     const payload = data.students.map((student) => {
       return {
         obtained_marks: null,
@@ -110,7 +112,7 @@ export default function ExaminationNewEditForm({ examinationId }) {
       if (data) {
         const URL = `${import.meta.env.VITE_AUTH_API}/api/company/exam/${examinationId}`;
         await axios
-          .put(URL, { ...data, students: payload })
+          .put(URL, { ...data,title:data?.title.label, students: payload })
           .then((res) => router.push(paths.dashboard.examination.list))
           .catch((err) => console.log(err));
         mutate()
@@ -140,7 +142,16 @@ export default function ExaminationNewEditForm({ examinationId }) {
           {!mdUp && <CardHeader title="Details" />}
 
           <Stack spacing={3} sx={{ p: 3 }}>
-            <RHFTextField name="title" label="Title" />
+            {/*<RHFTextField name="title" label="Title" />
+            */}
+            <RHFAutocomplete
+              name="title"
+              label="Title"
+              placeholder="Choose a title"
+              fullWidth
+              options={programmingLanguages}
+              getOptionLabel={(option) => option?.label}
+            />
             <RHFTextField name="total_marks" label="Total Marks" />
 
             <Stack spacing={1.5}>

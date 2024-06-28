@@ -33,6 +33,8 @@ export default function InquiryNewEditForm({ inquiryId }) {
   const mdUp = useResponsive('up', 'md');
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
+  const [radio,setRadio] = useState('')
+
 
   const NewUserSchema = Yup.object().shape({
     firstName: Yup.string().required('First name is required'),
@@ -63,6 +65,7 @@ export default function InquiryNewEditForm({ inquiryId }) {
       father_contact: '',
       father_occupation: '',
       reference_by: '',
+      other_reference_by:'',
       interested_in: [],
       suggested_by: '',
     },
@@ -73,9 +76,13 @@ export default function InquiryNewEditForm({ inquiryId }) {
     handleSubmit,
     control,
     watch,
+    getValues,
     formState: { isSubmitting },
   } = methods;
+const handleRadio = (e) =>{
+  setRadio(e.target.value === "Other")
 
+}
   useEffect(() => {
     const fetchInquiryById = async () => {
       try {
@@ -83,6 +90,8 @@ export default function InquiryNewEditForm({ inquiryId }) {
           const URL = `${import.meta.env.VITE_AUTH_API}/api/company/inquiry/${inquiryId}`;
           const response = await axios.get(URL);
           const { data } = response.data;
+          const condition = INQUIRY_REFERENCE_BY.find((item) => item.label == data.reference_by) ? data.reference_by : ("Other");
+
           reset({
             firstName: data.firstName,
             lastName: data.lastName,
@@ -102,11 +111,16 @@ export default function InquiryNewEditForm({ inquiryId }) {
             fatherName: data.fatherName,
             father_contact: data.father_contact,
             father_occupation: data.father_occupation,
-            reference_by: data.reference_by,
+            reference_by:   condition,
+            other_reference_by:data.reference_by,
             interested_in: data.interested_in,
             suggested_by: data.suggested_by,
           });
+          if(condition == "Other"){
+            setRadio(true)
+          };
         }
+
       } catch (error) {
         console.error('Failed to fetch inquiry:', error);
       }
@@ -152,12 +166,13 @@ export default function InquiryNewEditForm({ inquiryId }) {
       fatherName: data.fatherName,
       father_contact: data.father_contact,
       father_occupation: data.father_occupation,
-      reference_by: data.reference_by,
+      reference_by: data.reference_by === "Other" ? data.other_reference_by : data.reference_by,
       interested_in: data.interested_in,
       suggested_by: data.suggested_by,
     };
     try {
       let response;
+
 
       if (inquiryId) {
         response = await updateInquiry(addInquiry);
@@ -382,13 +397,17 @@ export default function InquiryNewEditForm({ inquiryId }) {
               }}
             >
               <Stack spacing={1}>
-                <Typography variant="subtitle2">How did you come to know about JBS IT?</Typography>
-                <RHFRadioGroup row spacing={4} name="reference_by" options={INQUIRY_REFERENCE_BY} />
+                <Typography variant="subtitle2">How did you come to know about us?</Typography>
+                <RHFRadioGroup row spacing={4} onClick={handleRadio}  sx={{width:"175px"}} name="reference_by" options={INQUIRY_REFERENCE_BY} />
               </Stack>
               <Stack spacing={1}>
                 <Typography variant="subtitle2">Why did you choose this Course?</Typography>
                 <RHFRadioGroup row spacing={4} name="suggested_by" options={INQUIRY_SUGGESTED_IN} />
               </Stack>
+              {radio && <Stack spacing={1}>
+                <Typography variant='subtitle2'>Write other reference name </Typography>
+                <RHFTextField name='other_reference_by' label='Reference By' />
+              </Stack>}
               <Stack spacing={1}>
                 <Typography variant="subtitle2">Select Interested Options:</Typography>
                 <RHFMultiSelect

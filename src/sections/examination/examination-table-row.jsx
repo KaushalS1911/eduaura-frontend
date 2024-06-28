@@ -16,6 +16,7 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 // import ExpenseQuickEditForm from './examination-quick-edit-form';
 import { Avatar, ListItemText, Tooltip } from '@mui/material';
 import ExaminationQuickEditForm from './examination-quick-edit-form';
+import { ExamImage } from '../../_mock/_inquiry';
 
 // ----------------------------------------------------------------------
 
@@ -28,7 +29,11 @@ export default function ExaminationTableRow({
   index,
   mutate,
 }) {
+
+
   const { conducted_by, date, desc, title, total_marks } = row;
+  const dta = ExamImage(title)
+
 
   const confirm = useBoolean();
 
@@ -41,12 +46,13 @@ export default function ExaminationTableRow({
       <TableRow hover selected={selected}>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{index + 1}</TableCell>
 
-        <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-          <Avatar alt={conducted_by?.avatar_url} src={conducted_by?.avatar_url} sx={{ mr: 2 }} />
 
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{moment(date).format('ll')}</TableCell>
+        <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
+          <Avatar alt={ExamImage(title)} src={dta.image} sx={{ mr: 2 }} />
           <ListItemText
-            primary={`${conducted_by?.firstName} ${conducted_by?.lastName}`}
-            secondary={conducted_by?.email}
+            primary={title}
+            // secondary={conducted_by?.email}
             primaryTypographyProps={{ typography: 'body2' }}
             secondaryTypographyProps={{
               component: 'span',
@@ -54,11 +60,14 @@ export default function ExaminationTableRow({
             }}
           />
         </TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{title}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{desc}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{total_marks}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{moment(date).format('ll')}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${conducted_by?.firstName} ${conducted_by?.lastName}`}</TableCell>
+
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{desc}</TableCell>
+
+
+
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
           <Tooltip title="Quick Edit" placement="top" arrow>

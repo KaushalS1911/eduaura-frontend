@@ -22,6 +22,8 @@ import { PATH_AFTER_LOGIN } from 'src/config-global';
 
 import Iconify from 'src/components/iconify';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import { Box } from '@mui/system';
+import Logo from 'src/components/logo';
 
 // ----------------------------------------------------------------------
 
@@ -68,16 +70,10 @@ export default function JwtLoginView() {
   });
 
   const renderHead = (
-    <Stack spacing={2} sx={{ mb: 5 }}>
-      <Typography variant="h4">Sign in</Typography>
+    <Stack spacing={2} sx={{ mb: 1 }}>
+      <Typography sx={{display:"flex",justifyContent:"center",alignItems:"center"}}><Logo /></Typography>
 
-      <Stack direction="row" spacing={0.5}>
-        <Typography variant="body2">New user?</Typography>
-
-        <Link component={RouterLink} href={paths.auth.jwt.register} variant="subtitle2">
-          Create an account
-        </Link>
-      </Stack>
+     
     </Stack>
   );
 
@@ -110,6 +106,14 @@ export default function JwtLoginView() {
       >
         Login
       </LoadingButton>
+
+      <Stack sx={{textAlign:"center",mt:"10px"}}>
+        <Typography variant="body2">Don't have an account?</Typography>
+
+        <Link component={RouterLink} href={paths.auth.jwt.register} variant="subtitle2" sx={{mt:"8px"}}>
+          Create an account
+        </Link>
+      </Stack>
     </Stack>
   );
 

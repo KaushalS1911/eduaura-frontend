@@ -110,8 +110,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
     control,
     handleSubmit,
     formState: { isSubmitting, errors },
-  } = methods;
-  console.log(watch('total_amount'));
+  } = methods
   const values = watch();
   const createStudent = async (studentPayload) => {
     const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/${user?.company_id}/student`;
@@ -201,8 +200,8 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
 
   const uploadStudentImage = (
     <>
-      {mdUp && (
-        <Grid item md={4}>
+
+        <Grid item md={4} xs={12}>
           <Typography variant="h6" sx={{ mb: 0.5 }}>
             Personal Details
           </Typography>
@@ -215,7 +214,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
             </Box>
           </Card>
         </Grid>
-      )}
+
       <Grid item xs={12} md={8}>
         <Card>
           {!mdUp && <CardHeader title="Personal Details" />}

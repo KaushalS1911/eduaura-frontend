@@ -1,11 +1,10 @@
 import PropTypes from 'prop-types';
 import { useMemo, useEffect, useReducer, useCallback } from 'react';
-
 import axios, { endpoints } from 'src/utils/axios';
-
 import { setSession } from './utils';
 import { AuthContext } from './auth-context';
 import { AUTH_API } from '../../../config-global';
+import { enqueueSnackbar } from 'notistack';
 
 // ----------------------------------------------------------------------
 /**
@@ -55,7 +54,6 @@ const JWT_REFRESH = 'jwtRefresh';
 
 export function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  
   const initialize = useCallback(async () => {
     try {
       const jwt = sessionStorage.getItem(JWT);
@@ -109,22 +107,33 @@ export function AuthProvider({ children }) {
     };
 
     const URL = `${AUTH_API}/api/auth/v2/login`;
-    const response = await axios.post(URL, data);
+    axios.post(URL, data).then((response) =>{
+      if(response?.data?.data?.status === 200 ){
+        const res = response
+        console.log(res,"reers");
+        const  {user}  = res.data.data;
+        const { jwt, jwtRefresh } = user.other_info;
 
-    const  {user}  = response.data.data;
-    const { jwt, jwtRefresh } = user.other_info;
+        setSession(jwt, jwtRefresh);
+        enqueueSnackbar("Login Successfully")
+        dispatch({
+          type: 'LOGIN',
+          payload: {
+            user: {
+              ...user,
+              jwt,jwtRefresh
+            },
+          },
+        });
+      } else {
+        enqueueSnackbar('Invalid credentials', { variant: 'error' });
+        console.log('err');
+      }
+    }).catch((err) =>{
+      console.log(err);
+    })
 
-    setSession(jwt, jwtRefresh);
 
-    dispatch({
-      type: 'LOGIN',
-      payload: {
-        user: {
-          ...user,
-          jwt,jwtRefresh
-        },
-      },
-    });
   }, []);
 
   // REGISTER
@@ -177,8 +186,9 @@ export function AuthProvider({ children }) {
       //
       login,
       logout,
+      initialize
     }),
-    [login, logout, state.user, status]
+    [login, logout, state.user, status,initialize]
   );
 
   return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;

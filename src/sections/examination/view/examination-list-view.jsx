@@ -51,12 +51,11 @@ import { useGetExam } from 'src/api/examination';
 
 const TABLE_HEAD = [
   { id: 'srNo', label: 'SrNo' },
-  { id: 'faculty', label: 'Faculty' },
-  { id: 'exam', label: 'Exam' },
-  { id: 'description', label: 'Detail' },
-  { id: 'total marks', label: 'Marks' },
   { id: 'date', label: 'Date' },
-  // { id: 'amount', label: 'Amount', width: 320 },
+  { id: 'technologo', label: 'Technology' },
+  { id: 'total marks', label: 'Marks' },
+  { id: 'faculty', label: 'Faculty' },
+  { id: 'description', label: 'Description' },
   { id: '', width: 88 },
 ];
 
