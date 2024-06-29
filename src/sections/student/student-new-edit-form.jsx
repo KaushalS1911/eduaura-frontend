@@ -63,7 +63,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
     enrollment_no: Yup.number().required('Enrollment No is required'),
     total_amount: Yup.number().required('Total Amount is required'),
     amount_paid: Yup.number().required('Amount Paid is required'),
-    discount: Yup.number().required('Discount is required'),
+    // discount: Yup.number().required('Discount is required'),
     // no_of_installments: Yup.number().required('Number of Installments is required'),
     // upcoming_installment_date: Yup.date()
     //   .nullable()

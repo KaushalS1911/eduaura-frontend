@@ -28,14 +28,14 @@ export default function AccountPopover() {
   const searchParams = useSearchParams();
   const returnTo = searchParams.get('returnTo');
   const { user, logout } = useAuthContext();
+  console.log(user,"sg");
   const OPTIONS = [
 
     {
       label: 'Profile',
       linkTo:
-        (user?.role === 'Admin' && paths.dashboard.setting) ||
-        (user?.role === 'Student' && paths.dashboard.student.edit(user?._id)) ||
-        paths.dashboard.employee.edit(user?.employee_id),
+        (user?.role === 'Admin' ? paths.dashboard.setting :
+        paths.dashboard.employee.edit(user?.employee_id))
     },
 
   ];
