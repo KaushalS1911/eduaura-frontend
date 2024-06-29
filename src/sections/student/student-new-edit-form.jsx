@@ -42,6 +42,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
       setProfilePic(currentStudent?.profile_pic);
     }
   }, [currentStudent]);
+  console.log(currentStudent,"ccc");
 
   const NewUserSchema = Yup.object().shape({
     firstName: Yup.string().required('First Name is required'),
@@ -93,7 +94,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
       zipcode: currentStudent?.address_detail?.zipcode || '',
       enrollment_no: currentStudent?.enrollment_no || '',
       total_amount: currentStudent?.fee_detail?.total_amount || '',
-      discount: currentStudent?.fee_detail?.discount || '',
+      discount: currentStudent?.fee_detail?.discount || null,
       amount_paid: currentStudent?.fee_detail?.amount_paid || '',
       no_of_installments: currentStudent?.fee_detail?.no_of_installments || 0,
       upcoming_installment_date: currentStudent?.fee_detail?.upcoming_installment_date
