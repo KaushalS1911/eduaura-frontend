@@ -17,7 +17,7 @@ export default function ExpenseCreatePage() {
   const { enqueueSnackbar } = useSnackbar();
 
   const handleClick = () => {
-    const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user.company_id}/configs/${configs._id}`;
+    const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/configs/${configs?._id}`;
     const payload = {
       ...configs,
       expenses: [...configs.expenses, inputVal],
@@ -36,7 +36,7 @@ export default function ExpenseCreatePage() {
 
   const handleDelete = (item) => {
     const filteredExpenses = configs.expenses.filter((e) => e !== item);
-    const apiEndpoint = `${import.meta.env.VITE_AUTH_API}/api/company/${user.company_id}/configs/${configs._id}`;
+    const apiEndpoint = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/configs/${configs?._id}`;
     const payload = { ...configs, expenses: filteredExpenses };
     axios
       .put(apiEndpoint, payload)
@@ -50,7 +50,7 @@ export default function ExpenseCreatePage() {
   };
 
   return (
-   
+
     <>
       <Box sx={{ width: '100%', maxWidth: '100%', padding: '10px' }}>
         <Grid container spacing={3}>

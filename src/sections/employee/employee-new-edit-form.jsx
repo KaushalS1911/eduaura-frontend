@@ -195,8 +195,8 @@ export default function EmployeeNewEditForm({ employee }) {
 
   const renderProperties = (
     <>
-      {mdUp && (
-        <Grid item md={4}>
+
+        <Grid item md={4} xs={12}>
           <Typography variant="h6" sx={{ mb: 0.5 }}>
             Personal Details
           </Typography>
@@ -210,7 +210,7 @@ export default function EmployeeNewEditForm({ employee }) {
             </Box>
           </Card>
         </Grid>
-      )}
+
 
       <Grid item xs={12} md={8}>
         <Card>

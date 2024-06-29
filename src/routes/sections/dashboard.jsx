@@ -40,7 +40,7 @@ const VisitEditPage = lazy(() => import('src/pages/dashboard/visit/edit'));
 
 // FEES
 const FeesPage = lazy(() => import('src/pages/dashboard/fees'));
-const InvoiceDetailsView = lazy(() => import('src/sections/overview/fees/invoice-page'));
+const InvoiceDetailsView = lazy(() => import('src/sections/fees/invoice-page'));
 
 // OVERVIEW
 const IndexPage = lazy(() => import('src/pages/dashboard/dashboard'));

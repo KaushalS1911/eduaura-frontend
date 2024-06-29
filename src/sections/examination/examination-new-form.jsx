@@ -16,12 +16,12 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, { RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
 import axios from 'axios';
-import { paths } from 'src/routes/paths';
-import moment from 'moment';
 import { useAuthContext } from 'src/auth/hooks';
 import RHFAutocomplete1 from 'src/components/hook-form/batch-autocomplete';
 import { useGetStudentsList } from 'src/api/student';
 import { useGetFaculty } from 'src/api/faculty';
+import { programmingLanguages } from '../../_mock/_inquiry';
+import { paths } from '../../routes/paths';
 
 const types = [
   'Rent',
@@ -53,7 +53,7 @@ const ExaminationNewForm = () => {
   }, [students, faculty]);
 
   const NewBlogSchema = Yup.object().shape({
-    title: Yup.string().required('Title is required'),
+    title: Yup.object().required('Title is required'),
     desc: Yup.string().required('Description is required'),
     date: Yup.date().required('Date is required'),
     total_marks: Yup.number().required('Total marks is required'),
@@ -62,7 +62,7 @@ const ExaminationNewForm = () => {
   const methods = useForm({
     resolver: yupResolver(NewBlogSchema),
     defaultValues: {
-      title: '',
+      title: null,
       desc: '',
       date: null,
       total_marks: '',
@@ -81,22 +81,17 @@ const ExaminationNewForm = () => {
   const onSubmit = handleSubmit(async (data) => {
     const studentId = [];
     data?.students.map((member) => studentId.push({ student_id: member._id }));
-    console.log({
-      ...data,
-      students: studentId,
-      conducted_by: data?.conducted_by?._id,
-      company_id: user?.company_id,
-    },"payload");
+
     try {
 
       const URL = `${import.meta.env.VITE_AUTH_API}/api/company/exam`;
       await axios
-        .post(URL, { ...data, students: studentId, conducted_by :data?.conducted_by?._id,company_id:user?.company_id})
+        .post(URL, { ...data, students: studentId,title:data?.title.label, conducted_by :data?.conducted_by?._id,company_id:user?.company_id})
         .then((res) => {
           enqueueSnackbar('Create success!');
         })
         .catch((err) => console.log(err));
-        
+
         router.push(paths.dashboard.examination.list);
       preview.onFalse();
     } catch (error) {
@@ -122,10 +117,19 @@ const ExaminationNewForm = () => {
           {!mdUp && <CardHeader title="Details" />}
 
           <Stack spacing={3} sx={{ p: 3 }}>
-           
-            <RHFTextField name="title" label="Title" />
+
+            {/*<RHFTextField name="title" label="Title"
+            */}
+            <RHFAutocomplete
+              name="title"
+              label="Title"
+              placeholder="Choose a title"
+              fullWidth
+              options={programmingLanguages}
+              getOptionLabel={(option) => option?.label}
+            />
             <RHFTextField name="total_marks" label="Total Marks" />
-          
+
             <Stack spacing={1.5}>
               <Controller
                 name="date"

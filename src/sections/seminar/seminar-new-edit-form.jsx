@@ -129,7 +129,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
     const payload = {
       title: data.title,
       desc: data.desc,
-      company_id: user.company_id,
+      company_id: user?.company_id,
       date_time: dateTime,
       schedule_by: assignObject?._id,
       attended_by: data.users.map((attended_by) => ({
@@ -157,7 +157,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
   };
   const fetchUsers = async (role) => {
     try {
-      const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user.company_id}/role/${role}`;
+      const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/role/${role}`;
       const response = await axios.get(URL);
       setUsers(response.data.data);
     } catch (error) {

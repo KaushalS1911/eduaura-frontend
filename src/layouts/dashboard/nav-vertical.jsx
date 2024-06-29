@@ -56,7 +56,7 @@ export default function NavVertical({ openNav, onCloseNav }) {
         }}
       />
 
-      <Box sx={{ flexGrow: 1 }} />
+      <Box sx={{pb:"75px"}}></Box>
 
     </Scrollbar>
   );
@@ -79,7 +79,9 @@ export default function NavVertical({ openNav, onCloseNav }) {
             borderRight: (theme) => `dashed 1px ${theme.palette.divider}`,
           }}
         >
+
           {renderContent}
+
         </Stack>
       ) : (
         <Drawer

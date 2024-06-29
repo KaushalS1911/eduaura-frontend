@@ -32,7 +32,7 @@ export default function DemoNewEditForm({ open, onClose, currentId }) {
   useEffect(() => {
     const fetchFacultyName = async () => {
       try {
-        const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user.company_id}/faculty`;
+        const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/faculty`;
         const response = await axios.get(URL);
         if (response.status === 200) {
           const fetchedOptions = response.data.data.map((e) => ({
@@ -49,13 +49,13 @@ export default function DemoNewEditForm({ open, onClose, currentId }) {
     };
 
     fetchFacultyName();
-  }, [user.company_id, enqueueSnackbar]);
+  }, [user?.company_id, enqueueSnackbar]);
 
   const methods = useForm({
     resolver: yupResolver(NewUserSchema),
     defaultValues: {
       inquiry_id: currentId,
-      company_id: user.company_id,
+      company_id: user?.company_id,
       faculty_id: '',
       date: null,
       technology: '',
@@ -82,8 +82,8 @@ export default function DemoNewEditForm({ open, onClose, currentId }) {
   const onSubmit = async (data) => {
     try {
       const payload = {
-        inquiry_id: currentId._id,
-        company_id: user.company_id,
+        inquiry_id: currentId?._id,
+        company_id: user?.company_id,
         detail: data.detail,
         technology: data.technology,
         date: dayjs(data.date).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'),

@@ -14,7 +14,7 @@ export default function Developercreatepage() {
   const { enqueueSnackbar } = useSnackbar();
 
   const handleClick = () => {
-    const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user.company_id}/configs/${configs._id}`;
+    const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/configs/${configs?._id}`;
     const payload = { ...configs, developer_type: [...configs.developer_type, inputVal] };
     axios
       .put(URL, payload)
@@ -32,7 +32,7 @@ export default function Developercreatepage() {
 
   const handleDelete = (item) => {
     const filteredDeveloper = configs.developer_type.filter((e) => e !== item);
-    const apiEndpoint = `${import.meta.env.VITE_AUTH_API}/api/company/${user.company_id}/configs/${configs._id}`;
+    const apiEndpoint = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/configs/${configs?._id}`;
     const payload = { ...configs, developer_type: filteredDeveloper };
     axios
       .put(apiEndpoint, payload)
@@ -133,7 +133,7 @@ export default function Developercreatepage() {
           </Grid>
         </Grid>
       </Box>
-      
+
     </>
   );
 }

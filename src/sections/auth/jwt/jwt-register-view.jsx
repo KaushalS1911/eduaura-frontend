@@ -20,6 +20,7 @@ import { useSnackbar } from 'src/components/snackbar';
 import Iconify from 'src/components/iconify';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import { useRouter, useSearchParams } from 'src/routes/hooks';
+import Logo from '../../../components/logo';
 
 const RegisterSchema = Yup.object().shape({
   firstName: Yup.string().required('First name is required'),
@@ -82,13 +83,9 @@ export default function JwtRegisterView() {
 
   return (
     <>
-      <Stack spacing={2} sx={{ mb: 5, position: 'relative' }}>
-        <Stack direction="row" spacing={0.5}>
-          <Typography variant="body2">Already have an account?</Typography>
-          <Link href={paths.auth.jwt.login} component={RouterLink} variant="subtitle2">
-            Sign in
-          </Link>
-        </Stack>
+
+      <Stack spacing={2} sx={{ mb: 1 }}>
+        <Typography sx={{display:"flex",justifyContent:"center",alignItems:"center"}}><Logo /></Typography>
       </Stack>
 
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -124,7 +121,14 @@ export default function JwtRegisterView() {
           </LoadingButton>
         </Stack>
       </FormProvider>
-
+      <Stack direction='row' sx={{textAlign:"center",mt:"20px",justifyContent:"center"}}>
+        <Typography variant="body2">Already have an account?</Typography>
+        <Typography>
+          <Link component={RouterLink} href={paths.auth.jwt.login} variant="subtitle2" style={{marginLeft:"5px"}}>
+          Sign in
+        </Link>
+        </Typography>
+      </Stack>
       <Typography
         component="div"
         sx={{
@@ -141,9 +145,10 @@ export default function JwtRegisterView() {
         and{' '}
         <Link underline="always" color="text.primary">
           Privacy Policy
+
         </Link>
-        .
       </Typography>
+
     </>
   );
 }

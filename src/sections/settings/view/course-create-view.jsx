@@ -14,7 +14,7 @@ export default function CourseCreatePage() {
   const { enqueueSnackbar } = useSnackbar();
 
   const handleClick = () => {
-    const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user.company_id}/configs/${configs._id}`;
+    const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/configs/${configs?._id}`;
     const payload = { ...configs, courses: [...configs.courses, inputVal] };
     axios
       .put(URL, payload)
@@ -30,7 +30,7 @@ export default function CourseCreatePage() {
 
   const handleDelete = (item) => {
     const filteredCourses = configs?.courses.filter((e) => e !== item);
-    const apiEndpoint = `${import.meta.env.VITE_AUTH_API}/api/company/${user.company_id}/configs/${configs._id}`;
+    const apiEndpoint = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/configs/${configs?._id}`;
     const payload = { ...configs, courses: filteredCourses };
     axios
       .put(apiEndpoint, payload)

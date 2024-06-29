@@ -67,7 +67,7 @@ export default function GuardianAddForm({ open, onClose, currentStudent, mutate 
 
     try {
       await axios
-        .put(URL, { ...currentStudent, guardian_detail: updatedGuardians })
+        .put(URL, { guardian_detail: updatedGuardians })
         .then((res) => mutate())
         .catch((err) => console.log(err));
       setAllGuardian(updatedGuardians);

@@ -42,7 +42,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
       setProfilePic(currentStudent?.profile_pic);
     }
   }, [currentStudent]);
-  
+
   const NewUserSchema = Yup.object().shape({
     firstName: Yup.string().required('First Name is required'),
     lastName: Yup.string().required('Last Name is required'),
@@ -70,7 +70,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
     //   .required('Upcoming Installment Date is required'),
     profile_pic: Yup.mixed().required('Profile Picture is required'),
   });
-  
+
   const defaultValues = useMemo(
     () => ({
       profile_pic: currentStudent?.profile_pic || '',
@@ -107,7 +107,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
     resolver: yupResolver(NewUserSchema),
     defaultValues,
   });
-  
+
   const {
     reset,
     watch,
@@ -134,7 +134,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
       throw error;
     }
   };
-  
+
   const updateStudent = async (studentPayload) => {
     const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/student/${currentStudent?._id}`;
     const formData = new FormData();
@@ -152,7 +152,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
       throw error;
     }
   };
-  
+
   const onSubmit = handleSubmit(async (data) => {
     const studentPayload = {
       firstName: data.firstName,
@@ -208,8 +208,8 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
 
   const uploadStudentImage = (
     <>
-      {mdUp && (
-        <Grid item md={4}>
+
+        <Grid item md={4} xs={12}>
           <Typography variant="h6" sx={{ mb: 0.5 }}>
             Personal Details
           </Typography>
@@ -222,7 +222,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
             </Box>
           </Card>
         </Grid>
-      )}
+
       <Grid item xs={12} md={8}>
         <Card>
           {!mdUp && <CardHeader title="Personal Details" />}

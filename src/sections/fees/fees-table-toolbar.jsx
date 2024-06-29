@@ -11,6 +11,7 @@ import { formHelperTextClasses } from '@mui/material/FormHelperText';
 
 import Iconify from 'src/components/iconify';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
+import { MobileDatePicker } from '@mui/x-date-pickers';
 
 // ----------------------------------------------------------------------
 
@@ -52,7 +53,7 @@ export default function FeesTableToolbar({ filters, onFilters, dateError }) {
           pr: { xs: 2.5, md: 1 },
         }}
       >
-        <DatePicker
+        <MobileDatePicker
           label="Start date"
           value={filters.startDate}
           onChange={handleFilterStartDate}
@@ -66,7 +67,7 @@ export default function FeesTableToolbar({ filters, onFilters, dateError }) {
           }}
         />
 
-        <DatePicker
+        <MobileDatePicker
           label="End date"
           value={filters.endDate}
           onChange={handleFilterEndDate}

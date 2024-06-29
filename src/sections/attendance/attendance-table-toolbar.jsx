@@ -16,6 +16,7 @@ import { formHelperTextClasses } from '@mui/material/FormHelperText';
 
 import Iconify from 'src/components/iconify';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
+import { MobileDatePicker } from '@mui/x-date-pickers';
 
 export default function AttendanceTableToolbar({ filters, onFilters, dateError, serviceOptions }) {
   const popover = usePopover();
@@ -88,7 +89,13 @@ export default function AttendanceTableToolbar({ filters, onFilters, dateError, 
         {/*   </Select> */}
         {/* </FormControl> */}
 
-        <Stack direction="row" alignItems="center" spacing={2} flexGrow={1} sx={{ width: 1, pr: 1.5 }}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          spacing={2}
+          flexGrow={1}
+          sx={{ width: 1, pr: 1.5 }}
+        >
           <TextField
             fullWidth
             value={filters.name}
@@ -108,7 +115,7 @@ export default function AttendanceTableToolbar({ filters, onFilters, dateError, 
           {/* </IconButton> */}
         </Stack>
 
-        <DatePicker
+        <MobileDatePicker
           label="Start date"
           value={filters.startDate}
           onChange={handleFilterStartDate}
@@ -118,7 +125,7 @@ export default function AttendanceTableToolbar({ filters, onFilters, dateError, 
           }}
         />
 
-        <DatePicker
+        <MobileDatePicker
           label="End date"
           value={filters.endDate}
           onChange={handleFilterEndDate}
@@ -137,8 +144,6 @@ export default function AttendanceTableToolbar({ filters, onFilters, dateError, 
             },
           }}
         />
-
-
       </Stack>
 
       <CustomPopover

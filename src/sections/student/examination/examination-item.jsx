@@ -19,6 +19,7 @@ import { fCurrency } from 'src/utils/format-number';
 
 import Iconify from 'src/components/iconify';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
+import { ExamImage } from '../../../_mock/_inquiry';
 
 // ----------------------------------------------------------------------
 
@@ -26,7 +27,7 @@ export default function ExaminationItem({ exam, onView, onEdit, onDelete }) {
   const popover = usePopover();
 
   const { examTitle, examDate, totalMarks, obtained_marks } = exam;
-
+const image = ExamImage(examTitle)
   return (
     <>
       <Card>
@@ -50,7 +51,7 @@ export default function ExaminationItem({ exam, onView, onEdit, onDelete }) {
 
         <Stack sx={{ p: 3, pb: 2 }}>
           <Avatar
-            src="https://multishoring.com/wp-content/uploads/2024/04/JavaScript-Symbol.png"
+            src={image?.image}
             alt="image"
             variant="rounded"
             sx={{ width: 48, height: 48, mb: 2 }}

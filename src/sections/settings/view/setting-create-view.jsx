@@ -14,9 +14,14 @@ import Labcreatepage from './lab-create-view';
 import Userrolecreatepage from './user-role-create-view';
 import ExpensesCreatePage from './expenses-create-view';
 import Developercreatepage from './developer-role-create-view';
+import MyProfile from './my-profile-create-view';
 
 const TABS = [
   {
+    value: 'My Profile',
+    label: 'My Profile',
+    icon: <Iconify icon="carbon:user-profile" width={24} />,
+  },  {
     value: 'Company Profile',
     label: 'Company Profile',
     icon: <Iconify icon="mdi:company" width={24} />,
@@ -61,7 +66,7 @@ const TABS = [
 export default function SettingsPage() {
   const settings = useSettingsContext();
 
-  const [currentTab, setCurrentTab] = useState('Expeneses');
+  const [currentTab, setCurrentTab] = useState('My Profile');
 
   const handleChangeTab = useCallback((event, newValue) => {
     setCurrentTab(newValue);
@@ -90,6 +95,7 @@ export default function SettingsPage() {
           ))}
         </Tabs>
 
+        {currentTab === 'My Profile' && <MyProfile />}
         {currentTab === 'Expeneses' && <ExpensesCreatePage />}
         {currentTab === 'Company Profile' && <CompanyProfile />}
         {currentTab === 'User Role' && <Userrolecreatepage />}

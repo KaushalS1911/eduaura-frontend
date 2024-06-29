@@ -1,4 +1,5 @@
 import {
+  Button,
   Card,
   CardContent,
   CardHeader,
@@ -8,15 +9,26 @@ import {
   Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Upload } from 'src/components/upload';
 import { useBoolean } from 'src/hooks/use-boolean';
+import axios from 'axios';
+import { useAuthContext } from '../../../auth/hooks';
+import { enqueueSnackbar } from 'notistack';
+import log from 'eslint-plugin-react/lib/util/log';
 
 export default function AppbanerCreate() {
   const preview = useBoolean();
 
   const [files, setFiles] = useState([]);
-
+  const { user } = useAuthContext();
+  const getBanners =() =>{
+    axios.get(`${import.meta.env.VITE_AUTH_API}/api/v1/company/${user?.company_id}/app-banner`).then((res) => setFiles([res?.data?.banner_image])).catch((err) => console.log(err))
+  }
+  useEffect(() => {
+    getBanners()
+  },[])
+  //api/v1/company/cid/f-banner:banner-imag |
   const handleDropMultiFile = useCallback(
     (acceptedFiles) => {
       setFiles([
@@ -24,11 +36,11 @@ export default function AppbanerCreate() {
         ...acceptedFiles.map((newFile) =>
           Object.assign(newFile, {
             preview: URL.createObjectURL(newFile),
-          })
+          }),
         ),
       ]);
     },
-    [files]
+    [files],
   );
 
   const handleRemoveFile = (inputFile) => {
@@ -40,8 +52,11 @@ export default function AppbanerCreate() {
     setFiles([]);
   };
   const handleUpload = () => {
-    console.log(files[0],"files");
-  }
+    const formData = new FormData();
+    //f-banner:banner-imag
+    formData.append('banner-image', files[0]);
+    axios.post(`${import.meta.env.VITE_AUTH_API}/api/v1/company/${user?.company_id}/app-banner`, formData).then((res) => enqueueSnackbar('Banner Upload Successfully')).catch((err) => 'Something want wrong',{variant:"error"});
+  };
   return (
     <>
       <Box
@@ -58,17 +73,17 @@ export default function AppbanerCreate() {
             sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
           >
             <Box>
-              <Typography variant="h6" sx={{ mb: 0.5 }}>
-                Company's Application  Banner
+              <Typography variant='h6' sx={{ mb: 0.5 }}>
+                Company's Application Banner
               </Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-               Select iamge ...
+              <Typography variant='body2' sx={{ color: 'text.secondary' }}>
+                Select iamge ...
               </Typography>
             </Box>
           </Grid>
           <Grid item xs={12} md={8}>
             <Card>
-              <CardHeader title="Upload Application Banner" />
+              <CardHeader title='Upload Application Banner' />
               <CardContent>
                 <Upload
                   multiple
@@ -83,6 +98,7 @@ export default function AppbanerCreate() {
               </CardContent>
             </Card>
           </Grid>
+
         </Grid>
       </Box>
     </>
