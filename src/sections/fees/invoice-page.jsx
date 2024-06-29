@@ -8,9 +8,9 @@ import { _invoices } from 'src/_mock';
 
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
+import { useGetSingleStudent } from 'src/api/student';
 import InvoiceDetails from './invoice-details';
-import { useParams } from '../../../routes/hooks';
-import { useGetSingleStudent } from '../../../api/student';
+import { useParams } from 'src/routes/hooks';
 
 // ----------------------------------------------------------------------
 

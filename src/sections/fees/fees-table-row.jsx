@@ -7,27 +7,36 @@ import Avatar from '@mui/material/Avatar';
 import Collapse from '@mui/material/Collapse';
 import MenuItem from '@mui/material/MenuItem';
 import TableRow from '@mui/material/TableRow';
-import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
 import { useBoolean } from 'src/hooks/use-boolean';
-import { fCurrency } from 'src/utils/format-number';
-import { fDate, fTime } from 'src/utils/format-time';
+import { fDate } from 'src/utils/format-time';
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
-import { FormProvider, useForm, Controller } from 'react-hook-form';
-import { Alert, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { LoadingButton } from '@mui/lab';
-import { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
+import { RHFAutocomplete } from 'src/components/hook-form';
 import axios from 'axios';
+import moment from 'moment';
 
 // ----------------------------------------------------------------------
+
+const TABLE_HEAD = [
+  { id: 'srNo', label: '#', width: 88, align: 'center' },
+  { id: 'profile', label: 'Installment date' },
+  { id: 'enroll', label: 'Amount' },
+  { id: 'contact', label: 'Payment date' },
+  { id: 'course', label: 'Payment mode' },
+  { id: 'installments', label: 'Status' },
+  { id: '', label: '' },
+];
 
 export default function FeesTableRow({
   row,
@@ -40,16 +49,8 @@ export default function FeesTableRow({
 }) {
   const { enrollment_no } = row;
   const [deleteInstallmentId, setDeleteInstallmentId] = useState();
-  const {
-    profile_pic,
-    course,
-    student_name,
-    student_email,
-    contact,
-    joining_date,
-    firstName,
-    lastName,
-  } = row;
+  const [singleInstallment, setSingleInstallment] = useState();
+  const { profile_pic, course, email, contact, joining_date, firstName, lastName } = row;
 
   const confirm = useBoolean();
   const dialog = useBoolean();
@@ -104,7 +105,7 @@ export default function FeesTableRow({
       const statusValue = data.status.value;
       await axios.put(
         `${import.meta.env.VITE_AUTH_API}/api/v2/student/${row._id}/installment/${deleteInstallmentId}`,
-        { status: statusValue }
+        { ...data, status: statusValue }
       );
       mutate();
       dialog.onFalse();
@@ -116,49 +117,14 @@ export default function FeesTableRow({
 
   const renderPrimary = (
     <TableRow hover selected={selected}>
-      <TableCell align={"center"}>
-        <Box
-          onClick={onViewRow}
-          sx={{
-            cursor: 'pointer',
-            '&:hover': {
-              textDecoration: 'underline',
-            },
-          }}
-        >
-          {index + 1}
-        </Box>
-      </TableCell>
+      <TableCell align="center">{index + 1}</TableCell>
 
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
         <Avatar alt="error" src={profile_pic} sx={{ mr: 2 }} />
 
         <ListItemText
-          primary={student_name}
-          secondary={student_email}
-          primaryTypographyProps={{ typography: 'body2' }}
-          secondaryTypographyProps={{
-            component: 'span',
-            color: 'text.disabled',
-          }}
-        />
-      </TableCell>
-
-      <TableCell>
-        <ListItemText
-          primary={enrollment_no}
-          primaryTypographyProps={{ typography: 'body2', noWrap: true }}
-          secondaryTypographyProps={{
-            mt: 0.5,
-            component: 'span',
-            typography: 'caption',
-          }}
-        />
-      </TableCell>
-
-      <TableCell align="center">
-        <ListItemText
           primary={`${firstName} ${lastName}`}
+          secondary={email}
           primaryTypographyProps={{ typography: 'body2' }}
           secondaryTypographyProps={{
             component: 'span',
@@ -167,40 +133,13 @@ export default function FeesTableRow({
         />
       </TableCell>
 
-      <TableCell align="center">
-        <ListItemText
-          primary={course}
-          primaryTypographyProps={{ typography: 'body2' }}
-          secondaryTypographyProps={{
-            component: 'span',
-            color: 'text.disabled',
-          }}
-        />{' '}
-      </TableCell>
+      <TableCell>{enrollment_no}</TableCell>
 
-      <TableCell>
-        <ListItemText
-          primary={fDate(joining_date)}
-          primaryTypographyProps={{ typography: 'body2', noWrap: true }}
-          secondaryTypographyProps={{
-            mt: 0.5,
-            component: 'span',
-            typography: 'caption',
-          }}
-        />
-      </TableCell>
+      <TableCell>{contact}</TableCell>
 
-      <TableCell>
-        <ListItemText
-          primary={contact}
-          primaryTypographyProps={{ typography: 'body2', noWrap: true }}
-          secondaryTypographyProps={{
-            mt: 0.5,
-            component: 'span',
-            typography: 'caption',
-          }}
-        />
-      </TableCell>
+      <TableCell>{course}</TableCell>
+
+      <TableCell>{moment(joining_date).format('DD/MM/YYYY')}</TableCell>
 
       <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
         <IconButton
@@ -242,27 +181,19 @@ export default function FeesTableRow({
                   },
                 }}
               >
-                <Box
-                  sx={{
-                    cursor: 'pointer',
-                    '&:hover': {
-                      textDecoration: 'underline',
-                    },
-                  }}
-                >
-                  {index + 1}
-                </Box>
+                <TableCell>{index + 1}</TableCell>
+                <TableCell sx={{ width: 140 }}>
+                  {moment(item.installment_date).format('DD/MM/YYYY')}
+                </TableCell>
+                <TableCell sx={{ width: 126 }}>{item.amount}</TableCell>
+                <TableCell sx={{ width: 140 }}>
+                  {item.payment_date == null
+                    ? '-'
+                    : moment(item.installment_date).format('DD/MM/YYYY')}
+                </TableCell>
 
-                <Box sx={{ width: 110, textAlign: 'right' }}>
-                  {fDate(item.installment_date, 'dd MMM yyyy')}
-                </Box>
-                <Box sx={{ width: 110, textAlign: 'right' }}>{item.amount}</Box>
-                <Box sx={{ width: 110, textAlign: 'right' }}>
-                  {item.payment_date == null ? '-' : fDate(item.payment_date, 'dd MMM yyyy')}
-                </Box>
-
-                <Box sx={{ width: 110, textAlign: 'right' }}>{item.payment_mode}</Box>
-                <Box sx={{ width: 110, textAlign: 'right' }}>
+                <TableCell sx={{ width: 68 }}>{item.payment_mode}</TableCell>
+                <TableCell sx={{ width: 68 }}>
                   <Label
                     variant="soft"
                     color={
@@ -274,17 +205,19 @@ export default function FeesTableRow({
                   >
                     {item.status}
                   </Label>
-                </Box>
-                <Box>
+                </TableCell>
+                <TableCell>
                   <IconButton
                     color={popover.open ? 'inherit' : 'default'}
                     onClick={(e) => {
-                      popover.onOpen(e), handleInstallmentDelete(item);
+                      popover.onOpen(e),
+                        handleInstallmentDelete(item),
+                        setSingleInstallment(item._id);
                     }}
                   >
                     <Iconify icon="eva:more-vertical-fill" />
                   </IconButton>
-                </Box>
+                </TableCell>
               </Stack>
             ))}
           </Stack>
@@ -305,6 +238,17 @@ export default function FeesTableRow({
         arrow="right-top"
         sx={{ width: 140 }}
       >
+        {/* <MenuItem
+          onClick={() => {
+            confirm.onTrue();
+            popover.onClose();
+          }}
+          sx={{ color: 'error.main' }}
+        >
+          <Iconify icon="solar:trash-bin-trash-bold" />
+          Delete
+        </MenuItem> */}
+
         <MenuItem
           onClick={() => {
             dialog.onTrue();
@@ -316,7 +260,7 @@ export default function FeesTableRow({
         </MenuItem>
         <MenuItem
           onClick={() => {
-            router.push(paths.dashboard.general.feesInvoice);
+            router.push(paths.dashboard.general.feesInvoice(row._id, singleInstallment));
             popover.onClose();
           }}
         >
@@ -363,7 +307,6 @@ export default function FeesTableRow({
                         {option.label}
                       </li>
                     )}
-                    // Ensure the value is correctly set to the status
                     value={methods.watch('status')}
                     onChange={(_, newValue) => methods.setValue('status', newValue)}
                   />
