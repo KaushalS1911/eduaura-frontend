@@ -76,13 +76,13 @@ export default function CalendarForm({ currentEvent, colorOptions, onClose, muta
             ...getValues(),
             user_id: studentId || currentEvent.user_id,
             leave_status: leaveStatus,
-            company_id: user.company_id,
+            company_id: user?.company_id,
           }
         : {
             ...getValues(),
             user_id: user._id,
             leave_status: leaveStatus,
-            company_id: user.company_id,
+            company_id: user?.company_id,
         };
     try {
       if (!dateError) {
@@ -121,7 +121,7 @@ export default function CalendarForm({ currentEvent, colorOptions, onClose, muta
       setStudentId('');
     }
   };
-  
+
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Stack spacing={3} sx={{ px: 3 }}>

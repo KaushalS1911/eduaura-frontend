@@ -14,7 +14,7 @@ export default function Userrolecreatepage() {
   const { enqueueSnackbar } = useSnackbar();
 
   const handleClick = () => {
-    const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user.company_id}/configs/${configs._id}`;
+    const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/configs/${configs?._id}`;
     const payload = { ...configs, roles: [...configs.roles, inputVal] };
     axios
       .put(URL, payload)
@@ -30,7 +30,7 @@ export default function Userrolecreatepage() {
 
   const handleDelete = (item) => {
     const filteredRoles = configs.roles.filter((e) => e !== item);
-    const apiEndpoint = `${import.meta.env.VITE_AUTH_API}/api/company/${user.company_id}/configs/${configs._id}`;
+    const apiEndpoint = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/configs/${configs?._id}`;
     const payload = { ...configs, roles: filteredRoles };
     axios
       .put(apiEndpoint, payload)

@@ -98,7 +98,7 @@ export default function EmployeeListView() {
   const handleDeleteRow = useCallback(
     async (_id) => {
       try {
-        const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user.company_id}/${_id}/deleteEmployee`;
+        const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/${_id}/deleteEmployee`;
         const response = await axios.delete(URL);
         if (response.status === 200) {
           enqueueSnackbar(response.data.message, { variant: 'success' });
@@ -112,13 +112,13 @@ export default function EmployeeListView() {
         enqueueSnackbar('Failed to delete Employee', { variant: 'error' });
       }
     },
-    [enqueueSnackbar, mutate, confirm, user.company_id]
+    [enqueueSnackbar, mutate, confirm, user?.company_id]
   );
 
   // Multiple Delete
   const handleDeleteRows = useCallback(async () => {
     try {
-      const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user.company_id}/delete/all-employee`;
+      const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/delete/all-employee`;
 
       const sortedSelectedIds = [...table.selected].sort();
       await Promise.all(
@@ -137,7 +137,7 @@ export default function EmployeeListView() {
       console.error('Failed to delete Employee', error);
       enqueueSnackbar('Failed to delete Employee', { variant: 'error' });
     }
-  }, [enqueueSnackbar, mutate, confirm, table.selected, user.company_id]);
+  }, [enqueueSnackbar, mutate, confirm, table.selected, user?.company_id]);
 
   const handleEditRow = useCallback(
     (id) => {

@@ -129,7 +129,7 @@ const handleRadio = (e) =>{
   }, [inquiryId, reset]);
 
   const postInquiry = async (newInquiry) => {
-    const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user.company_id}/inquiry`;
+    const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/inquiry`;
     const response = await axios.post(URL, newInquiry);
     return response.data;
   };

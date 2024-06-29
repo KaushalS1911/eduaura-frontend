@@ -53,7 +53,7 @@ const METHODS = [
   },
 ];
 
-export default function AuthClassicLayout({ children, image, title }) {
+export default function AuthClassicLayout({ children, image, title ,register}) {
   const { method } = useAuthContext();
 
   const theme = useTheme();
@@ -78,7 +78,7 @@ export default function AuthClassicLayout({ children, image, title }) {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          height: '100vh',
+          minHeight: '100vh',
           backgroundColor: '#F6F7F9',
         }}
       >
@@ -89,7 +89,7 @@ export default function AuthClassicLayout({ children, image, title }) {
             overflow: 'hidden',
             boxShadow: '1px 1px 15px #0005',
             maxWidth: {md:"85rem !important",xs:"unset"},
-            width:{xs:"400px",md:"100%"},
+            width:{xs:"430px",md:"100%"},
             mx:"20px",
             justifyContent:{xs:"center",md:"unset"}
           }}
@@ -100,9 +100,9 @@ export default function AuthClassicLayout({ children, image, title }) {
                 // width: 1,
                 // mx: 'auto',
                 // maxWidth: 480,
-                px: { xs: 3, md: 8 },
-                pt: { xs: 9, md: 8 },
-                pb: { xs: 9, md: 10 },
+                px: { xs: 6, md: 8 },
+                pt: register ? { xs: 2, md: 2 } : { xs: 8, md: 8 } ,
+                pb: register ? { xs: 6, md: 6 }:{ xs: 8, md: 10 },
               }}
             >
               {children}

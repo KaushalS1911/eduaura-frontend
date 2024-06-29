@@ -186,7 +186,7 @@ export default function AddAttendanceListView() {
       student_id: id,
       status,
       date: todayDate,
-      company_id: user.company_id,
+      company_id: user?.company_id,
     };
 
     // Add the new record to the filtered data

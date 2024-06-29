@@ -35,7 +35,7 @@ export default function AccountPopover() {
       linkTo:
         (user?.role === 'Admin' && paths.dashboard.setting) ||
         (user?.role === 'Student' && paths.dashboard.student.edit(user?._id)) ||
-        paths.dashboard.employee.edit(user?._id),
+        paths.dashboard.employee.edit(user?.employee_id),
     },
 
   ];

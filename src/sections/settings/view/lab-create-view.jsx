@@ -14,7 +14,7 @@ export default function Labcreatepage() {
   const { enqueueSnackbar } = useSnackbar();
 
   const handleClick = () => {
-    const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user.company_id}/configs/${configs._id}`;
+    const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/configs/${configs?._id}`;
     const payload = { ...configs, classrooms: [...configs.classrooms, inputVal] };
     axios
       .put(URL, payload)
@@ -32,7 +32,7 @@ export default function Labcreatepage() {
 
   const handleDelete = (item) => {
     const filteredClassrooms = configs.classrooms.filter((e) => e !== item);
-    const apiEndpoint = `${import.meta.env.VITE_AUTH_API}/api/company/${user.company_id}/configs/${configs._id}`;
+    const apiEndpoint = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/configs/${configs?._id}`;
     const payload = { ...configs, classrooms: filteredClassrooms };
     axios
       .put(apiEndpoint, payload)
@@ -132,10 +132,10 @@ export default function Labcreatepage() {
               </Stack>
             </Card>
           </Grid>
-          
+
         </Grid>
       </Box>
-      
+
     </>
   );
 }

@@ -133,7 +133,7 @@ export default function StudentAccountGeneral({ id }) {
       }
 
       const response = await axios.post(
-        `${import.meta.env.VITE_AUTH_API}/api/v2/${user.company_id}/student`,
+        `${import.meta.env.VITE_AUTH_API}/api/v2/${user?.company_id}/student`,
         formData,
         {
           headers: {

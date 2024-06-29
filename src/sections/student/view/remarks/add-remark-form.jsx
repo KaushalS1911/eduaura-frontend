@@ -70,7 +70,7 @@ export default function AddRemarkForm({ open, onClose, currentStudent }) {
     const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/student/${currentStudent?._id}`;
     try {
       axios
-        .put(URL, { ...currentStudent, remarks: allRemark })
+        .put(URL, { remarks: allRemark })
         .then((res) => console.log(res))
         .catch((err) => console.log(err));
       onClose();

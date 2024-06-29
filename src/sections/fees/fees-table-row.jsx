@@ -104,7 +104,7 @@ export default function FeesTableRow({
       const statusValue = data.status.value;
       await axios.put(
         `${import.meta.env.VITE_AUTH_API}/api/v2/student/${row._id}/installment/${deleteInstallmentId}`,
-        { ...data, status: statusValue }
+        { status: statusValue }
       );
       mutate();
       dialog.onFalse();
