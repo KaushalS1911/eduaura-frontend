@@ -23,6 +23,8 @@ import { INVOICE_STATUS_OPTIONS } from 'src/_mock';
 import Label from 'src/components/label';
 import Scrollbar from 'src/components/scrollbar';
 import InvoiceToolbar from './invoice-toolbar';
+import { useParams } from 'react-router';
+import Logo from 'src/components/logo';
 
 // ----------------------------------------------------------------------
 
@@ -38,7 +40,12 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function InvoiceDetails({ invoice }) {
-  const [currentStatus, setCurrentStatus] = useState(invoice.status);
+  const params = useParams();
+  const [currentStatus, setCurrentStatus] = useState(invoice?.status || '');
+
+  const invoiceDetails = invoice?.fee_detail?.installments.find(
+    (e) => e._id === params.installmentID
+  );
 
   const handleChangeStatus = useCallback((event) => {
     setCurrentStatus(event.target.value);
@@ -59,7 +66,7 @@ export default function InvoiceDetails({ invoice }) {
         </TableCell>
         <TableCell width={120} sx={{ typography: 'subtitle2' }}>
           <Box sx={{ mt: 2 }} />
-          {fCurrency(80000)}
+          {fCurrency(invoiceDetails?.amount)}
         </TableCell>
       </StyledTableRow>
 
@@ -81,7 +88,7 @@ export default function InvoiceDetails({ invoice }) {
         <TableCell colSpan={3} />
         <TableCell sx={{ typography: 'subtitle1' }}>Total</TableCell>
         <TableCell width={140} sx={{ typography: 'subtitle1' }}>
-          {fCurrency(80000)}
+          {fCurrency(invoiceDetails?.amount)}
         </TableCell>
       </StyledTableRow>
     </>
@@ -92,15 +99,13 @@ export default function InvoiceDetails({ invoice }) {
       <Grid xs={12} md={9} sx={{ py: 3 }}>
         <Typography variant="subtitle2">NOTES</Typography>
 
-        <Typography variant="body2">
-          We appreciate your business. Should you need us to add VAT or extra notes let us know!
-        </Typography>
+        <Typography variant="body2">Fees Are Not Refundable</Typography>
       </Grid>
 
       <Grid xs={12} md={3} sx={{ py: 3, textAlign: 'right' }}>
         <Typography variant="subtitle2">Have a Question?</Typography>
 
-        <Typography variant="body2">support@minimals.cc</Typography>
+        <Typography variant="body2">jbs.itinstitute@gmail.com</Typography>
       </Grid>
     </Grid>
   );
@@ -115,8 +120,9 @@ export default function InvoiceDetails({ invoice }) {
 
               <TableCell sx={{ typography: 'subtitle2' }}>Course</TableCell>
 
-              <TableCell>Payment Mode</TableCell>
-
+              <TableCell align="right" width={1050}>
+                Payment Mode
+              </TableCell>
               <TableCell align="right">Amount</TableCell>
 
               <TableCell align="right">Total</TableCell>
@@ -130,15 +136,15 @@ export default function InvoiceDetails({ invoice }) {
 
                 <TableCell>
                   <Box sx={{ maxWidth: 560 }}>
-                    <Typography variant="subtitle2">Full Stack Development</Typography>
+                    <Typography variant="subtitle2">{invoice?.course}</Typography>
                   </Box>
                 </TableCell>
 
-                <TableCell>Cash</TableCell>
+                <TableCell align="right">{invoiceDetails?.payment_mode}</TableCell>
 
-                <TableCell align="right">{fCurrency(80000)}</TableCell>
+                <TableCell align="right">{fCurrency(invoiceDetails?.amount)}</TableCell>
 
-                <TableCell align="right">{fCurrency(80000)}</TableCell>
+                <TableCell align="right">{fCurrency(invoiceDetails?.amount)}</TableCell>
               </TableRow>
             ))}
             {renderTotal}
@@ -155,6 +161,7 @@ export default function InvoiceDetails({ invoice }) {
         currentStatus={currentStatus || ''}
         onChangeStatus={handleChangeStatus}
         statusOptions={INVOICE_STATUS_OPTIONS}
+        invoiceDetails={invoiceDetails}
       />
 
       <Card sx={{ pt: 5, px: 5 }}>
@@ -167,19 +174,16 @@ export default function InvoiceDetails({ invoice }) {
             sm: 'repeat(2, 1fr)',
           }}
         >
-          <Box
-            component="img"
-            alt="logo"
-            src="/logo/jbs-round.png"
-            sx={{ width: 100, height: 100 }}
-          />
+          <Box>
+            <Logo />
+          </Box>
 
           <Stack spacing={1} alignItems={{ xs: 'flex-start', md: 'flex-end' }}>
             <Label variant="soft" color={'success'}>
-              Paid
+              {invoiceDetails?.status}
             </Label>
 
-            <Typography variant="h6">JBS-000101</Typography>
+            <Typography variant="h6">JBS-{invoice?.enrollment_no}</Typography>
           </Stack>
 
           <Stack sx={{ typography: 'body2' }}>
@@ -190,7 +194,7 @@ export default function InvoiceDetails({ invoice }) {
             <br />
             F-38 , yogichowk , city center nana varachha surat
             <br />
-            Phone: 904-966-2836
+            Phone : 987-526-3080
             <br />
           </Stack>
 
@@ -198,26 +202,28 @@ export default function InvoiceDetails({ invoice }) {
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
               Invoice To
             </Typography>
-            Darshil Thummar
+            {invoice?.firstName} {invoice?.lastName}
             <br />
-            A-326 Tirupati Soc, yogichowk nana varachha surat
+            {invoice?.address_detail?.address_1} {invoice?.address_detail?.address_2}{' '}
+            {invoice?.address_detail?.city} {invoice?.address_detail?.state}{' '}
+            {invoice?.address_detail?.country}
             <br />
-            Phone: 909-925-7198
+            Phone: {invoice?.contact}
             <br />
           </Stack>
 
           <Stack sx={{ typography: 'body2' }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              Date Create
+              Payment Create
             </Typography>
-            {fDate(invoice.createDate)}
+            {fDate(invoiceDetails?.payment_date)}
           </Stack>
 
           <Stack sx={{ typography: 'body2' }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
               Due Date
             </Typography>
-            {fDate(invoice.dueDate)}
+            {fDate(invoiceDetails?.installment_date)}
           </Stack>
         </Box>
 

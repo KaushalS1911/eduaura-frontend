@@ -104,7 +104,8 @@ export const paths = {
 
     general: {
       fees: `${ROOTS.DASHBOARD}/fees`,
-      feesInvoice: `${ROOTS.DASHBOARD}/fees/fee-invoice`,
+      feesInvoice: (id, installmentID) =>
+        `${ROOTS.DASHBOARD}/fees/${id}/fee-invoice/${installmentID}/installment`,
     },
 
     inquiry: {

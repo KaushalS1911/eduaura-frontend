@@ -40,25 +40,18 @@ const TABLE_HEAD = [
 ];
 
 export default function FeesTableRow({
-                                       row,
-                                       index,
-                                       selected,
-                                       onViewRow,
-                                       onSelectRow,
-                                       onDeleteRow,
-                                       mutate,
-                                     }) {
+  row,
+  index,
+  selected,
+  onViewRow,
+  onSelectRow,
+  onDeleteRow,
+  mutate,
+}) {
   const { enrollment_no } = row;
   const [deleteInstallmentId, setDeleteInstallmentId] = useState();
-  const {
-    profile_pic,
-    course,
-    email,
-    contact,
-    joining_date,
-    firstName,
-    lastName,
-  } = row;
+  const [singleInstallment, setSingleInstallment] = useState();
+  const { profile_pic, course, email, contact, joining_date, firstName, lastName } = row;
 
   const confirm = useBoolean();
   const dialog = useBoolean();
@@ -89,7 +82,7 @@ export default function FeesTableRow({
       try {
         if (deleteInstallmentId) {
           const currentStatus = row?.fee_detail?.installments.find(
-            (item) => item._id === deleteInstallmentId,
+            (item) => item._id === deleteInstallmentId
           );
           if (currentStatus) {
             reset({
@@ -113,7 +106,7 @@ export default function FeesTableRow({
       const statusValue = data.status.value;
       await axios.put(
         `${import.meta.env.VITE_AUTH_API}/api/v2/student/${row._id}/installment/${deleteInstallmentId}`,
-        { ...data, status: statusValue },
+        { ...data, status: statusValue }
       );
       mutate();
       dialog.onFalse();
@@ -125,9 +118,7 @@ export default function FeesTableRow({
 
   const renderPrimary = (
     <TableRow hover selected={selected}>
-      <TableCell align="center">
-        {index + 1}
-      </TableCell>
+      <TableCell align="center">{index + 1}</TableCell>
 
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
         <Avatar alt="error" src={profile_pic} sx={{ mr: 2 }} />
@@ -143,21 +134,13 @@ export default function FeesTableRow({
         />
       </TableCell>
 
-      <TableCell>
-        {enrollment_no}
-      </TableCell>
+      <TableCell>{enrollment_no}</TableCell>
 
-      <TableCell>
-        {contact}
-      </TableCell>
+      <TableCell>{contact}</TableCell>
 
-      <TableCell>
-        {course}
-      </TableCell>
+      <TableCell>{course}</TableCell>
 
-      <TableCell>
-        {moment(joining_date).format('DD/MM/YYYY')}
-      </TableCell>
+      <TableCell>{moment(joining_date).format('DD/MM/YYYY')}</TableCell>
 
       <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
         <IconButton
@@ -199,15 +182,15 @@ export default function FeesTableRow({
                   },
                 }}
               >
-                <TableCell>
-                  {index + 1}
-                </TableCell>
+                <TableCell>{index + 1}</TableCell>
                 <TableCell sx={{ width: 140 }}>
                   {moment(item.installment_date).format('DD/MM/YYYY')}
                 </TableCell>
                 <TableCell sx={{ width: 126 }}>{item.amount}</TableCell>
                 <TableCell sx={{ width: 140 }}>
-                  {item.payment_date == null ? '-' : moment(item.installment_date).format('DD/MM/YYYY')}
+                  {item.payment_date == null
+                    ? '-'
+                    : moment(item.installment_date).format('DD/MM/YYYY')}
                 </TableCell>
 
                 <TableCell sx={{ width: 68 }}>{item.payment_mode}</TableCell>
@@ -228,7 +211,9 @@ export default function FeesTableRow({
                   <IconButton
                     color={popover.open ? 'inherit' : 'default'}
                     onClick={(e) => {
-                      popover.onOpen(e), handleInstallmentDelete(item);
+                      popover.onOpen(e),
+                        handleInstallmentDelete(item),
+                        setSingleInstallment(item._id);
                     }}
                   >
                     <Iconify icon="eva:more-vertical-fill" />
@@ -276,7 +261,7 @@ export default function FeesTableRow({
         </MenuItem>
         <MenuItem
           onClick={() => {
-            router.push(paths.dashboard.general.feesInvoice);
+            router.push(paths.dashboard.general.feesInvoice(row._id, singleInstallment));
             popover.onClose();
           }}
         >
@@ -323,7 +308,6 @@ export default function FeesTableRow({
                         {option.label}
                       </li>
                     )}
-                    // Ensure the value is correctly set to the status
                     value={methods.watch('status')}
                     onChange={(_, newValue) => methods.setValue('status', newValue)}
                   />
