@@ -7,7 +7,6 @@ import { AuthGuard } from 'src/auth/guard';
 import { LoadingScreen } from 'src/components/loading-screen';
 
 // ----------------------------------------------------------------------
-
 // SETTING PROFILE
 import UserProfile from 'src/pages/dashboard/profile/profile';
 import { SettingsPage } from 'src/sections/settings/view';
@@ -41,7 +40,7 @@ const VisitEditPage = lazy(() => import('src/pages/dashboard/visit/edit'));
 
 // FEES
 const FeesPage = lazy(() => import('src/pages/dashboard/fees'));
-// const InvoiceDetailsView = lazy(() => import('src/sections/overview/fees/invoice-page'));
+const InvoiceDetailsView = lazy(() => import('src/sections/fees/invoice-page'));
 
 // OVERVIEW
 const IndexPage = lazy(() => import('src/pages/dashboard/dashboard'));
@@ -112,13 +111,14 @@ export const dashboardRoutes = [
     ),
     children: [
       { element: <IndexPage />, index: true },
-
-      { path: 'fees', element: <FeesPage /> },
       { path: 'complain', element: <ComplainListView /> },
-      // {
-      //   path: 'fees/fee-invoice',
-      //   element: <InvoiceDetailsView id="e99f09a7-dd88-49d5-b1c8-1daf80c2d7b2" />,
-      // },
+      {
+        path: 'fees',
+        children: [
+          { element: <FeesPage />, index: true },
+          { path: ':id/fee-invoice/:installmentID/installment', element: <InvoiceDetailsView /> },
+        ],
+      },
       {
         path: 'inquiry',
         children: [

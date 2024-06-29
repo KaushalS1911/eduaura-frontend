@@ -39,7 +39,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function InvoiceDetails({ invoice }) {
-  const [currentStatus, setCurrentStatus] = useState(invoice.status);
+  const [currentStatus, setCurrentStatus] = useState(invoice?.status);
 
   const handleChangeStatus = useCallback((event) => {
     setCurrentStatus(event.target.value);

@@ -19,19 +19,20 @@ import { useRouter } from 'src/routes/hooks';
 import { useBoolean } from 'src/hooks/use-boolean';
 
 import Iconify from 'src/components/iconify';
-import InvoicePDF from 'src/sections/invoice/invoice-pdf';
-
+import FeesInvoicePDF from './fees-invoice-pdf';
 
 // ----------------------------------------------------------------------
 
-export default function InvoiceToolbar({ invoice, currentStatus, statusOptions, onChangeStatus }) {
+export default function InvoiceToolbar({
+  invoice,
+  currentStatus,
+  statusOptions,
+  onChangeStatus,
+  invoiceDetails,
+}) {
   const router = useRouter();
 
   const view = useBoolean();
-
-  const handleEdit = useCallback(() => {
-    router.push(paths.dashboard.invoice.edit(invoice.id));
-  }, [invoice.id, router]);
 
   return (
     <>
@@ -42,12 +43,6 @@ export default function InvoiceToolbar({ invoice, currentStatus, statusOptions, 
         sx={{ mb: { xs: 3, md: 5 } }}
       >
         <Stack direction="row" spacing={1} flexGrow={1} sx={{ width: 1 }}>
-          <Tooltip title="Edit">
-            <IconButton onClick={handleEdit}>
-              <Iconify icon="solar:pen-bold" />
-            </IconButton>
-          </Tooltip>
-
           <Tooltip title="View">
             <IconButton onClick={view.onTrue}>
               <Iconify icon="solar:eye-bold" />
@@ -55,8 +50,14 @@ export default function InvoiceToolbar({ invoice, currentStatus, statusOptions, 
           </Tooltip>
 
           <PDFDownloadLink
-            document={<InvoicePDF invoice={invoice} currentStatus={currentStatus} />}
-            fileName={invoice.invoiceNumber}
+            document={
+              <FeesInvoicePDF
+                invoice={invoice}
+                currentStatus={currentStatus}
+                invoiceDetails={invoiceDetails}
+              />
+            }
+            fileName={invoice?._id}
             style={{ textDecoration: 'none' }}
           >
             {({ loading }) => (
@@ -71,42 +72,12 @@ export default function InvoiceToolbar({ invoice, currentStatus, statusOptions, 
               </Tooltip>
             )}
           </PDFDownloadLink>
-
-          <Tooltip title="Print">
+          {/* <Tooltip title="Print">
             <IconButton>
               <Iconify icon="solar:printer-minimalistic-bold" />
             </IconButton>
-          </Tooltip>
-
-          <Tooltip title="Send">
-            <IconButton>
-              <Iconify icon="iconamoon:send-fill" />
-            </IconButton>
-          </Tooltip>
-
-          <Tooltip title="Share">
-            <IconButton>
-              <Iconify icon="solar:share-bold" />
-            </IconButton>
-          </Tooltip>
+          </Tooltip> */}
         </Stack>
-
-        {/* <TextField
-          fullWidth
-          select
-          label="Status"
-          value={currentStatus}
-          onChange={onChangeStatus}
-          sx={{
-            maxWidth: 160,
-          }}
-        >
-          {statusOptions.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </TextField> */}
       </Stack>
 
       <Dialog fullScreen open={view.value}>
@@ -123,7 +94,11 @@ export default function InvoiceToolbar({ invoice, currentStatus, statusOptions, 
 
           <Box sx={{ flexGrow: 1, height: 1, overflow: 'hidden' }}>
             <PDFViewer width="100%" height="100%" style={{ border: 'none' }}>
-              <InvoicePDF invoice={invoice} currentStatus={currentStatus} />
+              <FeesInvoicePDF
+                invoice={invoice}
+                currentStatus={currentStatus}
+                invoiceDetails={invoiceDetails}
+              />
             </PDFViewer>
           </Box>
         </Box>

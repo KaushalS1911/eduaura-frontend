@@ -38,16 +38,14 @@ import { useGetStudents } from 'src/api/student';
 
 // ----------------------------------------------------------------------
 
-
 const TABLE_HEAD = [
-  { id: '', label: 'Sr No', align:'center' },
+  { id: 'srNo', label: '#', align: 'center' },
   { id: 'profile', label: 'Profile' },
   { id: 'enroll', label: 'Enroll No' },
-  { id: 'studentName', label: 'Student Name' },
+  { id: 'contact', label: 'Contact' },
   { id: 'course', label: 'Course' },
   { id: 'joining_date', label: 'Joining Date' },
-  { id: 'contact', label: 'Contact' },
-  { id: '', label: 'Installments', align: "center" },
+  { id: 'installments', label: 'Installments', align: 'center' },
 ];
 const defaultFilters = {
   name: '',
@@ -67,7 +65,7 @@ export default function FeesListView() {
 
   const confirm = useBoolean();
 
-  const { students , mutate} = useGetStudents();
+  const { students, mutate } = useGetStudents();
 
   const [tableData, setTableData] = useState(students);
 
@@ -104,9 +102,7 @@ export default function FeesListView() {
     },
     [table]
   );
-  const handleEditRow = () => {
-
-  };
+  const handleEditRow = () => {};
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
   }, []);
@@ -171,8 +167,6 @@ export default function FeesListView() {
       />
 
       <Card>
-
-
         <FeesTableToolbar filters={filters} onFilters={handleFilters} dateError={dateError} />
 
         {canReset && (
