@@ -1,5 +1,5 @@
 /* eslint-disable perfectionist/sort-imports */
-import 'src/global.css';
+
 
 // i18n
 import 'src/locales/i18n';
@@ -26,7 +26,7 @@ export default function App() {
   useScrollToTop();
 
   return (
-      
+
     <AuthProvider>
         <LocalizationProvider>
           <SettingsProvider

@@ -218,7 +218,20 @@ export function useNavData() {
       },
     ],
     [t], // Include user.role as a dependency
-    )
-  ;
-  return user?.role === "Admin" ? adminNavData : navigationData;
+    );
+  const employeeData = useMemo(() =>[
+    {
+      subheader: t('academic'),
+      items: [
+
+        // ATTENDANCE
+        {
+          title: t('attendance'),
+          path: paths.dashboard.attendance.root,
+          icon: ICONS.attandance,
+        },
+      ]
+    }
+  ])
+  return user?.role === "Admin" ? adminNavData : user?.role === "Employee" ? employeeData : navigationData;
 }
