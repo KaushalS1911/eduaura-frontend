@@ -42,7 +42,6 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
       setProfilePic(currentStudent?.profile_pic);
     }
   }, [currentStudent]);
-  console.log(currentStudent,"ccc");
 
   const NewUserSchema = Yup.object().shape({
     firstName: Yup.string().required('First Name is required'),
@@ -75,8 +74,8 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
   const defaultValues = useMemo(
     () => ({
       profile_pic: currentStudent?.profile_pic || '',
-      firstName: currentStudent?.firstName || '',
-      lastName: currentStudent?.lastName || '',
+      firstName: (currentStudent?.firstName || '').toUpperCase(),
+      lastName: (currentStudent?.lastName || '').toUpperCase(),
       contact: currentStudent?.contact || '',
       email: currentStudent?.email || '',
       gender: currentStudent?.gender || '',
@@ -88,9 +87,9 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
       blood_group: currentStudent?.blood_group || '',
       address_1: currentStudent?.address_detail?.address_1 || '',
       address_2: currentStudent?.address_detail?.address_2 || '',
-      country: currentStudent?.address_detail?.country || '',
-      state: currentStudent?.address_detail?.state || '',
-      city: currentStudent?.address_detail?.city || '',
+      country: currentStudent?.address_detail?.country || 'India',
+      state: currentStudent?.address_detail?.state || 'Gujarat',
+      city: currentStudent?.address_detail?.city || 'Surat',
       zipcode: currentStudent?.address_detail?.zipcode || '',
       enrollment_no: currentStudent?.enrollment_no || '',
       total_amount: currentStudent?.fee_detail?.total_amount || '',
@@ -130,6 +129,8 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
     try {
       const response = await axios.post(URL, formData);
       enqueueSnackbar(response?.message || 'Student Created Successfully', { variant: 'success' });
+      console.log('ID : ', response?.data?.data?._id);
+      router.push(paths.dashboard.student.edit(response?.data?.data?._id));
     } catch (error) {
       console.error('Failed to create student:', error);
       throw error;
@@ -148,6 +149,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
     try {
       const response = await axios.put(URL, formData);
       enqueueSnackbar(response?.message || 'Student Updated Successfully', { variant: 'success' });
+      router.push(paths.dashboard.student.list);
     } catch (error) {
       console.error('Failed to update student:', error);
       throw error;
@@ -187,7 +189,6 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
       } else {
         await createStudent(studentPayload);
       }
-      router.push(paths.dashboard.student.list);
       reset();
     } catch (err) {
       console.error('Error submitting form:', err);
@@ -236,8 +237,24 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
                 md: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField name="firstName" label="First Name" />
-              <RHFTextField name="lastName" label="Last Name" />
+              <RHFTextField
+                name="firstName"
+                label="First Name"
+                inputProps={{ style: { textTransform: 'uppercase' } }}
+                onChange={(e) => {
+                  const value = e.target.value.toUpperCase();
+                  methods.setValue('firstName', value, { shouldValidate: true });
+                }}
+              />
+              <RHFTextField
+                name="lastName"
+                label="Last Name"
+                inputProps={{ style: { textTransform: 'uppercase' } }}
+                onChange={(e) => {
+                  const value = e.target.value.toUpperCase();
+                  methods.setValue('lastName', value, { shouldValidate: true });
+                }}
+              />
               <RHFTextField name="email" label="Email Address" />
               <RHFTextField name="contact" label="Phone Number" />
               <RHFAutocomplete
@@ -337,7 +354,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
                 label="Country"
                 placeholder="Choose a country"
                 options={countrystatecity.map((country) => country.name)}
-                isOptionEqualToValue={(option, value) => option.value === value.value}
+                isOptionEqualToValue={(option, value) => option === value}
               />
               <RHFAutocomplete
                 name="state"
@@ -350,12 +367,12 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
                         ?.states.map((state) => state.name) || []
                     : []
                 }
-                isOptionEqualToValue={(option, value) => option.value === value.value}
+                isOptionEqualToValue={(option, value) => option === value}
               />
               <RHFAutocomplete
                 name="city"
                 label="City"
-                placeholder="Choose a State"
+                placeholder="Choose a City"
                 options={
                   watch('state')
                     ? countrystatecity
@@ -364,7 +381,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
                         ?.cities.map((city) => city.name) || []
                     : []
                 }
-                isOptionEqualToValue={(option, value) => option.value === value.value}
+                isOptionEqualToValue={(option, value) => option === value}
               />
               <RHFTextField name="zipcode" label="Zip/Code" />
             </Box>
