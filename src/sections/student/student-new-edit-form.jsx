@@ -208,20 +208,19 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
 
   const uploadStudentImage = (
     <>
-
-        <Grid item md={4} xs={12}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
-            Personal Details
-          </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Basic info, profile pic, Name, Course, Enrollment no...
-          </Typography>
-          <Card sx={{ pt: 5, px: 3, mt: 5 }}>
-            <Box sx={{ mb: 5 }}>
-              <RHFUploadAvatar name="profile_pic" onDrop={handleDrop} />
-            </Box>
-          </Card>
-        </Grid>
+      <Grid item md={4} xs={12}>
+        <Typography variant="h6" sx={{ mb: 0.5 }}>
+          Personal Details
+        </Typography>
+        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          Basic info, profile pic, Name, Course, Enrollment no...
+        </Typography>
+        <Card sx={{ pt: 5, px: 3, mt: 5 }}>
+          <Box sx={{ mb: 5 }}>
+            <RHFUploadAvatar name="profile_pic" onDrop={handleDrop} />
+          </Box>
+        </Card>
+      </Grid>
 
       <Grid item xs={12} md={8}>
         <Card>
@@ -398,13 +397,26 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
                 md: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField name="total_amount" label="Total Amount" />
-              <RHFTextField name="amount_paid" label="Amount Paid" />
-              <RHFTextField name="discount" label="Discount" />
+              <RHFTextField
+                name="total_amount"
+                label="Total Amount"
+                disabled={currentStudent ? true : false}
+              />
+              <RHFTextField
+                name="amount_paid"
+                label="Amount Paid"
+                disabled={currentStudent ? true : false}
+              />
+              <RHFTextField
+                name="discount"
+                label="Discount"
+                disabled={currentStudent ? true : false}
+              />
               <Stack spacing={1.5}>
                 <Controller
                   name="upcoming_installment_date"
                   control={control}
+                  disabled={currentStudent ? true : false}
                   render={({ field, fieldState: { error } }) => (
                     <DatePicker
                       {...field}
@@ -421,7 +433,11 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
                   )}
                 />
               </Stack>
-              <RHFTextField name="no_of_installments" label="Number of Installment" />
+              <RHFTextField
+                name="no_of_installments"
+                label="Number of Installment"
+                disabled={currentStudent ? true : false}
+              />
             </Box>
           </Stack>
         </Card>
@@ -439,7 +455,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
             <Button
               color="inherit"
               variant="outlined"
-              onClick={() => router.push(paths.dashboard.user.list)}
+              onClick={() => router.push(paths.dashboard.student.list)}
             >
               Cancel
             </Button>
