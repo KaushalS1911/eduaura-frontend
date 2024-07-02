@@ -47,9 +47,24 @@ export default function InvoiceDetails({ invoice }) {
     (e) => e._id === params.installmentID
   );
 
+  const invoiceNumber = invoice?.fee_detail?.installments
+    ?.map((e, index) => {
+      if (e._id === params.installmentID) {
+        return index + 1;
+      }
+      return '';
+    })
+    .filter((num) => num !== '');
+
   const handleChangeStatus = useCallback((event) => {
     setCurrentStatus(event.target.value);
   }, []);
+
+  const formatEnrollmentNo = (number) => {
+    const paddedNumber = number?.toString().padStart(4, '0');
+    const installmentNumber = invoiceNumber?.toString().padStart(2, '0');
+    return `${paddedNumber}${installmentNumber}  `;
+  };
 
   const renderTotal = (
     <>
@@ -177,13 +192,20 @@ export default function InvoiceDetails({ invoice }) {
           <Box>
             <Logo />
           </Box>
-
           <Stack spacing={1} alignItems={{ xs: 'flex-start', md: 'flex-end' }}>
-            <Label variant="soft" color={'success'}>
+            <Label
+              variant="soft"
+              color={
+                (invoiceDetails?.status === 'paid' && 'success') ||
+                (invoiceDetails?.status === 'pending' && 'warning') ||
+                (invoiceDetails?.status === 'unpaid' && 'error') ||
+                'default'
+              }
+            >
               {invoiceDetails?.status}
             </Label>
 
-            <Typography variant="h6">JBS-{invoice?.enrollment_no}</Typography>
+            <Typography variant="h6">JBS-{formatEnrollmentNo(invoice?.enrollment_no)}</Typography>
           </Stack>
 
           <Stack sx={{ typography: 'body2' }}>
@@ -194,7 +216,7 @@ export default function InvoiceDetails({ invoice }) {
             <br />
             F-38 , yogichowk , city center nana varachha surat
             <br />
-            Phone : 987-526-3080
+            Phone : 9875263080
             <br />
           </Stack>
 

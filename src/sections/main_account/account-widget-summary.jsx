@@ -1,13 +1,11 @@
 import PropTypes from 'prop-types';
-
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-
 import { fShortenNumber } from 'src/utils/format-number';
 
 // ----------------------------------------------------------------------
 
-export default function AccountWidgetSummary({ title, total, icon, sx, ...other }) {
+export default function AccountWidgetSummary({ title, total = 0, icon, sx, ...other }) {
   return (
     <Card
       sx={{
@@ -21,7 +19,7 @@ export default function AccountWidgetSummary({ title, total, icon, sx, ...other 
       {...other}
     >
       <Box>
-        <Box sx={{ mb: 1, typography: 'h3' }}>{fShortenNumber(total)}</Box>
+        <Box sx={{ mb: 1, typography: 'h3' }}>{total}</Box>
         <Box sx={{ color: 'text.secondary', typography: 'subtitle2' }}>{title}</Box>
       </Box>
 
@@ -45,4 +43,8 @@ AccountWidgetSummary.propTypes = {
   sx: PropTypes.object,
   title: PropTypes.string,
   total: PropTypes.number,
+};
+
+AccountWidgetSummary.defaultProps = {
+  total: 0,
 };

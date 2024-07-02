@@ -238,17 +238,6 @@ export default function FeesTableRow({
         arrow="right-top"
         sx={{ width: 140 }}
       >
-        {/* <MenuItem
-          onClick={() => {
-            confirm.onTrue();
-            popover.onClose();
-          }}
-          sx={{ color: 'error.main' }}
-        >
-          <Iconify icon="solar:trash-bin-trash-bold" />
-          Delete
-        </MenuItem> */}
-
         <MenuItem
           onClick={() => {
             dialog.onTrue();
@@ -295,7 +284,7 @@ export default function FeesTableRow({
               <DialogTitle sx={{ fontSize: '25px !important' }}>Update Status</DialogTitle>
 
               <DialogContent>
-                <Box>
+                <Box sx={{ mt: 1 }}>
                   <RHFAutocomplete
                     name="status"
                     label="Status"

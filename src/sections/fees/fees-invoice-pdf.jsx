@@ -25,6 +25,7 @@ const useStyles = () =>
         mb40: { marginBottom: 40 },
         h3: { fontSize: 16, fontWeight: 700 },
         h4: { fontSize: 13, fontWeight: 700 },
+        h5: { fontSize: 10, fontWeight: 700 },
         body1: { fontSize: 10 },
         body2: { fontSize: 9 },
         subtitle1: { fontSize: 10, fontWeight: 700 },
@@ -127,7 +128,7 @@ const FeesInvoicePDF = ({ currentStatus, invoice, invoiceDetails }) => {
               <Text style={[styles.subtitle2, styles.mb4]}>Invoice from</Text>
               <Text style={styles.body2}>JBS IT INSTITUTE</Text>
               <Text style={styles.body2}>F-38 , yogichowk , city center nana varachha surat</Text>
-              <Text style={styles.body2}>987-526-3080</Text>
+              <Text style={styles.body2}>9875263080</Text>
             </View>
 
             <View style={styles.col6}>
@@ -148,7 +149,7 @@ const FeesInvoicePDF = ({ currentStatus, invoice, invoiceDetails }) => {
           </View>
           <View style={styles.col6}>
             <Text style={[styles.subtitle2, styles.mb4]}>Due date</Text>
-            <Text style={styles.body2}>{fDate(invoiceDetails?.installment_date)}</Text>
+            <Text style={styles.body1}>{fDate(invoiceDetails?.installment_date)}</Text>
           </View>
         </View>
 
@@ -209,10 +210,10 @@ const FeesInvoicePDF = ({ currentStatus, invoice, invoiceDetails }) => {
                 <View style={styles.tableCell_2} />
                 <View style={styles.tableCell_3} />
                 <View style={styles.tableCell_3}>
-                  <Text style={styles.body2}>Discount</Text>
+                  <Text style={styles.h5}>Discount</Text>
                 </View>
                 <View style={[styles.tableCell_3, styles.alignRight]}>
-                  <Text style={styles.body2}>0</Text>
+                  <Text style={styles.h5}>0</Text>
                 </View>
               </View>
 
@@ -221,10 +222,10 @@ const FeesInvoicePDF = ({ currentStatus, invoice, invoiceDetails }) => {
                 <View style={styles.tableCell_2} />
                 <View style={styles.tableCell_3} />
                 <View style={styles.tableCell_3}>
-                  <Text style={styles.body2}>Taxes</Text>
+                  <Text style={styles.h5}>Taxes</Text>
                 </View>
                 <View style={[styles.tableCell_3, styles.alignRight]}>
-                  <Text style={styles.body2}>0</Text>
+                  <Text style={styles.h5}>0</Text>
                 </View>
               </View>
 
@@ -233,10 +234,10 @@ const FeesInvoicePDF = ({ currentStatus, invoice, invoiceDetails }) => {
                 <View style={styles.tableCell_2} />
                 <View style={styles.tableCell_3} />
                 <View style={styles.tableCell_3}>
-                  <Text style={styles.h4}>Total</Text>
+                  <Text style={styles.h5}>Total</Text>
                 </View>
                 <View style={[styles.tableCell_3, styles.alignRight]}>
-                  <Text style={styles.h4}>{fCurrency(invoiceDetails?.amount)}</Text>
+                  <Text style={styles.h5}>{fCurrency(invoiceDetails?.amount)}</Text>
                 </View>
               </View>
             </View>
