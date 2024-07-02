@@ -30,6 +30,7 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import { useAuthContext } from 'src/auth/hooks';
 import axios from 'axios';
 import CardHeader from '@mui/material/CardHeader';
+import { useGetConfigs } from '../../api/config';
 // ----------------------------------------------------------------------
 export default function StudentNewEditForm({ currentStudent, mutate }) {
   const router = useRouter();
@@ -37,6 +38,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
   const { enqueueSnackbar } = useSnackbar();
   const { user } = useAuthContext();
   const [profilePic, setProfilePic] = useState(null);
+  const { configs } = useGetConfigs();
   useEffect(() => {
     if (currentStudent) {
       setProfilePic(currentStudent?.profile_pic);
@@ -291,7 +293,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
                 name="course"
                 label="Course"
                 placeholder="Choose a course"
-                options={courses.map((course) => course.label)}
+                options={configs?.courses?.map((course) => course)}
                 isOptionEqualToValue={(option, value) => option === value}
               />
               <Stack spacing={1.5}>
