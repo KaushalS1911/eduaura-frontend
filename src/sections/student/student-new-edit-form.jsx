@@ -47,7 +47,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
     firstName: Yup.string().required('First Name is required'),
     lastName: Yup.string().required('Last Name is required'),
     email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    contact: Yup.string().required('Phone Number is required'),
+    contact: Yup.string().max(10).min(10).required('Contact number is required'),
     gender: Yup.string().required('Gender is required'),
     course: Yup.string().required('Course is required'),
     education: Yup.string().required('Education is required'),

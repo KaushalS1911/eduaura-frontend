@@ -1,5 +1,5 @@
 import isEqual from 'lodash/isEqual';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
   Card,
   Table,
@@ -67,9 +67,14 @@ export default function EmployeeListView() {
   const settings = useSettingsContext();
   const router = useRouter();
   const confirm = useBoolean();
+  const [tableData, setTableData] = useState([]);
   const { employees,employeesLoading ,mutate } = useGetEmployees();
   const [filters, setFilters] = useState(defaultFilters);
-
+  useEffect(() => {
+    if (employees) {
+      setTableData(employees);
+    }
+  }, [employees]);
   const dataFiltered = applyFilter({
     inputData: employees,
     comparator: getComparator(table.order, table.orderBy),
@@ -121,19 +126,27 @@ export default function EmployeeListView() {
     try {
       const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/delete/all-employee`;
 
-      const sortedSelectedIds = [...table.selected].sort();
-      await Promise.all(
-        sortedSelectedIds.map(async (selectedId) => {
-          const response = await axios.delete(URL, { data: { ids: [selectedId] } });
-          if (response.status === 200) {
-            enqueueSnackbar(response.data.data.message, { variant: 'success' });
-            mutate();
+      const selectedIdsArray = [...table.selected];
+      const response = await axios.delete(URL, { data: { ids: selectedIdsArray }, }) ;
+      enqueueSnackbar(response.data.data.message, { variant: 'success' });
+            setTableData((prevData) => prevData.filter((row) => !selectedIdsArray.includes(row.id)));
+            table.onUpdatePageDeleteRow(selectedIdsArray.length);
             confirm.onFalse();
-          } else {
-            enqueueSnackbar(response.data.message, { variant: 'error' });
-          }
-        })
-      );
+            mutate();
+      // await Promise.all(
+      //   sortedSelectedIds.map(async (selectedId) => {
+      //     const response = ;
+      //     if (response.status === 200) {
+      //       enqueueSnackbar(response.data.data.message, { variant: 'success' });
+      //       setTableData((prevData) => prevData.filter((row) => !selectedIdsArray.includes(row.id)));
+      //       table.onUpdatePageDeleteRow(selectedIdsArray.length);
+      //       mutate();
+      //       confirm.onFalse();
+      //     } else {
+      //       enqueueSnackbar(response.data.message, { variant: 'error' });
+      //     }
+      //   })
+      // );
     } catch (error) {
       console.error('Failed to delete Employee', error);
       enqueueSnackbar('Failed to delete Employee', { variant: 'error' });

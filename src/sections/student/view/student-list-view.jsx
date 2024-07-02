@@ -147,13 +147,16 @@ export default function StudentListView() {
   const handleDeleteRows = useCallback(
     async (id) => {
       try {
+        const selectedIdsArray = [...table.selected];
         const response = await axios.delete(
           `https://admin-panel-dmawv.ondigitalocean.app/api/v2/student`,
           {
-            data: { ids: id },
+            data: { ids: selectedIdsArray },
           }
         );
         enqueueSnackbar(response?.data?.message || 'Delete Success', { variant: 'success' });
+        setTableData((prevData) => prevData.filter((row) => !selectedIdsArray.includes(row.id)));
+        table.onUpdatePageDeleteRow(selectedIdsArray.length);
         confirm.onFalse();
         mutate();
       } catch (error) {

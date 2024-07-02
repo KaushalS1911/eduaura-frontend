@@ -35,7 +35,7 @@ export default function GuardianAddForm({ open, onClose, currentStudent, mutate 
   const NewAddressSchema = Yup.object().shape({
     firstName: Yup.string().required('First Name is required'),
     lastName: Yup.string().required('Last Name is required'),
-    contact: Yup.string().required('Phone Number is required').max(10).min(10),
+    contact: Yup.string().max(10).min(10).required('Contact number is required'),
     relation_type: Yup.string().required('Guardian Type is required'),
   });
 
