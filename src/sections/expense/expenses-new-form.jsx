@@ -19,6 +19,7 @@ import axios from 'axios';
 import { paths } from 'src/routes/paths';
 import moment from 'moment';
 import { useAuthContext } from 'src/auth/hooks';
+import { useGetConfigs } from '../../api/config';
 
 const types = [
   'Rent',
@@ -35,7 +36,7 @@ const ExpenseNewForm = () => {
   const mdUp = useResponsive('up', 'md');
   const { enqueueSnackbar } = useSnackbar();
   const preview = useBoolean();
-
+  const { configs } = useGetConfigs();
   const NewBlogSchema = Yup.object().shape({
     type: Yup.string().required('Type is required'),
     desc: Yup.string().required('Description is required'),
@@ -61,7 +62,6 @@ const ExpenseNewForm = () => {
     formState: { isSubmitting },
   } = methods;
   const { user } = useAuthContext();
-  console.log(user, 'user');
   const onSubmit = handleSubmit(async (data) => {
     try {
       const formattedData = {
@@ -109,7 +109,7 @@ const ExpenseNewForm = () => {
               label="Type"
               placeholder="Choose a Type"
               fullWidth
-              options={types}
+              options={configs?.expenses}
               getOptionLabel={(option) => option}
             />
             <RHFTextField name="desc" label="Description" multiline rows={3} />

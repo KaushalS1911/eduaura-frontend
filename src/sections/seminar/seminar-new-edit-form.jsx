@@ -24,6 +24,7 @@ import axios from 'axios';
 import { useSnackbar } from 'src/components/snackbar';
 import { paths } from 'src/routes/paths';
 import { MobileDateTimePicker } from '@mui/x-date-pickers';
+import { useGetConfigs } from '../../api/config';
 export default function SeminarNewEditForm({ SeminarId }) {
   const { user } = useAuthContext();
   const [users, setUsers] = useState([]);
@@ -33,6 +34,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
   const [allUser, setAllUser] = useState([]);
   const [dateTime, setDateTime] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
+  const { configs } = useGetConfigs();
   const NewUserSchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
     schedule_by: Yup.string().required('Schedule by is required'),
@@ -228,7 +230,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
                 label="Role"
                 placeholder="Choose a role"
                 fullWidth
-                options={ROLE}
+                options={configs?.roles}
                 getOptionLabel={(option) => option}
               />
               <Controller
