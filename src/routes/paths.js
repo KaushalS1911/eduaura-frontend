@@ -12,6 +12,7 @@ const ROOTS = {
   AUTH: '/auth',
   AUTH_DEMO: '/auth-demo',
   DASHBOARD: '/dashboard',
+  INVITE_USER:'/invite-user'
 };
 
 // ----------------------------------------------------------------------
@@ -51,6 +52,7 @@ export const paths = {
   //   },
   // },
   // AUTH
+  // api/invite-user
   auth: {
     amplify: {
       login: `${ROOTS.AUTH}/amplify/login`,
@@ -204,5 +206,8 @@ export const paths = {
       root: `${ROOTS.DASHBOARD}/attendance`,
       new: `${ROOTS.DASHBOARD}/attendance/new`,
     },
+  },
+  inviteUser:{
+    root:`${ ROOTS.INVITE_USER }`
   },
 };

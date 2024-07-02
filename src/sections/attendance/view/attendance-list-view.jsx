@@ -38,6 +38,7 @@ import {
 import AttendanceTableRow from '../attendance-table-row';
 import AttendanceTableToolbar from '../attendance-table-toolbar';
 import AttendanceTableFiltersResult from '../attendance-table-filters-result';
+import { LoadingScreen } from '../../../components/loading-screen';
 
 const TABLE_HEAD = [
   { id: 'srNo', label: '#', align: 'center' },
@@ -63,7 +64,7 @@ export default function AttendanceListView() {
 
   const theme = useTheme();
 
-  const { attendance, mutate } = useGetAllAttendance();
+  const { attendance, attendanceLoading,mutate } = useGetAllAttendance();
 
   const settings = useSettingsContext();
 
@@ -195,7 +196,7 @@ export default function AttendanceListView() {
 
   return (
     <>
-      <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+      {attendanceLoading ? <LoadingScreen /> : <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
           heading="Attendance logs"
           links={[
@@ -323,7 +324,8 @@ export default function AttendanceListView() {
             onChangeDense={table.onChangeDense}
           />
         </Card>
-      </Container>
+      </Container>}
+
     </>
   );
 }

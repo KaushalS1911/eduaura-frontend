@@ -46,6 +46,7 @@ import ExaminationTableRow from '../examination-table-row';
 import ExaminationTableToolbar from '../examination-table-toolbar';
 import ExaminationTableFiltersResult from '../examination-table-filters-result';
 import { useGetExam } from 'src/api/examination';
+import { LoadingScreen } from '../../../components/loading-screen';
 
 // ----------------------------------------------------------------------
 
@@ -76,7 +77,7 @@ export default function ExpenseListView() {
   const confirm = useBoolean();
   const [tableData, setTableData] = useState([]);
   const [filters, setFilters] = useState(defaultFilters);
-  const { exam, mutate } = useGetExam(user?.company_id);
+  const { exam,examLoading, mutate } = useGetExam(user?.company_id);
 
   useEffect(() => {
     if (exam) {
@@ -183,7 +184,7 @@ export default function ExpenseListView() {
 
   return (
     <>
-      <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+      {examLoading ? <LoadingScreen /> :       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
           heading="Exams"
           links={[
@@ -301,6 +302,7 @@ export default function ExpenseListView() {
           />
         </Card>
       </Container>
+      }
 
       <ConfirmDialog
         open={confirm.value}

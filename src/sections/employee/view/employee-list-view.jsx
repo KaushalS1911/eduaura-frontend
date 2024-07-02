@@ -38,6 +38,7 @@ import EmployeeTableRow from '../employee-table-row';
 import EmployeeTableToolbar from '../employee-table-toolbar';
 import EmployeeTableFiltersResult from '../employee-table-filters-result';
 import { useGetEmployees } from '../../../api/employee';
+import { LoadingScreen } from '../../../components/loading-screen';
 
 // ----------------------------------------------------------------------
 
@@ -66,7 +67,7 @@ export default function EmployeeListView() {
   const settings = useSettingsContext();
   const router = useRouter();
   const confirm = useBoolean();
-  const { employees, mutate } = useGetEmployees();
+  const { employees,employeesLoading ,mutate } = useGetEmployees();
   const [filters, setFilters] = useState(defaultFilters);
 
   const dataFiltered = applyFilter({
@@ -148,7 +149,7 @@ export default function EmployeeListView() {
 
   return (
     <>
-      <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+      {employeesLoading ? <LoadingScreen /> :       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
           heading="Employee"
           links={[
@@ -257,6 +258,7 @@ export default function EmployeeListView() {
           />
         </Card>
       </Container>
+      }
 
       <ConfirmDialog
         open={confirm.value}

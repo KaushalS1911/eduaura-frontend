@@ -45,6 +45,7 @@ import StudentTableFiltersResult from '../student-table-filters-result';
 
 import { useGetStudents } from '../../../api/student';
 import axios from 'axios';
+import { LoadingScreen } from '../../../components/loading-screen';
 
 // ----------------------------------------------------------------------
 
@@ -79,7 +80,7 @@ export default function StudentListView() {
 
   const confirm = useBoolean();
 
-  const { students, mutate } = useGetStudents();
+  const { students,studentsLoading, mutate } = useGetStudents();
 
   const [tableData, setTableData] = useState(students);
 
@@ -186,7 +187,7 @@ export default function StudentListView() {
 
   return (
     <>
-      <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+      {studentsLoading ? <LoadingScreen /> :<Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
           heading="List"
           links={[
@@ -338,7 +339,8 @@ export default function StudentListView() {
             onChangeDense={table.onChangeDense}
           />
         </Card>
-      </Container>
+      </Container>}
+
 
       <ConfirmDialog
         open={confirm.value}
