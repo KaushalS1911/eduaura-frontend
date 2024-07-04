@@ -196,6 +196,7 @@ export const paths = {
       details: (id) => `${ROOTS.DASHBOARD}/batches/${id}`,
       new: `${ROOTS.DASHBOARD}/batches/new`,
       edit: (id) => `${ROOTS.DASHBOARD}/batches/${id}/edit`,
+      view: (id) => `${ROOTS.DASHBOARD}/batches/${id}/view`,
     },
 
     demo: {

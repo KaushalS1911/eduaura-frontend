@@ -174,6 +174,12 @@ export default function BatchListView() {
     },
     [router]
   );
+  const handleRegisterViewRow = useCallback(
+    (id) => {
+      router.push(paths.dashboard.batches.view(id));
+    },
+    [router]
+  );
 
   const handleViewRow = useCallback(
     (id) => {
@@ -273,6 +279,7 @@ export default function BatchListView() {
                         onDeleteRow={() => handleDeleteRow(row._id)}
                         onEditRow={() => handleEditRow(row._id)}
                         onViewRow={() => handleViewRow(row._id)}
+                        onRegisterViewRow={() => handleRegisterViewRow(row._id)}
                       />
                     ))}
 

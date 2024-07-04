@@ -32,7 +32,7 @@ export default function BatchTableRow({
   onSelectRow,
   onEditRow,
   onDeleteRow,
-  index,
+  index, onRegisterViewRow
 }) {
   const { technology, batch_name, batch_time, batch_members, faculty } = row;
 
@@ -166,6 +166,14 @@ export default function BatchTableRow({
         >
           <Iconify icon="solar:pen-bold" />
           Edit
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            onRegisterViewRow(), popover.onClose();
+          }}
+        >
+          <Iconify icon="solar:eye-bold" />
+          Register
         </MenuItem>
       </CustomPopover>
 
