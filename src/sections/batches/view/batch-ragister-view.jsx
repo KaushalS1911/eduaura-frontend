@@ -38,7 +38,7 @@ const [student,setStudent] = useState([])
         }}
       />
       <BatchToolbar invoice={student} data1={data} configs={configs} />
-      <Card id='attendance' sx={{ padding: '20px',overflowX:'scroll' }}>
+      <Card id='attendance' sx={{ padding: '20px',overflowx:'scroll',minWidth:"1500px" }}>
         <Box sx={{display:"flex",justifyContent:"space-between"}}>
           <Box>
             <Box sx={{ fontSize: '25px', fontWeight: '800' }}>{configs?.company_details?.name}</Box>
