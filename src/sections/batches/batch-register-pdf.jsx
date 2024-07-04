@@ -1,10 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Page, View, Text, Font, Document, StyleSheet } from '@react-pdf/renderer';
-import { useGetConfigs } from 'src/api/config';
-import { useAuthContext } from '../../auth/hooks';
-import axios from 'axios';
-import { useParams } from 'react-router';
 
 Font.register({
   family: 'Roboto',
@@ -38,10 +34,10 @@ const useStyles = () =>
           width: '300px',
         },
         t2Width: {
-          width: '550px',
+          width: '590px',
         },
         t3Width: {
-          width: '290px',
+          width: '230px',
         },
         th1Head: {
           marginRight: '30px',
@@ -63,12 +59,11 @@ const useStyles = () =>
         tr2: {
           flexDirection: 'row',
           height: '23px',
-
         },
         td: {
           borderRight: '1px solid black',
           textAlign: 'center',
-          fontSize: 11,
+          fontSize: 10,
         },
 
         rotate: {
@@ -77,7 +72,6 @@ const useStyles = () =>
         tdb: {
           borderBottom: '1px solid black',
           textAlign: 'center',
-
         },
         th: {
           backgroundColor: '#f0f0f0',
@@ -91,22 +85,33 @@ const useStyles = () =>
     [],
   );
 
-const BatchRegisterPDF = ({ student, data ,configs}) => {
+const BatchRegisterPDF = ({ student, data, configs }) => {
   const styles = useStyles();
 
-  // const [configs, setConfigs] = useState([]);
-  console.log(student,"chchch");
   return (
     <Document>
-      <Page size='A2' style={styles.page}>
-        <View style={{ fontSize: 25, fontWeight: 800 }}>
-          <Text>{configs?.company_details?.name}</Text>
-        </View>
-        <View style={styles.section}>
-          <Text style={{fontSize:11}}>
-            {`${configs?.company_details?.address_1}, ${configs?.company_details?.city}, ${configs?.company_details?.state}, ${configs?.company_details?.country} - ${configs?.company_details?.zipcode}.`}
-          </Text>
-        </View>
+      <Page  orientation="landscape" style={styles.page} >
+       <View style={{flexDirection:"row",justifyContent:'space-between'}}>
+         <View> <View style={{ fontSize: 25, fontWeight: 800 }}>
+           <Text>{configs?.company_details?.name}</Text>
+         </View>
+           <View style={styles.section}>
+             <Text style={{ fontSize: 10 }}>
+               {`${configs?.company_details?.address_1}, ${configs?.company_details?.city}, ${configs?.company_details?.state}, ${configs?.company_details?.country} - ${configs?.company_details?.zipcode}.`}
+             </Text>
+           </View>
+         </View>
+         <View style={{flexDirection:"row",alignItems:'end',paddingTop:'20px'}}>
+           <View style={{marginRight:20}}>
+             <Text style={{fontSize:10}}>PD : Present Day</Text>
+             <Text style={{fontSize:10}}>AD : Absent Day</Text>
+           </View>
+           <View >
+             <Text style={{fontSize:10}}>TD : Total Day</Text>
+             <Text style={{fontSize:10}}>HL : Holi Day</Text>
+           </View>
+         </View>
+       </View>
 
         <View style={[styles.flex]}>
           <View style={[styles.table, styles.t1Width]}>
@@ -133,12 +138,11 @@ const BatchRegisterPDF = ({ student, data ,configs}) => {
               }]}>Student Name</Text>
             </View>
             {student?.map((data, index) => (
-            <View style={[styles.tr]}>
-              <Text style={[styles.td, { width: 60, paddingTop: 4.5 }]}>{index+1}</Text>
-              <Text style={[styles.td, { width: 100, paddingTop: 4.5 }]}>{data?.enrollment_no}</Text>
-              <Text style={[styles.td, { width: '100%', borderRight: '1px solid white', paddingTop: 4.5 }]}>{`${data?.firstName} ${data?.lastName}`}</Text>
-            </View>
-
+              <View style={[styles.tr]}>
+                <Text style={[styles.td, { width: 60, paddingTop: 4.5 }]}>{index + 1}</Text>
+                <Text style={[styles.td, { width: 100, paddingTop: 4.5 }]}>{data?.enrollment_no}</Text>
+                <Text style={[styles.td, { width: '100%', borderRight: '1px solid white', paddingTop: 4.5 }]}>{`${data?.firstName} ${data?.lastName}`}</Text>
+              </View>
             ))}
             <View style={[styles.tr]}>
               <Text style={[styles.td, { width: 60 }]}><Text style={{ opacity: '0' }}>1</Text></Text>
@@ -152,80 +156,78 @@ const BatchRegisterPDF = ({ student, data ,configs}) => {
               <Text style={[styles.td, { width: '100%', borderRight: '1px solid white' }]}><Text
                 style={{ opacity: '0' }}>Heet Timbadiya</Text></Text>
             </View>
-            <View style={[styles.tr2]}>
-              <Text style={[{ width: 60 }]}></Text>
-              <Text style={[{ width: 100 }]}></Text>
-              <Text style={[styles.td, {
-                width: '100%',
-                border: '1px solid black',
-                borderTop: '1px solid white',
-                fontSize: 11,
-                fontWeight: 'bold',
-                paddingTop: 4.5,
-              }]}>Presents on Last Day</Text>
-            </View>
-            <View style={[styles.tr2]}>
-              <Text style={[{ width: 60 }]}></Text>
-              <Text style={[{ width: 100 }]}></Text>
-              <Text style={[styles.td, {
-                width: '100%',
-                border: '1px solid black',
-                borderTop: '1px solid white',
-                fontSize: 11,
-                fontWeight: 'bold',
-                paddingTop: 4.5,
-              }]}>No. of new students</Text>
-            </View>
-            <View style={[styles.tr2]}>
-              <Text style={[{ width: 60 }]}></Text>
-              <Text style={[{ width: 100 }]}></Text>
-              <Text style={[styles.td, {
-                width: '100%',
-                border: '1px solid black',
-                borderTop: '1px solid white',
-                fontSize: 11,
-                fontWeight: 'bold',
-                paddingTop: 4.5,
-              }]}>No. of students left</Text>
-            </View>
-            <View style={[styles.tr2]}>
-              <Text style={[{ width: 60 }]}></Text>
-              <Text style={[{ width: 100 }]}></Text>
-              <Text style={[styles.td, {
-                width: '100%',
-                border: '1px solid black',
-                borderTop: '1px solid white',
-                fontSize: 11,
-                fontWeight: 'bold',
-                paddingTop: 4.5,
-              }]}>Presents in class</Text>
-            </View>
-            <View style={[styles.tr2]}>
-              <Text style={[{ width: 60 }]}></Text>
-              <Text style={[{ width: 100 }]}></Text>
-              <Text style={[styles.td, {
-                width: '100%',
-                border: '1px solid black',
-                borderTop: '1px solid white',
-                fontSize: 11,
-                fontWeight: 'bold',
-                paddingTop: 4.5,
-              }]}>No. of absence(A+L+I)</Text>
-            </View>
-            <View style={[styles.tr2]}>
-              <Text style={[{ width: 60 }]}></Text>
-              <Text style={[{ width: 100 }]}></Text>
-              <Text style={[styles.td, {
-                width: '100%',
-                border: '1px solid black',
-                borderTop: '1px solid white',
-                fontSize: 11,
-                fontWeight: 'bold',
-                paddingTop: 4.5,
-              }]}>Presents</Text>
-            </View>
-
-
+            {/*<View style={[styles.tr2]}>*/}
+            {/*  <Text style={[{ width: 60 }]}></Text>*/}
+            {/*  <Text style={[{ width: 100 }]}></Text>*/}
+            {/*  <Text style={[styles.td, {*/}
+            {/*    width: '100%',*/}
+            {/*    border: '1px solid black',*/}
+            {/*    borderTop: '1px solid white',*/}
+            {/*    fontSize: 11,*/}
+            {/*    fontWeight: 'bold',*/}
+            {/*    paddingTop: 4.5,*/}
+            {/*  }]}>Presents on Last Day</Text>*/}
+            {/*</View>*/}
+            {/*<View style={[styles.tr2]}>*/}
+            {/*  <Text style={[{ width: 60 }]}></Text>*/}
+            {/*  <Text style={[{ width: 100 }]}></Text>*/}
+            {/*  <Text style={[styles.td, {*/}
+            {/*    width: '100%',*/}
+            {/*    border: '1px solid black',*/}
+            {/*    borderTop: '1px solid white',*/}
+            {/*    fontSize: 11,*/}
+            {/*    fontWeight: 'bold',*/}
+            {/*    paddingTop: 4.5,*/}
+            {/*  }]}>No. of new students</Text>*/}
+            {/*</View>*/}
+            {/*<View style={[styles.tr2]}>*/}
+            {/*  <Text style={[{ width: 60 }]}></Text>*/}
+            {/*  <Text style={[{ width: 100 }]}></Text>*/}
+            {/*  <Text style={[styles.td, {*/}
+            {/*    width: '100%',*/}
+            {/*    border: '1px solid black',*/}
+            {/*    borderTop: '1px solid white',*/}
+            {/*    fontSize: 11,*/}
+            {/*    fontWeight: 'bold',*/}
+            {/*    paddingTop: 4.5,*/}
+            {/*  }]}>No. of students left</Text>*/}
+            {/*</View>*/}
+            {/*<View style={[styles.tr2]}>*/}
+            {/*  <Text style={[{ width: 60 }]}></Text>*/}
+            {/*  <Text style={[{ width: 100 }]}></Text>*/}
+            {/*  <Text style={[styles.td, {*/}
+            {/*    width: '100%',*/}
+            {/*    border: '1px solid black',*/}
+            {/*    borderTop: '1px solid white',*/}
+            {/*    fontSize: 11,*/}
+            {/*    fontWeight: 'bold',*/}
+            {/*    paddingTop: 4.5,*/}
+            {/*  }]}>Presents in class</Text>*/}
+            {/*</View>*/}
+            {/*<View style={[styles.tr2]}>*/}
+            {/*  <Text style={[{ width: 60 }]}></Text>*/}
+            {/*  <Text style={[{ width: 100 }]}></Text>*/}
+            {/*  <Text style={[styles.td, {*/}
+            {/*    width: '100%',*/}
+            {/*    border: '1px solid black',*/}
+            {/*    borderTop: '1px solid white',*/}
+            {/*    fontSize: 11,*/}
+            {/*    fontWeight: 'bold',*/}
+            {/*    paddingTop: 4.5,*/}
+            {/*  }]}>No. of absence(A+L+I)</Text>*/}
+            {/*</View>*/}
+            {/*<View style={[styles.tr2]}>*/}
+            {/*  <Text style={[{ width: 60 }]}></Text>*/}
+            {/*  <Text style={[{ width: 100 }]}></Text>*/}
+            {/*  <Text style={[styles.td, {*/}
+            {/*    width: '100%',*/}
+            {/*    border: '1px solid black',*/}
+            {/*    borderTop: '1px solid white',*/}
+            {/*    fontSize: 11,*/}
+            {/*    fontWeight: 'bold',*/}
+            {/*    paddingTop: 4.5,*/}
+            {/*  }]}>Presents</Text>*/}
+            {/*</View>*/}
           </View>
           <View style={[styles.table, styles.t2Width]}>
             <View style={[styles.tr, {
@@ -236,18 +238,16 @@ const BatchRegisterPDF = ({ student, data ,configs}) => {
               borderRight: '1px solid white',
             }]}>
               {Array(31).fill(null).map((_, index) => (
-                <Text style={[styles.td, { width: 40, paddingTop: '30px' }]}>{index + 1}</Text>
+                <Text style={[styles.td, { width: 43, paddingTop: '30px',fontWeight:'700' }]}>{index + 1}</Text>
               ))}
             </View>
-            {/*<td key={index} style={{ height: 27 }}></td>*/}
-            {Array(student.length + 9).fill(null).map((_, index) => (
+            {Array(student.length+3).fill(null).map((_, index) => (
               <View style={[styles.tr, { borderLeft: '1px solid white', borderRight: '1px solid white' }]}>
                 {Array(31).fill(null).map((_, index) => (
-                  <Text style={[styles.td, { width: 40 }]}><Text style={{ opacity: '0' }}>{index + 1}</Text></Text>
+                  <Text style={[styles.td, { width: 43 }]}><Text style={{ opacity: '0' }}>{index + 1}</Text></Text>
                 ))}
               </View>
             ))}
-
           </View>
           <View style={[styles.table, styles.t3Width]}>
             <View style={[styles.tr, {
@@ -257,30 +257,25 @@ const BatchRegisterPDF = ({ student, data ,configs}) => {
               borderLeft: '1px solid white',
               borderRight: '1px solid white',
             }]}>
-              <Text style={[styles.td, { width: '49px', paddingTop: '30px', fontSize: 9 }]}><Text>Roll No</Text></Text>
-              <Text style={[styles.td, { width: '64px', paddingTop: '30px', fontSize: 9 }]}><Text>Current Month
-                Present</Text></Text>
-              <Text style={[styles.td, { width: '64px', paddingTop: '30px', fontSize: 9 }]}><Text>Present till last
-                month</Text></Text>
-              <Text style={[styles.td, { width: '64px', paddingTop: '30px', fontSize: 9 }]}><Text>Total Present
-                Days</Text></Text>
+              {/*<Text style={[styles.td, { width: '49px', paddingTop: '30px', fontSize: 9 }]}><Text>Roll No</Text></Text>*/}
+              <Text style={[styles.td, { width: '45px', paddingTop: '30px', fontSize: 9 ,fontWeight:'700'}]}><Text>PD</Text></Text>
+              <Text style={[styles.td, { width: '45px', paddingTop: '30px', fontSize: 9 ,fontWeight:'700'}]}><Text>AD</Text></Text>
+              <Text style={[styles.td, { width: '45px', paddingTop: '30px', fontSize: 9 ,fontWeight:'700'}]}><Text>TD</Text></Text>
               <Text style={[styles.td, {
-                width: '49px',
+                width: '45px',
                 paddingTop: '30px',
                 position: 'relative',
                 fontSize: 9,
-              }]}>Remarks</Text>
+                fontWeight:'700'
+              }]}>HL</Text>
             </View>
-
-            {Array(student.length + 9).fill(null).map((_, index) => (
+            {Array(student.length + 3).fill(null).map((_, index) => (
               <View style={[styles.tr, { borderLeft: '1px solid white', borderRight: '1px solid white' }]}>
-                {/*{Array(5).fill(null).map((_, index) => (*/}
-                <Text style={[styles.td, { width: '49px' }]}><Text style={{ opacity: '0' }}>{index + 1}</Text></Text>
-                <Text style={[styles.td, { width: '64px' }]}><Text style={{ opacity: '0' }}>{index + 1}</Text></Text>
-                <Text style={[styles.td, { width: '64px' }]}><Text style={{ opacity: '0' }}>{index + 1}</Text></Text>
-                <Text style={[styles.td, { width: '64px' }]}><Text style={{ opacity: '0' }}>{index + 1}</Text></Text>
-                <Text style={[styles.td, { width: '49px' }]}><Text style={{ opacity: '0' }}>{index + 1}</Text></Text>
-                {/*))}*/}
+                {/*<Text style={[styles.td, { width: '49px' }]}><Text style={{ opacity: '0' }}>{index + 1}</Text></Text>*/}
+                <Text style={[styles.td, { width: '45px' }]}><Text style={{ opacity: '0' }}>{index + 1}</Text></Text>
+                <Text style={[styles.td, { width: '45px' }]}><Text style={{ opacity: '0' }}>{index + 1}</Text></Text>
+                <Text style={[styles.td, { width: '45px' }]}><Text style={{ opacity: '0' }}>{index + 1}</Text></Text>
+                <Text style={[styles.td, { width: '45px' }]}><Text style={{ opacity: '0' }}>{index + 1}</Text></Text>
               </View>
             ))}
           </View>

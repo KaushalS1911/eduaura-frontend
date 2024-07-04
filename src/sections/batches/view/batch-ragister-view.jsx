@@ -17,7 +17,7 @@ const [student,setStudent] = useState([])
       .catch((err) => console.log(err));
   }, [registerId]);
   const { configs } = useGetConfigs();
-  const data = ['RollNo', `Current Month Present`, 'Present till Last Month', 'Total Present Days', 'Remarks'];
+  const data = ['PD', `AD`, 'TD', 'HL'];
   return (
     <>
       <CustomBreadcrumbs
@@ -38,10 +38,24 @@ const [student,setStudent] = useState([])
         }}
       />
       <BatchToolbar invoice={student} data1={data} configs={configs} />
-      <Card id='attendance' sx={{ padding: '20px' }}>
-        <Box sx={{ fontSize: '25px', fontWeight: '800' }}>{configs?.company_details?.name}</Box>
-        <Box
-          sx={{ mb: '5px' }}>{`${configs?.company_details?.address_1}, ${configs?.company_details?.city}, ${configs?.company_details?.state}, ${configs?.company_details?.country} - ${configs?.company_details?.zipcode}.`}</Box>
+      <Card id='attendance' sx={{ padding: '20px',overflowX:'scroll' }}>
+        <Box sx={{display:"flex",justifyContent:"space-between"}}>
+          <Box>
+            <Box sx={{ fontSize: '25px', fontWeight: '800' }}>{configs?.company_details?.name}</Box>
+            <Box
+              sx={{ mb: '5px' }}>{`${configs?.company_details?.address_1}, ${configs?.company_details?.city}, ${configs?.company_details?.state}, ${configs?.company_details?.country} - ${configs?.company_details?.zipcode}.`}</Box>
+          </Box>
+          <Box sx={{display:'flex',alignItems:'end',fontSize:14}}>
+            <Box sx={{marginRight:5}}>
+              <Box>PD : Present Day</Box>
+              <Box>AD : Absent Day</Box>
+            </Box>
+            <Box>
+              <Box>TD : Total Day</Box>
+              <Box>HL : Holi Day</Box>
+            </Box>
+          </Box>
+        </Box>
         <Box sx={{ display: 'flex' }}>
           <table style={{ border: '1px solid black', width: '500px' }}>
             <tr>
@@ -92,38 +106,7 @@ const [student,setStudent] = useState([])
               <td className='hide'>dd</td>
             </tr>
 
-            <tr>
-              <th className='hide' style={{ border: '1px solid white' }}></th>
-              <th className='hide' style={{ borderBottom: '1px solid white' }}></th>
-              <th>Presents on Last Day</th>
-            </tr>
-            <tr>
-              <th className='hide' style={{ border: '1px solid white' }}></th>
-              <th className='hide' style={{ borderBottom: '1px solid white' }}></th>
-              <th>No. of new students
-              </th>
-            </tr>
-            <tr>
-              <th className='hide' style={{ border: '1px solid white' }}></th>
-              <th className='hide' style={{ borderBottom: '1px solid white' }}></th>
-              <th>No. of students left
-              </th>
-            </tr>
-            <tr>
-              <th className='hide' style={{ border: '1px solid white' }}></th>
-              <th className='hide' style={{ borderBottom: '1px solid white' }}></th>
-              <th>Presents in class</th>
-            </tr>
-            <tr>
-              <th className='hide' style={{ border: '1px solid white' }}></th>
-              <th className='hide' style={{ borderBottom: '1px solid white' }}></th>
-              <th>No. of absence(A+L+I)</th>
-            </tr>
-            <tr>
-              <th className='hide' style={{ border: '1px solid white' }}></th>
-              <th className='hide' style={{ borderBottom: '1px solid white' }}></th>
-              <th>Presents</th>
-            </tr>
+
 
           </table>
           <table style={{ border: '1px solid black', width: '800px' }}>
@@ -133,7 +116,7 @@ const [student,setStudent] = useState([])
                 <td key={index} style={{ height: 27, width: 25.77, textAlign: 'center' }}>{index + 1}</td>
               ))}
             </tr>
-            {Array(student?.length+9).fill(null).map((_, index) => (
+            {Array(student?.length+3).fill(null).map((_, index) => (
               <tr>
                 {Array(31).fill(null).map((_, index) => (
                   <td key={index} style={{ height: 27 }}></td>
@@ -146,18 +129,12 @@ const [student,setStudent] = useState([])
               {data.map((name, index) => (
 
                 <th key={index} style={{ fontSize: '12px', position: 'relative', backgroundColor: 'green !important' }}>
-                  <Box sx={{
-                    position: 'absolute',
-                    transform: 'rotate(270deg) translateY(-50%)',
-                    width: '90px !important',
-                    top: '35%',
-                    left: '-5%',
-                  }}>{name}</Box></th>
+                  <Box >{name}</Box></th>
               ))}
             </tr>
-            {Array(student?.length+9).fill(null).map((_, index) => (
+            {Array(student?.length+3).fill(null).map((_, index) => (
               <tr>
-                {Array(5).fill(null).map((_, index) => (
+                {Array(4).fill(null).map((_, index) => (
                   <td key={index} style={{ height: 27 }}></td>
                 ))}
               </tr>
