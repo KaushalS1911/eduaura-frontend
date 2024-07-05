@@ -47,7 +47,7 @@ export default function NavVertical({ openNav, onCloseNav }) {
         },
       }}
     >
-      <Logo sx={{ mt: 3, ml: 4, mb: 1 }} />
+      {lgUp ?  <Logo sx={{ mt: 3, ml: 4, mb: 1 }} /> : <Box sx={{display:"flex",justifyContent:"center",alignItems:"center"}}><Logo sx={{ mt: 3, ml: 4, mb: 1 }} /></Box>}
 
       <NavSectionVertical
         data={navData}

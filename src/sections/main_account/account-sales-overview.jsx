@@ -11,6 +11,7 @@ import { fPercent, fCurrency } from 'src/utils/format-number';
 // ----------------------------------------------------------------------
 
 export default function AccountSalesOverview({ title, subheader, data, ...other }) {
+  console.log(data);
   return (
     <Card {...other}>
       <CardHeader title={title} subheader={subheader} />
@@ -49,9 +50,9 @@ function ProgressItem({ progress }) {
 
           <Typography variant="subtitle2">{fCurrency(totalAmount)}</Typography>
 
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            &nbsp;({fPercent(value)})
-          </Typography>
+          {/* <Typography variant="body2" sx={{ color: 'text.secondary' }}> */}
+          {/*   &nbsp;({fPercent(value)}) */}
+          {/* </Typography> */}
         </Stack>
 
         <LinearProgress

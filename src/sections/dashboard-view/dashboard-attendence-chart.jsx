@@ -30,7 +30,6 @@ const StyledChart = styled(Chart)(({ theme }) => ({
 
 export default function DashboardAttendenceChart({ title, subheader, total, chart, ...other }) {
   const theme = useTheme();
-  console.log(total,"toslsk");
   const {
     colors = [
       [theme.palette.primary.light, theme.palette.primary.main],
@@ -72,6 +71,7 @@ export default function DashboardAttendenceChart({ title, subheader, total, char
           value: { offsetY: 16 },
           total: {
             formatter: () => fNumber(total),
+            total
           },
         },
       },

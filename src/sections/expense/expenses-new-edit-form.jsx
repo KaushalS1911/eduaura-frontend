@@ -19,6 +19,7 @@ import FormProvider, { RHFTextField, RHFAutocomplete } from 'src/components/hook
 import axios from 'axios';
 import { paths } from 'src/routes/paths';
 import { useAuthContext } from 'src/auth/hooks';
+import { useGetConfigs } from '../../api/config';
 
 // ----------------------------------------------------------------------
 
@@ -37,6 +38,8 @@ export default function PostNewEditForm({ expensesId }) {
   const mdUp = useResponsive('up', 'md');
   const { enqueueSnackbar } = useSnackbar();
   const preview = useBoolean();
+  const { configs } = useGetConfigs();
+
 
   const NewBlogSchema = Yup.object().shape({
     type: Yup.string().required('Type is required'),
@@ -125,7 +128,7 @@ export default function PostNewEditForm({ expensesId }) {
               label="Type"
               placeholder="Choose a Type"
               fullWidth
-              options={types}
+              options={configs?.expenses}
               getOptionLabel={(option) => option}
             />
             <RHFTextField name="desc" label="Description" multiline rows={3} />

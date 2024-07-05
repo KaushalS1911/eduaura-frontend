@@ -14,6 +14,7 @@ import DashboardCourseChart from '../dashboard-course-chart';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useAuthContext } from 'src/auth/hooks';
+import { useGetAttendance, useGetCourses, useGetDashboardData, useGetDemos } from '../../../api/dashboard';
 
 // ----------------------------------------------------------------------
 
@@ -24,47 +25,28 @@ export default function DashboardView() {
   const [attendence, setAttendence] = useState({});
   const [course, setCourse] = useState({});
   const [dashboardData, setDashboardData] = useState([]);
-
-  const getDemos = () => {
-    return axios
-      .get(
-        `https://admin-panel-dmawv.ondigitalocean.app/api/company/${user?.company_id}/upcoming-demo`,
-      )
-      .then((res) => setDemo(res?.data?.data))
-      .catch((err) => console.log(err));
-  };
-
-  const dashboard = () => {
-    return axios
-      .get(`https://admin-panel-dmawv.ondigitalocean.app/api/company/${user?.company_id}/dashboard`)
-      .then((res) => setDashboardData(res?.data?.data))
-      .catch((err) => console.log(err));
-  };
-
-  const getCourse = () => {
-    return axios
-      .get(
-        `https://admin-panel-dmawv.ondigitalocean.app/api/company/${user?.company_id}/student/course`,
-      )
-      .then((res) => setCourse(res?.data?.data))
-      .catch((err) => console.log(err));
-  };
-
-  const getAttendence = () => {
-    return axios
-      .get(
-        `https://admin-panel-dmawv.ondigitalocean.app/api/company/${user?.company_id}/attendance/logs`,
-      )
-      .then((res) => setAttendence(res?.data?.data))
-      .catch((err) => console.log(err));
-  };
+const {demos} = useGetDemos()
+  const {dashboard} = useGetDashboardData()
+  const {courses}= useGetCourses()
+  const {attendance} = useGetAttendance()
 
   useEffect(() => {
-    getDemos(), dashboard(), getCourse(), getAttendence();
+    if(demos){
+      setDemo(demos)
+    }
+    if(dashboard){
+      setDashboardData(dashboard)
+    }
+    if(courses){
+      setCourse(courses)
+    }
+    if(attendance){
+      setAttendence(attendance)
+    }
 
-  }, []);
+  }, [demos,dashboard,courses,attendance]);
 
-  const output = [];
+    const output = [];
 
   for (const [key, value] of Object.entries(course)) {
     output.push({ label: key, value: value });

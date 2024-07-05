@@ -45,6 +45,7 @@ import StudentTableFiltersResult from '../student-table-filters-result';
 
 import { useGetStudents } from '../../../api/student';
 import axios from 'axios';
+import { LoadingScreen } from '../../../components/loading-screen';
 
 // ----------------------------------------------------------------------
 
@@ -79,7 +80,7 @@ export default function StudentListView() {
 
   const confirm = useBoolean();
 
-  const { students, mutate } = useGetStudents();
+  const { students,studentsLoading, mutate } = useGetStudents();
 
   const [tableData, setTableData] = useState(students);
 
@@ -146,13 +147,16 @@ export default function StudentListView() {
   const handleDeleteRows = useCallback(
     async (id) => {
       try {
+        const selectedIdsArray = [...table.selected];
         const response = await axios.delete(
           `https://admin-panel-dmawv.ondigitalocean.app/api/v2/student`,
           {
-            data: { ids: id },
+            data: { ids: selectedIdsArray },
           }
         );
         enqueueSnackbar(response?.data?.message || 'Delete Success', { variant: 'success' });
+        setTableData((prevData) => prevData.filter((row) => !selectedIdsArray.includes(row.id)));
+        table.onUpdatePageDeleteRow(selectedIdsArray.length);
         confirm.onFalse();
         mutate();
       } catch (error) {
@@ -186,7 +190,7 @@ export default function StudentListView() {
 
   return (
     <>
-      <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+      {studentsLoading ? <LoadingScreen /> :<Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
           heading="List"
           links={[
@@ -338,7 +342,8 @@ export default function StudentListView() {
             onChangeDense={table.onChangeDense}
           />
         </Card>
-      </Container>
+      </Container>}
+
 
       <ConfirmDialog
         open={confirm.value}

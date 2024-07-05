@@ -5,7 +5,6 @@ import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import { alpha, useTheme } from '@mui/material/styles';
 
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
@@ -18,6 +17,10 @@ import { useAuthContext } from 'src/auth/hooks';
 import Logo from 'src/components/logo';
 import { Grid } from '@mui/material';
 import loginImage from 'src/assets/login-back/login.jpg'
+import { position } from 'stylis';
+import { useRouter } from '../../routes/hooks';
+import { PATH_AFTER_LOGIN } from '../../config-global';
+import Iconify from '../../components/iconify';
 // ----------------------------------------------------------------------
 
 const METHODS = [
@@ -53,8 +56,8 @@ const METHODS = [
   },
 ];
 
-export default function AuthClassicLayout({ children, register }) {
-
+export default function AuthClassicLayout({ children, register ,invite}) {
+const router = useRouter()
   const renderContent = (
     <>
       <Box
@@ -65,8 +68,12 @@ export default function AuthClassicLayout({ children, register }) {
           alignItems: 'center',
           minHeight: '100vh',
           backgroundColor: '#F6F7F9',
+          position: invite ? 'relative' : 'unset',
         }}
       >
+        {invite && <Box sx={{ position: 'absolute',top:'3%',left:"5%",cursor:"pointer" ,display:"flex",justifyContent:"center",alignItems:"center"}} onClick={() =>
+          router.push(PATH_AFTER_LOGIN)}>
+          <Iconify icon="material-symbols-light:keyboard-backspace"  sx={{height:"25px" ,width:"25px",marginRight:"3px"}} /> Back</Box>}
         <Grid
           container
           sx={{

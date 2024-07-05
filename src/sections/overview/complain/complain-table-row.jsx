@@ -45,13 +45,13 @@ export default function ComplainTableRow({
       <TableCell> {index + 1}</TableCell>
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
         <Avatar
-          alt={`${student.firstName} ${student.lastName}`}
-          src={student.profile_pic}
+          alt={`${student?.firstName} ${student?.lastName}`}
+          src={student?.profile_pic}
           sx={{ mr: 2 }}
         />
 
         <ListItemText
-          primary={`${student.firstName} ${student.lastName}`}
+          primary={`${student?.firstName} ${student?.lastName}`}
           secondary={student?.email}
           primaryTypographyProps={{ typography: 'body2' }}
           secondaryTypographyProps={{

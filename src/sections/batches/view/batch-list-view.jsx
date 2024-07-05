@@ -45,6 +45,7 @@ import axios from 'axios';
 import BatchTableRow from '../batch-table-row';
 import BatchTableToolbar from '../batch-table-toolbar';
 import BatchTableFiltersResult from '../batch-table-filters-result';
+import { LoadingScreen } from '../../../components/loading-screen';
 
 // ----------------------------------------------------------------------
 
@@ -72,7 +73,7 @@ const defaultFilters = {
 export default function BatchListView() {
   const { enqueueSnackbar } = useSnackbar();
   const { user } = useAuthContext();
-  const { batch, mutate } = useGetBatches(`${user?.company_id}`);
+  const { batch,batchLoading, mutate } = useGetBatches(`${user?.company_id}`);
   const table = useTable({ defaultOrderBy: 'orderNumber' });
 
   const settings = useSettingsContext();
@@ -173,6 +174,12 @@ export default function BatchListView() {
     },
     [router]
   );
+  const handleRegisterViewRow = useCallback(
+    (id) => {
+      router.push(paths.dashboard.batches.view(id));
+    },
+    [router]
+  );
 
   const handleViewRow = useCallback(
     (id) => {
@@ -190,7 +197,7 @@ export default function BatchListView() {
 
   return (
     <>
-      <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+      {batchLoading ? <LoadingScreen /> : <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
           heading="Batch"
           links={[
@@ -272,6 +279,7 @@ export default function BatchListView() {
                         onDeleteRow={() => handleDeleteRow(row._id)}
                         onEditRow={() => handleEditRow(row._id)}
                         onViewRow={() => handleViewRow(row._id)}
+                        onRegisterViewRow={() => handleRegisterViewRow(row._id)}
                       />
                     ))}
 
@@ -296,7 +304,8 @@ export default function BatchListView() {
             onChangeDense={table.onChangeDense}
           />
         </Card>
-      </Container>
+      </Container>}
+
 
       <ConfirmDialog
         open={confirm.value}

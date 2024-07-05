@@ -28,17 +28,27 @@ export default function AccountPopover() {
   const searchParams = useSearchParams();
   const returnTo = searchParams.get('returnTo');
   const { user, logout } = useAuthContext();
-  console.log(user,"sg");
-  const OPTIONS = [
-
+  const otherOption = [
     {
       label: 'Profile',
       linkTo:
         (user?.role === 'Admin' ? paths.dashboard.setting :
-        paths.dashboard.employee.edit(user?.employee_id))
+          paths.dashboard.employee.edit(user?.employee_id)),
     },
-
   ];
+  const adminOption = [
+    {
+      label: 'Profile',
+      linkTo:
+        (user?.role === 'Admin' ? paths.dashboard.setting :
+          paths.dashboard.employee.edit(user?.employee_id)),
+    },
+    {
+      label: 'Invite User',
+      linkTo:paths.inviteUser.root
+    },
+  ];
+  const OPTIONS = user?.role === 'Admin' ? adminOption : otherOption;
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -64,8 +74,8 @@ export default function AccountPopover() {
     <>
       <IconButton
         component={m.button}
-        whileTap="tap"
-        whileHover="hover"
+        whileTap='tap'
+        whileHover='hover'
         variants={varHover(1.05)}
         onClick={popover.onOpen}
         sx={{
@@ -91,11 +101,11 @@ export default function AccountPopover() {
 
       <CustomPopover open={popover.open} onClose={popover.onClose} sx={{ width: 200, p: 0 }}>
         <Box sx={{ p: 2, pb: 1.5 }}>
-          <Typography variant="subtitle2" noWrap>
+          <Typography variant='subtitle2' noWrap>
             {user ? `${user.firstName} ${user.lastName}` : 'User'}
           </Typography>
 
-          <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
+          <Typography variant='body2' sx={{ color: 'text.secondary' }} noWrap>
             {user?.email || 'user@example.com'}
           </Typography>
         </Box>

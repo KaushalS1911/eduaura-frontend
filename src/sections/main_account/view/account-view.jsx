@@ -26,7 +26,7 @@ export default function AccountView() {
   const { Account } = useGetAccount(startDate, endDate);
   const { overdue } = useGetAccountOverDue();
 
-  console.log(Account, 'account');
+  console.log((Account?.feesInfo?.feesReceived?.totalAmount + Account?.feesInfo?.feesReceivable?.totalAmount), 'account');
 
   useEffect(() => {
     setStartDate(today);
@@ -36,9 +36,9 @@ export default function AccountView() {
   const totalExpenses = Account?.expenses?.totalExpense ?? 0;
   const _ecommerceSalesOverview = ['Total Income', 'Total Expenses'].map((label, index) => {
     const totalAmount = Account?.expenses?.totalExpense ?? 0;
-    const totalAmount1 = Account?.feesInfo?.feesReceived?.totalAmount ?? 0;
+    const totalAmount1 = (Account?.feesInfo?.feesReceived?.totalAmount + Account?.feesInfo?.feesReceivable?.totalAmount) ?? 0;
     const value = totalAmount && totalExpenses ? (totalAmount / totalExpenses) * 100 : 0;
-    const value1 = totalAmount1 && totalExpenses ? (totalAmount1 / totalExpenses) * 100 : 0;
+    const value1 = Account?.feesInfo?.feesReceived?.totalAmount  ;
 
     return {
       label,

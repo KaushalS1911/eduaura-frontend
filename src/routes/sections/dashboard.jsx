@@ -13,6 +13,9 @@ import { SettingsPage } from 'src/sections/settings/view';
 import { ComplainListView } from '../../sections/overview/complain/view/index.js';
 import UserEditProfile from 'src/pages/dashboard/profile/edit.jsx';
 import UserProfileView from 'src/sections/user/view/user-profile-view.jsx';
+import InviteUserView from '../../layouts/common/Invite-user';
+import AuthClassicLayout from '../../layouts/auth/classic';
+import RegisterView from '../../pages/dashboard/batches/view';
 
 // BATCH
 const BatchListPage = lazy(() => import('src/pages/dashboard/batches/list'));
@@ -223,6 +226,7 @@ export const dashboardRoutes = [
           { path: 'list', element: <BatchListPage /> },
           { path: 'new', element: <BatchCreatePage /> },
           { path: ':id/edit', element: <BatchEditPage /> },
+          { path: ':id/view', element: <RegisterView /> },
         ],
       },
       {
@@ -256,4 +260,14 @@ export const dashboardRoutes = [
       { path: 'setting', element: <SettingsPage /> },
     ],
   },
+  {
+    path:'invite-user',
+    element: (<AuthGuard>
+      <Suspense fallback={<LoadingScreen />}>
+        <AuthClassicLayout register={true} invite={true}>
+          <InviteUserView />
+        </AuthClassicLayout>
+      </Suspense>
+    </AuthGuard>)
+  }
 ];
