@@ -19,6 +19,8 @@ import { fDate } from 'src/utils/format-time';
 import { Paper } from '@mui/material';
 import { useGetExam } from 'src/api/examination';
 import { useGetSingleStudentAttendance } from 'src/api/attendance';
+import logo from '../../../assets/logo/jbs.png';
+import user from '../../../assets/logo/user.webp';
 
 export default function StudentDetails({ studentData }) {
   const { configs } = useGetConfigs();
@@ -103,15 +105,13 @@ export default function StudentDetails({ studentData }) {
                     {studentData?.contact}
                   </Typography>
                 </Grid>
-                <Grid xs={12} display={'flex'} alignItems={'center'} mb={1}>
+                <Grid xs={12} display={'flex'} mb={1}>
                   <Typography sx={{ fontWeight: '700' }}>Address :</Typography>
                   <Typography
                     px={2}
                     sx={{
                       fontWeight: '500',
                       width: '400px',
-                      flexDirection: 'row',
-                      alignItems: 'self-start',
                     }}
                   >
                     {studentData?.address_detail?.address_1 +
@@ -167,16 +167,29 @@ export default function StudentDetails({ studentData }) {
           </Box>
           <Box>
             <Box mx={3.5}>
-              <img
-                src={studentData?.profile_pic}
-                alt={studentData?.profile_pic}
-                style={{
-                  width: '210px',
-                  height: '210px',
-                  borderRadius: '10px',
-                  objectFit: 'cover',
-                }}
-              />
+              {studentData?.profile_pic ? (
+                <img
+                  src={studentData?.profile_pic}
+                  alt={studentData?.profile_pic}
+                  style={{
+                    width: '210px',
+                    height: '210px',
+                    borderRadius: '10px',
+                    objectFit: 'cover',
+                  }}
+                />
+              ) : (
+                <img
+                  src={user}
+                  alt={user}
+                  style={{
+                    width: '210px',
+                    height: '210px',
+                    borderRadius: '10px',
+                    objectFit: 'cover',
+                  }}
+                />
+              )}
             </Box>
           </Box>
         </Box>
@@ -233,9 +246,7 @@ export default function StudentDetails({ studentData }) {
               <TableBody>
                 {studentData?.guardian_detail?.map((row, index) => (
                   <TableRow key={row.id}>
-                    <TableCell component="th" scope="row">
-                      {index + 1}
-                    </TableCell>
+                    <TableCell>{index + 1}</TableCell>
                     <TableCell>{row?.firstName + ' ' + row?.lastName}</TableCell>
                     <TableCell>{row?.relation_type}</TableCell>
                     <TableCell>{row?.contact}</TableCell>
@@ -567,11 +578,19 @@ export default function StudentDetails({ studentData }) {
             sx={{ backgroundColor: '#F6F6F6', p: 2 }}
           >
             <Box>
-              <img
-                style={{ height: '100px', width: '100px', objectFit: 'cover' }}
-                src={configs?.company_details?.logo_url}
-                alt={configs?.company_details?.logo_url}
-              />
+              {configs?.company_details?.logo_url ? (
+                <img
+                  style={{ height: '100px', width: '100px', objectFit: 'cover' }}
+                  src={configs?.company_details?.logo_url}
+                  alt={configs?.company_details?.logo_url}
+                />
+              ) : (
+                <img
+                  style={{ height: '100px', width: '100px', objectFit: 'cover' }}
+                  src={logo}
+                  alt={logo}
+                />
+              )}
             </Box>
             <Box textAlign={'center'}>
               <Typography variant="h4" sx={{ fontSize: '16px', fontWeight: '700' }}>
@@ -587,7 +606,7 @@ export default function StudentDetails({ studentData }) {
         {studentData?.guardian_detail[0] && <Box sx={{ my: 5, py: 1 }}>{GuardianDetails}</Box>}
         {installmentsData != [] && <Box sx={{ my: 5, py: 1 }}>{FeesDetails}</Box>}
         {attendanceCounts != {} && <Box sx={{ my: 5, py: 1 }}>{AttendanceDetails}</Box>}
-        {currentStudentExams != {} && <Box sx={{ my: 5, py: 1 }}>{ExamDetails}</Box>}
+        {currentStudentExams[0] && <Box sx={{ my: 5, py: 1 }}>{ExamDetails}</Box>}
         {studentData?.remarks[0] && <Box sx={{ my: 5, py: 1 }}>{RemarkDetails}</Box>}
         {/* <Box sx={{ my: 5, py: 1 }}>{CourseDetails}</Box> */}
       </Card>

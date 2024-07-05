@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Page, View, Text, Font, Image, Document, StyleSheet } from '@react-pdf/renderer';
 import { fDate } from 'src/utils/format-time';
+import logo from '../../../assets/logo/jbs.png';
+import user from '../../../assets/logo/user.png';
 
 Font.register({
   family: 'Roboto',
@@ -103,15 +105,31 @@ const StudentOverviewPDF = ({
         >
           <View>
             <View>
-              <Image
-                source={studentData?.profile_pic}
-                style={{
-                  width: 120,
-                  height: 140,
-                  objectFit: 'cover',
-                  borderRadius: '5px',
-                }}
-              />
+              {studentData?.profile_pic
+                ? (console.log('bapu done che '),
+                  (
+                    <Image
+                      source={studentData?.profile_pic}
+                      style={{
+                        width: 120,
+                        height: 140,
+                        objectFit: 'cover',
+                        borderRadius: '5px',
+                      }}
+                    />
+                  ))
+                : (console.log('bapu done nathi che '),
+                  (
+                    <Image
+                      source={user}
+                      style={{
+                        width: 120,
+                        height: 140,
+                        objectFit: 'cover',
+                        borderRadius: '5px',
+                      }}
+                    />
+                  ))}
             </View>
           </View>
           <View>
@@ -487,36 +505,31 @@ const StudentOverviewPDF = ({
             </View>
           </View>
           <View>
-            {currentStudentExams?.map(
-              (row, index) => (
-                console.log(row),
-                (
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      padding: '6px 0px',
-                    }}
-                    key={row.id}
-                  >
-                    <View style={{ width: '80px', textAlign: 'center' }}>
-                      <Text style={{ fontSize: '10px' }}>{index + 1}</Text>
-                    </View>
-                    <View style={{ width: '220px', textAlign: 'center' }}>
-                      <Text>{row?.examTitle}</Text>
-                    </View>
-                    <View style={{ width: '220px', textAlign: 'center' }}>
-                      <Text>{fDate(row?.examDate)}</Text>
-                    </View>
-                    <View style={{ width: '220px', textAlign: 'center' }}>
-                      <Text>{row?.totalMarks}</Text>
-                    </View>
-                    <View style={{ width: '220px', textAlign: 'center' }}>
-                      <Text>{row?.obtained_marks}</Text>
-                    </View>
-                  </View>
-                )
-              )
-            )}
+            {currentStudentExams?.map((row, index) => (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  padding: '6px 0px',
+                }}
+                key={row.id}
+              >
+                <View style={{ width: '80px', textAlign: 'center' }}>
+                  <Text style={{ fontSize: '10px' }}>{index + 1}</Text>
+                </View>
+                <View style={{ width: '220px', textAlign: 'center' }}>
+                  <Text>{row?.examTitle}</Text>
+                </View>
+                <View style={{ width: '220px', textAlign: 'center' }}>
+                  <Text>{fDate(row?.examDate)}</Text>
+                </View>
+                <View style={{ width: '220px', textAlign: 'center' }}>
+                  <Text>{row?.totalMarks}</Text>
+                </View>
+                <View style={{ width: '220px', textAlign: 'center' }}>
+                  <Text>{row?.obtained_marks}</Text>
+                </View>
+              </View>
+            ))}
           </View>
         </View>
       </View>
@@ -619,14 +632,25 @@ const StudentOverviewPDF = ({
             }}
           >
             <View>
-              <Image
-                source={configs?.company_details?.logo_url}
-                style={{
-                  width: 60,
-                  height: 60,
-                  borderRadius: '5px',
-                }}
-              />
+              {configs?.company_details?.logo_url ? (
+                <Image
+                  source={configs?.company_details?.logo_url}
+                  style={{
+                    width: 60,
+                    height: 60,
+                    borderRadius: '5px',
+                  }}
+                />
+              ) : (
+                <Image
+                  source={logo}
+                  style={{
+                    width: 60,
+                    height: 60,
+                    borderRadius: '5px',
+                  }}
+                />
+              )}
             </View>
             <View style={{ flex: 1, textAlign: 'center' }}>
               <Text style={{ textAlign: 'center', fontWeight: '700', fontSize: '18px' }}>
@@ -645,7 +669,7 @@ const StudentOverviewPDF = ({
         )}
         {installmentsData != [] && <View style={{ margin: '5px 0px' }}>{FeesDetails}</View>}
         {attendanceCounts != {} && <View style={{ margin: '5px 0px' }}>{AttendanceDetails}</View>}
-        {currentStudentExams != {} && <View style={{ margin: '5px 0px' }}>{ExamDetails}</View>}
+        {currentStudentExams[0] && <View style={{ margin: '5px 0px' }}>{ExamDetails}</View>}
         {studentData?.remarks[0] && <View style={{ margin: '5px 0px' }}>{RemarkDetails}</View>}
       </Page>
     </Document>
