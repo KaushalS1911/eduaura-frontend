@@ -19,6 +19,8 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 import StudentQuickEditForm from './student-quick-edit-form';
+import { paths } from 'src/routes/paths';
+import { useRouter } from 'src/routes/hooks';
 
 // ----------------------------------------------------------------------
 
@@ -30,6 +32,8 @@ export default function StudentTableRow({ row, selected, onEditRow, onSelectRow,
   const quickEdit = useBoolean();
 
   const popover = usePopover();
+
+  const router = useRouter();
 
   return (
     <>
@@ -99,14 +103,15 @@ export default function StudentTableRow({ row, selected, onEditRow, onSelectRow,
           <Iconify icon="solar:pen-bold" />
           Edit
         </MenuItem>
-        {/* <MenuItem
+        <MenuItem
           onClick={() => {
+            router.push(paths.dashboard.student.studentView(row._id));
             popover.onClose();
           }}
         >
-          <Iconify icon="solar:pen-bold" />
-          Guardian
-        </MenuItem> */}
+          <Iconify icon="raphael:view" />
+          View Detail
+        </MenuItem>
       </CustomPopover>
 
       <ConfirmDialog

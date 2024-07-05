@@ -71,7 +71,6 @@ export default function DemoFormDialog({ open, setOpen, demosID, demoID, mutate 
       const response = await axios.get(URL);
       if (response) {
         const { faculty, detail, date, technology, status } = response.data.data;
-        console.log(date, 'date');
         const faculty_name = { label: `${faculty.firstName} ${faculty.lastName}`, id: faculty._id };
         setValue('faculty_name', faculty_name);
         setValue('details', detail);

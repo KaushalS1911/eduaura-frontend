@@ -68,12 +68,12 @@ export default function AccountView() {
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <Grid container spacing={SPACING} disableGutters>
         <Grid item xs={12} md={8} lg={8}>
-          <AccountSalesOverview title='Account Overview' data={_ecommerceSalesOverview} />
+          <AccountSalesOverview title="Account Overview" data={_ecommerceSalesOverview} />
         </Grid>
         <Grid item xs={12} md={4}>
           <AccountWidgetSummary
             title="Today's Income"
-            total={Account?.balance?.totalAmount}
+            total={Account?.feesInfo?.balance?.totalAmount}
             icon={<BookingIllustration />}
           />
         </Grid>
@@ -84,7 +84,7 @@ export default function AccountView() {
         ))}
         <Grid item xs={12} lg={8}>
           <AccountNewInvoice
-            title='Overdue payments'
+            title="Overdue payments"
             tableData={overdue}
             tableLabels={[
               { id: 'id', label: '#', align: 'center' },

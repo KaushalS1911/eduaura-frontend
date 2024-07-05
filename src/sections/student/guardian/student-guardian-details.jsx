@@ -24,9 +24,9 @@ import axios from 'axios';
 export default function StudentGuardianDetails({ currentStudent, mutate }) {
   const [addressId, setAddressId] = useState('');
   const [editAddressId, setEditAddressId] = useState(null);
-
   const popover = usePopover();
   const [deletedGuardian, setDeletedGuardian] = useState(null);
+  const [updateGuardian, setUpdateGuardian] = useState();
   const GuardianNewForm = useBoolean();
 
   const handleAddNewAddress = useCallback((address) => {
@@ -38,11 +38,10 @@ export default function StudentGuardianDetails({ currentStudent, mutate }) {
       // handleClose();
       setAddressId(id);
       const filteredGuardian = currentStudent?.guardian_detail?.filter((item) => item._id !== id);
-      console.log('fil ', filteredGuardian);
       const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/student/${currentStudent?._id}`;
       try {
         axios
-          .put(URL, { ...currentStudent, guardian_detail: filteredGuardian })
+          .put(URL, { guardian_detail: filteredGuardian })
           .then((res) => mutate(), setDeletedGuardian(null))
           .catch((err) => console.log(err));
       } catch (error) {
@@ -74,6 +73,7 @@ export default function StudentGuardianDetails({ currentStudent, mutate }) {
               color="primary"
               startIcon={<Iconify icon="mingcute:add-line" />}
               onClick={() => {
+                setUpdateGuardian(undefined);
                 setEditAddressId(null);
                 GuardianNewForm.onTrue();
               }}
@@ -91,21 +91,15 @@ export default function StudentGuardianDetails({ currentStudent, mutate }) {
               guardian={item}
               action={
                 <>
-                  {/* <IconButton
-                   onClick={(event) => {
-                     popover.onOpen(event);
-                     // handleSelectedId(`${item._id}`);
-                     setDeletedGuardian(item._id);
-                   }}
-                   sx={{ position: 'absolute', top: 8, right: 8 }}
-                 >
-                   <Iconify icon="eva:more-vertical-fill" />
-                 </IconButton> */}
                   <IconButton
-                    color={popover.open ? 'inherit' : 'default'}
-                    onClick={() => handleSelectedId(item._id)}
+                    onClick={(event) => {
+                      popover.onOpen(event);
+                      setUpdateGuardian(item);
+                      setDeletedGuardian(item._id);
+                    }}
+                    sx={{ position: 'absolute', top: 8, right: 8 }}
                   >
-                    <Iconify icon="solar:trash-bin-trash-bold" />
+                    <Iconify icon="eva:more-vertical-fill" />
                   </IconButton>
                 </>
               }
@@ -118,7 +112,7 @@ export default function StudentGuardianDetails({ currentStudent, mutate }) {
         </Stack>
       </Card>
 
-      {/* <CustomPopover open={popover.open} onClose={handleClose}>
+      <CustomPopover open={popover.open} onClose={handleClose}>
         <MenuItem onClick={handleEdit}>
           <Iconify icon="solar:pen-bold" />
           Edit
@@ -126,7 +120,6 @@ export default function StudentGuardianDetails({ currentStudent, mutate }) {
 
         <MenuItem
           onClick={() => {
-            console.info('DELETE', addressId);
             handleSelectedId(deletedGuardian);
             handleClose();
           }}
@@ -135,7 +128,7 @@ export default function StudentGuardianDetails({ currentStudent, mutate }) {
           <Iconify icon="solar:trash-bin-trash-bold" />
           Delete
         </MenuItem>
-      </CustomPopover> */}
+      </CustomPopover>
 
       <GuardianAddForm
         mutate={mutate}
@@ -144,6 +137,7 @@ export default function StudentGuardianDetails({ currentStudent, mutate }) {
         onCreate={handleAddNewAddress}
         addressId={editAddressId}
         currentStudent={currentStudent}
+        updateGuardian={updateGuardian}
       />
     </>
   );

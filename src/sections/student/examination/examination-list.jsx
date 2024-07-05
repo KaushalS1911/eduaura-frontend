@@ -9,8 +9,6 @@ import { useGetExam } from 'src/api/examination';
 export default function ExaminationList({ currentStudentExams }) {
   const router = useRouter();
 
-
-
   const handleView = useCallback(
     (id) => {
       router.push(paths.dashboard.student.details(id));
@@ -28,7 +26,6 @@ export default function ExaminationList({ currentStudentExams }) {
   const handleDelete = useCallback((id) => {
     console.info('DELETE', id);
   }, []);
-
 
   return (
     <>

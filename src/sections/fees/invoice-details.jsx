@@ -179,7 +179,7 @@ export default function InvoiceDetails({ invoice }) {
         invoiceDetails={invoiceDetails}
       />
 
-      <Card sx={{ pt: 5, px: 5 }}>
+      <Card sx={{ pt: 0, px: 5 }}>
         <Box
           rowGap={5}
           display="grid"

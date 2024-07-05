@@ -123,7 +123,7 @@ export const paths = {
       profile: `${ROOTS.DASHBOARD}/student/profile`,
       account: `${ROOTS.DASHBOARD}/student/account`,
       edit: (id) => `${ROOTS.DASHBOARD}/student/${id}/edit`,
-      view: (id) => `${ROOTS.DASHBOARD}/student/${id}`,
+      studentView: (id) => `${ROOTS.DASHBOARD}/student/${id}/studentView`,
       guaridiandetails: (id) => `${ROOTS.DASHBOARD}/student/${id}/guaridiandetails`,
     },
 
@@ -151,6 +151,7 @@ export const paths = {
       list: `${ROOTS.DASHBOARD}/seminar/list`,
       edit: (id) => `${ROOTS.DASHBOARD}/seminar/${id}/edit`,
     },
+
     profile: {
       root: `${ROOTS.DASHBOARD}/profile`,
       list: `${ROOTS.DASHBOARD}/profile/list`,
@@ -170,18 +171,21 @@ export const paths = {
       edit: (id) => `${ROOTS.DASHBOARD}/expenses/${id}/edit`,
       new: `${ROOTS.DASHBOARD}/expenses/new`,
     },
+
     visit: {
       root: `${ROOTS.DASHBOARD}/visit`,
       list: `${ROOTS.DASHBOARD}/visit/list`,
       edit: (id) => `${ROOTS.DASHBOARD}/visit/${id}/edit`,
       new: `${ROOTS.DASHBOARD}/visit/new`,
     },
+
     examination: {
       root: `${ROOTS.DASHBOARD}/examination`,
       list: `${ROOTS.DASHBOARD}/examination/list`,
       edit: (id) => `${ROOTS.DASHBOARD}/examination/${id}/edit`,
       new: `${ROOTS.DASHBOARD}/examination/new`,
     },
+
     task: {
       root: `${ROOTS.DASHBOARD}/task`,
       list: `${ROOTS.DASHBOARD}/task/list`,

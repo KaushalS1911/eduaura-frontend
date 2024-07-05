@@ -31,9 +31,9 @@ export default function StudentAttendanceTableRow({
   onViewRow,
   onEditRow,
   onDeleteRow,
-  index
+  index,
 }) {
-  const { date , status } = row;
+  const { date, status } = row;
   const confirm = useBoolean();
 
   const popover = usePopover();
@@ -41,10 +41,7 @@ export default function StudentAttendanceTableRow({
   return (
     <>
       <TableRow hover selected={selected}>
-
-        <TableCell>
-          {index + 1}
-        </TableCell>
+        <TableCell>{index + 1}</TableCell>
 
         <TableCell>
           <ListItemText
