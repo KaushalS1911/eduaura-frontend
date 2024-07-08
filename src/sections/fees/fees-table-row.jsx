@@ -194,7 +194,7 @@ export default function FeesTableRow({
                 <TableCell sx={{ width: 140 }}>
                   {item.payment_date == null
                     ? '-'
-                    : moment(item.installment_date).format('DD/MM/YYYY')}
+                    : moment(item.payment_date).format('DD/MM/YYYY')}
                 </TableCell>
 
                 <TableCell sx={{ width: 68 }}>{item.payment_mode}</TableCell>
