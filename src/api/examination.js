@@ -20,3 +20,20 @@ export function useGetExam(company_id) {
 
   return memoizedValue;
 }
+export function useGetSingleExam(BactchExamID) {
+  const URL = `${import.meta.env.VITE_AUTH_API}/api/company/exam/${BactchExamID}`;
+  const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
+  const memoizedValue = useMemo(
+    () => ({
+      batchExamData: data?.data?.exam || [],
+      batchExamDataLoading: isLoading,
+      batchExamDataError: error,
+      batchExamDataValidating: isValidating,
+      batchExamDataEmpty: !isLoading && !data?.data?.exams?.length,
+      mutate,
+    }),
+    [data?.data?.exams, error, isLoading, isValidating, mutate]
+  );
+
+  return memoizedValue;
+}

@@ -12,7 +12,7 @@ const ROOTS = {
   AUTH: '/auth',
   AUTH_DEMO: '/auth-demo',
   DASHBOARD: '/dashboard',
-  INVITE_USER:'/invite-user'
+  INVITE_USER: '/invite-user',
 };
 
 // ----------------------------------------------------------------------
@@ -186,6 +186,7 @@ export const paths = {
       list: `${ROOTS.DASHBOARD}/examination/list`,
       edit: (id) => `${ROOTS.DASHBOARD}/examination/${id}/edit`,
       new: `${ROOTS.DASHBOARD}/examination/new`,
+      examoverview: (batchExamId) => `${ROOTS.DASHBOARD}/examination/${batchExamId}/examoverview`,
     },
 
     task: {
@@ -212,7 +213,7 @@ export const paths = {
       new: `${ROOTS.DASHBOARD}/attendance/new`,
     },
   },
-  inviteUser:{
-    root:`${ ROOTS.INVITE_USER }`
+  inviteUser: {
+    root: `${ROOTS.INVITE_USER}`,
   },
 };

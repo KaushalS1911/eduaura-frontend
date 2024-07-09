@@ -17,6 +17,8 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { Avatar, ListItemText, Tooltip } from '@mui/material';
 import ExaminationQuickEditForm from './examination-quick-edit-form';
 import { ExamImage } from '../../_mock/_inquiry';
+import { useRouter } from 'src/routes/hooks';
+import { paths } from 'src/routes/paths';
 
 // ----------------------------------------------------------------------
 
@@ -29,23 +31,17 @@ export default function ExaminationTableRow({
   index,
   mutate,
 }) {
-
-
   const { conducted_by, date, desc, title, total_marks } = row;
-  const dta = ExamImage(title)
-
-
+  const dta = ExamImage(title);
   const confirm = useBoolean();
-
   const quickEdit = useBoolean();
-
+  const router = useRouter();
   const popover = usePopover();
 
   return (
     <>
       <TableRow hover selected={selected}>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{index + 1}</TableCell>
-
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{moment(date).format('ll')}</TableCell>
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
@@ -62,12 +58,11 @@ export default function ExaminationTableRow({
         </TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{total_marks}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${conducted_by?.firstName} ${conducted_by?.lastName}`}</TableCell>
+        <TableCell
+          sx={{ whiteSpace: 'nowrap' }}
+        >{`${conducted_by?.firstName} ${conducted_by?.lastName}`}</TableCell>
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{desc}</TableCell>
-
-
-
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
           <Tooltip title="Quick Edit" placement="top" arrow>
@@ -92,7 +87,7 @@ export default function ExaminationTableRow({
         open={popover.open}
         onClose={popover.onClose}
         arrow="right-top"
-        sx={{ width: 140 }}
+        sx={{ width: 'auto' }}
       >
         <MenuItem
           onClick={() => {
@@ -113,6 +108,15 @@ export default function ExaminationTableRow({
         >
           <Iconify icon="solar:pen-bold" />
           Edit
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            router.push(paths.dashboard.examination.examoverview(row?._id));
+            popover.onClose();
+          }}
+        >
+          <Iconify icon="healthicons:i-exam-multiple-choice" />
+          Exam Overview
         </MenuItem>
       </CustomPopover>
       <ConfirmDialog

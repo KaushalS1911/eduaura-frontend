@@ -166,7 +166,7 @@ export default function StudentDetails({ studentData }) {
             </Grid>
           </Box>
           <Box>
-            <Box mx={3.5}>
+            <Box mx={2.5}>
               {studentData?.profile_pic ? (
                 <img
                   src={studentData?.profile_pic}
@@ -324,9 +324,7 @@ export default function StudentDetails({ studentData }) {
               <TableBody>
                 {installmentsData?.map((row, index) => (
                   <TableRow key={row.id}>
-                    <TableCell component="th" scope="row">
-                      {index + 1}
-                    </TableCell>
+                    <TableCell>{index + 1}</TableCell>
                     <TableCell>{fDate(row?.installment_date)}</TableCell>
                     <TableCell>{row?.amount}</TableCell>
                     <TableCell>{fDate(row?.payment_date)}</TableCell>
@@ -462,9 +460,7 @@ export default function StudentDetails({ studentData }) {
               <TableBody>
                 {currentStudentExams?.map((row, index) => (
                   <TableRow key={row.id}>
-                    <TableCell component="th" scope="row">
-                      {index + 1}
-                    </TableCell>
+                    <TableCell>{index + 1}</TableCell>
                     <TableCell>{row?.examTitle}</TableCell>
                     <TableCell>{fDate(row?.examDate)}</TableCell>
                     <TableCell>{row?.totalMarks}</TableCell>
@@ -544,9 +540,7 @@ export default function StudentDetails({ studentData }) {
               <TableBody>
                 {currentStudentExams?.map((row, index) => (
                   <TableRow key={row.id}>
-                    <TableCell component="th" scope="row">
-                      {index + 1}
-                    </TableCell>
+                    <TableCell>{index + 1}</TableCell>
                     <TableCell>{row?.examTitle}</TableCell>
                     <TableCell>{fDate(row?.examDate)}</TableCell>
                     <TableCell>{row?.totalMarks}</TableCell>

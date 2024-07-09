@@ -83,16 +83,21 @@ const ExaminationNewForm = () => {
     data?.students.map((member) => studentId.push({ student_id: member._id }));
 
     try {
-
       const URL = `${import.meta.env.VITE_AUTH_API}/api/company/exam`;
       await axios
-        .post(URL, { ...data, students: studentId,title:data?.title.label, conducted_by :data?.conducted_by?._id,company_id:user?.company_id})
+        .post(URL, {
+          ...data,
+          students: studentId,
+          title: data?.title.label,
+          conducted_by: data?.conducted_by?._id,
+          company_id: user?.company_id,
+        })
         .then((res) => {
           enqueueSnackbar('Create success!');
         })
         .catch((err) => console.log(err));
 
-        router.push(paths.dashboard.examination.list);
+      router.push(paths.dashboard.examination.list);
       preview.onFalse();
     } catch (error) {
       console.error(error);
@@ -117,9 +122,8 @@ const ExaminationNewForm = () => {
           {!mdUp && <CardHeader title="Details" />}
 
           <Stack spacing={3} sx={{ p: 3 }}>
-
             {/*<RHFTextField name="title" label="Title"
-            */}
+             */}
             <RHFAutocomplete
               name="title"
               label="Title"
@@ -164,7 +168,12 @@ const ExaminationNewForm = () => {
               options={facultyName.map((option) => option)}
               getOptionLabel={(option) => `${option?.firstName} ${option?.lastName}`}
             />
-            <RHFAutocomplete1 name="students" control={control} studentName={studentName} labelName="Select students"/>
+            <RHFAutocomplete1
+              name="students"
+              control={control}
+              studentName={studentName}
+              labelName="Select students"
+            />
             <RHFTextField name="desc" label="Description" multiline rows={3} />
           </Stack>
         </Card>

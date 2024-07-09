@@ -100,7 +100,6 @@ export default function ExaminationNewEditForm({ examinationId }) {
   }, [examinationId, reset]);
 
   const onSubmit = handleSubmit(async (data) => {
-
     const payload = data.students.map((student) => {
       return {
         obtained_marks: null,
@@ -112,10 +111,10 @@ export default function ExaminationNewEditForm({ examinationId }) {
       if (data) {
         const URL = `${import.meta.env.VITE_AUTH_API}/api/company/exam/${examinationId}`;
         await axios
-          .put(URL, { ...data,title:data?.title.label, students: payload })
+          .put(URL, { ...data, title: data?.title.label, students: payload })
           .then((res) => router.push(paths.dashboard.examination.list))
           .catch((err) => console.log(err));
-        mutate()
+        mutate();
       }
       preview.onFalse();
       enqueueSnackbar(examinationId ? 'Update success!' : 'Create success!');
@@ -143,7 +142,7 @@ export default function ExaminationNewEditForm({ examinationId }) {
 
           <Stack spacing={3} sx={{ p: 3 }}>
             {/*<RHFTextField name="title" label="Title" />
-            */}
+             */}
             <RHFAutocomplete
               name="title"
               label="Title"

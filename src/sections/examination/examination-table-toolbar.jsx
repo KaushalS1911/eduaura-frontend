@@ -11,10 +11,7 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 // ----------------------------------------------------------------------
 
-export default function ExaminationTableToolbar({
-  filters,
-  onFilters,
-}) {
+export default function ExaminationTableToolbar({ filters, onFilters }) {
   const popover = usePopover();
 
   const handleFilterName = useCallback(
@@ -48,7 +45,6 @@ export default function ExaminationTableToolbar({
           pr: { xs: 2.5, md: 2.5 },
         }}
       >
-
         <Stack direction="row" alignItems="center" spacing={2} flexGrow={1} sx={{ width: 1 }}>
           <TextField
             fullWidth

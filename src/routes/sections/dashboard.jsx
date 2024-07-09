@@ -31,6 +31,7 @@ const ExpensesEditPage = lazy(() => import('src/pages/dashboard/expenses/edit'))
 const ExaminationListPage = lazy(() => import('src/pages/dashboard/examination/list'));
 const ExaminationCreatePage = lazy(() => import('src/pages/dashboard/examination/create'));
 const ExaminationEditPage = lazy(() => import('src/pages/dashboard/examination/edit'));
+const ExamOverviewPage = lazy(() => import('src/pages/dashboard/examination/examview.jsx'));
 
 // Task
 const TaskListPage = lazy(() => import('src/pages/dashboard/task/list'));
@@ -217,6 +218,7 @@ export const dashboardRoutes = [
           { path: 'list', element: <ExaminationListPage /> },
           { path: 'new', element: <ExaminationCreatePage /> },
           { path: ':id/edit', element: <ExaminationEditPage /> },
+          { path: ':batchExamId/examoverview', element: <ExamOverviewPage /> },
         ],
       },
       {
@@ -261,13 +263,15 @@ export const dashboardRoutes = [
     ],
   },
   {
-    path:'invite-user',
-    element: (<AuthGuard>
-      <Suspense fallback={<LoadingScreen />}>
-        <AuthClassicLayout register={true} invite={true}>
-          <InviteUserView />
-        </AuthClassicLayout>
-      </Suspense>
-    </AuthGuard>)
-  }
+    path: 'invite-user',
+    element: (
+      <AuthGuard>
+        <Suspense fallback={<LoadingScreen />}>
+          <AuthClassicLayout register={true} invite={true}>
+            <InviteUserView />
+          </AuthClassicLayout>
+        </Suspense>
+      </AuthGuard>
+    ),
+  },
 ];
