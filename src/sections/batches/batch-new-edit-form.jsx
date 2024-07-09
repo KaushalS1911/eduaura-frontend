@@ -77,7 +77,7 @@ export default function BatchNewEditForm({ batchId }) {
           reset({
             technology: data?.batch?.technology,
             batch_name: data?.batch?.batch_name,
-            batch_time: moment(data?.batch?.batch_time, 'hh:mm').toDate(),
+            batch_time: new Date(data?.batch?.batch_time),
             faculty: data?.batch?.faculty,
             batch_members: data?.batch?.batch_members,
             // batch_members: [{name:"ramesh"},{name:"heet"}],

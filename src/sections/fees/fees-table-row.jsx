@@ -18,13 +18,14 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
-import { FormProvider, useForm } from 'react-hook-form';
-import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import { LoadingButton } from '@mui/lab';
 import { RHFAutocomplete } from 'src/components/hook-form';
 import axios from 'axios';
 import moment from 'moment';
+import { DatePicker } from '@mui/x-date-pickers';
 
 // ----------------------------------------------------------------------
 
@@ -37,6 +38,7 @@ const TABLE_HEAD = [
   { id: 'installments', label: 'Status' },
   { id: '', label: '' },
 ];
+const PAYMENT_OPTIONS =['card','cash','cheque','upi']
 
 export default function FeesTableRow({
   row,
@@ -66,6 +68,8 @@ export default function FeesTableRow({
   const methods = useForm({
     defaultValues: {
       status: '',
+      payment_mode:'',
+      payment_date: new Date()
     },
   });
 
@@ -73,6 +77,7 @@ export default function FeesTableRow({
     reset,
     handleSubmit,
     control,
+    setValue,
     formState: { isSubmitting },
   } = methods;
 
@@ -189,7 +194,7 @@ export default function FeesTableRow({
                 <TableCell sx={{ width: 140 }}>
                   {item.payment_date == null
                     ? '-'
-                    : moment(item.installment_date).format('DD/MM/YYYY')}
+                    : moment(item.payment_date).format('DD/MM/YYYY')}
                 </TableCell>
 
                 <TableCell sx={{ width: 68 }}>{item.payment_mode}</TableCell>
@@ -299,6 +304,42 @@ export default function FeesTableRow({
                     value={methods.watch('status')}
                     onChange={(_, newValue) => methods.setValue('status', newValue)}
                   />
+                  <RHFAutocomplete
+                    sx={{my:3}}
+                    name="payment_mode"
+                    label="Payment Mode"
+                    placeholder="Choose a Payment Mode"
+                    fullWidth
+                    options={PAYMENT_OPTIONS}
+                    getOptionLabel={(option) => option}
+                    value={methods.watch('payment_mode') || 'card'}
+                    onChange={(_, newValue) => methods.setValue('payment_mode', newValue)}
+                  />
+                  <Stack spacing={1.5}>
+                    <Controller
+                      name="payment_date"
+                      control={control}
+                      render={({ field, fieldState: { error } }) => (
+                        <DatePicker
+                          {...field}
+                          value={field.value || new Date()}
+                          onChange={(newDate) => {
+                            setValue('payment_date', newDate);
+                            field.onChange(newDate);
+                          }}
+                          format="dd/MM/yyyy"
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              fullWidth
+                              error={!!error}
+                              helperText={error?.message}
+                            />
+                          )}
+                        />
+                      )}
+                    />
+                  </Stack>
                 </Box>
               </DialogContent>
 

@@ -256,11 +256,8 @@ export default function AddAttendanceListView() {
                   />
                   <TableBody>
                     {dataFiltered
-                      ?.slice(
-                        table.page * table.rowsPerPage,
-                        table.page * table.rowsPerPage + table.rowsPerPage
-                      )
-                      .map((row, index) => (
+
+                      ?.map((row, index) => (
                         <AttendanceAddTableRow
                           key={row.id}
                           index={index}
