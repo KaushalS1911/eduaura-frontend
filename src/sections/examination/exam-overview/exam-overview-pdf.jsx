@@ -277,11 +277,11 @@ const ExamOverviewPDF = ({
             </View>
           </View>
         </View>
-        <View style={{ marginTop: "30px" }}>
+        <View style={{ marginTop: '30px' }}>
           <View>
             <Text style={{ fontSize: 15, fontWeight: '700' }}>Grade Summary</Text>
           </View>
-          <View style={{ marginTop: "8px" }}>
+          <View style={{ marginTop: '8px' }}>
             <View
               style={{
                 flexDirection: 'row',

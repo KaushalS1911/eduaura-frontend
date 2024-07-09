@@ -111,7 +111,7 @@ export default function StudentDetails({ studentData }) {
                     px={2}
                     sx={{
                       fontWeight: '500',
-                      width: '400px',
+                      width: '360px',
                     }}
                   >
                     {studentData?.address_detail?.address_1 +
@@ -128,7 +128,7 @@ export default function StudentDetails({ studentData }) {
               </Grid>
               <Grid xs={6}>
                 <Grid container>
-                  <Grid xs={6}>
+                  <Grid xs={12}>
                     <Grid xs={12} display={'flex'} alignItems={'center'} mb={1}>
                       <Typography sx={{ fontWeight: '700' }}>Email :</Typography>
                       <Typography px={2} sx={{ fontWeight: '500' }}>
@@ -160,13 +160,12 @@ export default function StudentDetails({ studentData }) {
                       </Typography>
                     </Grid>
                   </Grid>
-                  <Grid xs={6}></Grid>
                 </Grid>
               </Grid>
             </Grid>
           </Box>
           <Box>
-            <Box mx={2.5}>
+            <Box mx={1.5}>
               {studentData?.profile_pic ? (
                 <img
                   src={studentData?.profile_pic}
@@ -575,8 +574,8 @@ export default function StudentDetails({ studentData }) {
               {configs?.company_details?.logo_url ? (
                 <img
                   style={{ height: '100px', width: '100px', objectFit: 'cover' }}
-                  src={configs?.company_details?.logo_url}
-                  alt={configs?.company_details?.logo_url}
+                  src={configs?.company_details?.logo}
+                  alt={configs?.company_details?.logo}
                 />
               ) : (
                 <img
