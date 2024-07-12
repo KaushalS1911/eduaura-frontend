@@ -32,8 +32,8 @@ export default function ExamDetails({ examData }) {
     return ((obtainedMarks / totalMarks) * 100).toFixed(2);
   };
 
-  const calculateResult = (marks) => {
-    return marks >= 50 ? 'Pass' : 'Fail';
+  const calculateResult = (obtainedMarks, totalMarks) => {
+    return (obtainedMarks / totalMarks) * 100 >= 33 ? 'Pass' : 'Fail';
   };
 
   const calculateRank = (students) => {
@@ -51,7 +51,7 @@ export default function ExamDetails({ examData }) {
   const calculatePassFailCount = (students) => {
     const passFailCount = { pass: 0, fail: 0 };
     students?.forEach((student) => {
-      if (calculateResult(student.obtained_marks) === 'Pass') {
+      if (calculateResult(student.obtained_marks, examData.total_marks) === 'Pass') {
         passFailCount.pass += 1;
       } else {
         passFailCount.fail += 1;
@@ -110,11 +110,11 @@ export default function ExamDetails({ examData }) {
             sx={{ backgroundColor: '#F6F6F6', p: 2 }}
           >
             <Box>
-              {configs?.company_details?.logo_url ? (
+              {configs?.company_details?.logo ? (
                 <img
                   style={{ height: '100px', width: '100px', objectFit: 'cover' }}
-                  src={configs?.company_details?.logo_url}
-                  alt={configs?.company_details?.logo_url}
+                  src={configs?.company_details?.logo}
+                  alt={configs?.company_details?.logo}
                 />
               ) : (
                 <img
@@ -253,7 +253,7 @@ export default function ExamDetails({ examData }) {
                         {calculatePercentage(row?.obtained_marks, examData?.total_marks)}%
                       </TableCell>
                       <TableCell sx={{ textAlign: 'center' }}>
-                        {calculateResult(row?.obtained_marks)}
+                        {calculateResult(row?.obtained_marks, examData?.total_marks)}
                       </TableCell>
                       <TableCell sx={{ textAlign: 'center' }}>{row?.rank}</TableCell>
                       <TableCell sx={{ textAlign: 'center' }}>

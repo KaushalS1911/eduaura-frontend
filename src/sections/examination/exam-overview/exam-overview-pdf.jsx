@@ -107,9 +107,9 @@ const ExamOverviewPDF = ({
             }}
           >
             <View>
-              {configs?.company_details?.logo_url ? (
+              {configs?.company_details?.logo ? (
                 <Image
-                  source={configs?.company_details?.logo_url}
+                  source={configs?.company_details?.logo}
                   style={{
                     width: 60,
                     height: 60,
@@ -210,7 +210,7 @@ const ExamOverviewPDF = ({
                   </View>
 
                   <View style={{ width: '150px', textAlign: 'center' }}>
-                    <Text>{calculateResult(row?.obtained_marks)}</Text>
+                    <Text>{calculateResult(row?.obtained_marks, examData?.total_marks)}</Text>
                   </View>
                   <View style={{ width: '150px', textAlign: 'center' }}>
                     <Text>{row?.rank}</Text>
