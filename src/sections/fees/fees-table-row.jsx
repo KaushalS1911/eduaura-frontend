@@ -26,6 +26,7 @@ import { RHFAutocomplete } from 'src/components/hook-form';
 import axios from 'axios';
 import moment from 'moment';
 import { DatePicker } from '@mui/x-date-pickers';
+import { format } from 'date-fns';
 
 // ----------------------------------------------------------------------
 
@@ -38,7 +39,7 @@ const TABLE_HEAD = [
   { id: 'installments', label: 'Status' },
   { id: '', label: '' },
 ];
-const PAYMENT_OPTIONS =['card','cash','cheque','upi']
+const PAYMENT_OPTIONS = ['card', 'cash', 'cheque', 'upi'];
 
 export default function FeesTableRow({
   row,
@@ -68,8 +69,8 @@ export default function FeesTableRow({
   const methods = useForm({
     defaultValues: {
       status: '',
-      payment_mode:'',
-      payment_date: new Date()
+      payment_mode: '',
+      payment_date: format(new Date(), 'yyyy-MM-dd'),
     },
   });
 
@@ -106,6 +107,7 @@ export default function FeesTableRow({
   };
 
   const onSubmit = handleSubmit(async (data) => {
+    console.log(data, 'data');
     try {
       const statusValue = data.status.value;
       await axios.put(
@@ -192,9 +194,7 @@ export default function FeesTableRow({
                 </TableCell>
                 <TableCell sx={{ width: 126 }}>{item.amount}</TableCell>
                 <TableCell sx={{ width: 140 }}>
-                  {item.payment_date == null
-                    ? '-'
-                    : moment(item.payment_date).format('DD/MM/YYYY')}
+                  {item.payment_date == null ? '-' : moment(item.payment_date).format('DD/MM/YYYY')}
                 </TableCell>
 
                 <TableCell sx={{ width: 68 }}>{item.payment_mode}</TableCell>
@@ -305,7 +305,7 @@ export default function FeesTableRow({
                     onChange={(_, newValue) => methods.setValue('status', newValue)}
                   />
                   <RHFAutocomplete
-                    sx={{my:3}}
+                    sx={{ my: 3 }}
                     name="payment_mode"
                     label="Payment Mode"
                     placeholder="Choose a Payment Mode"
@@ -322,7 +322,7 @@ export default function FeesTableRow({
                       render={({ field, fieldState: { error } }) => (
                         <DatePicker
                           {...field}
-                          value={field.value || new Date()}
+                          value={field.value}
                           onChange={(newDate) => {
                             setValue('payment_date', newDate);
                             field.onChange(newDate);

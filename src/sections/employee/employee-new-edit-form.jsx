@@ -62,8 +62,8 @@ export default function EmployeeNewEditForm({ employee }) {
 
   const defaultValues = useMemo(
     () => ({
-      firstName: employee?.firstName || '',
-      lastName: employee?.lastName || '',
+      firstName: (employee?.firstName || '').toUpperCase(),
+      lastName: (employee?.lastName || '').toUpperCase(),
       contact: employee?.contact || '',
       dob: employee?.dob ? new Date(employee?.dob) : null,
       email: employee?.email || '',
@@ -75,9 +75,9 @@ export default function EmployeeNewEditForm({ employee }) {
       joining_date: employee?.joining_date ? new Date(employee?.joining_date) : null,
       address_1: employee?.address_detail?.address_1 || '',
       address_2: employee?.address_detail?.address_2 || '',
-      country: employee?.address_detail?.country || '',
-      state: employee?.address_detail?.state || '',
-      city: employee?.address_detail?.city || '',
+      country: employee?.address_detail?.country || 'India',
+      state: employee?.address_detail?.state || 'Gujarat',
+      city: employee?.address_detail?.city || 'Surat',
       zipcode: employee?.address_detail?.zipcode || '',
       avatar_url: employee?.avatar_url || null,
     }),
@@ -193,24 +193,27 @@ export default function EmployeeNewEditForm({ employee }) {
     [setValue]
   );
 
+  const handleUppercase = (field) => (e) => {
+    const value = e.target.value.toUpperCase();
+    setValue(field, value, { shouldValidate: true });
+  };
+
   const renderProperties = (
     <>
+      <Grid item md={4} xs={12}>
+        <Typography variant="h6" sx={{ mb: 0.5 }}>
+          Personal Details
+        </Typography>
+        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          Basic info, profile pic, role, qualification...
+        </Typography>
 
-        <Grid item md={4} xs={12}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
-            Personal Details
-          </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Basic info, profile pic, role, qualification...
-          </Typography>
-
-          <Card sx={{ pt: 5, px: 3, mt: 5 }}>
-            <Box sx={{ mb: 5 }}>
-              <RHFUploadAvatar name="avatar_url" onDrop={handleDrop} />
-            </Box>
-          </Card>
-        </Grid>
-
+        <Card sx={{ pt: 5, px: 3, mt: 5 }}>
+          <Box sx={{ mb: 5 }}>
+            <RHFUploadAvatar name="avatar_url" onDrop={handleDrop} />
+          </Box>
+        </Card>
+      </Grid>
 
       <Grid item xs={12} md={8}>
         <Card>
@@ -226,9 +229,17 @@ export default function EmployeeNewEditForm({ employee }) {
                 md: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField name="firstName" label="First Name" />
+              <RHFTextField
+                name="firstName"
+                label="First Name"
+                onChange={handleUppercase('firstName')}
+              />
 
-              <RHFTextField name="lastName" label="Last Name" />
+              <RHFTextField
+                name="lastName"
+                label="Last Name"
+                onChange={handleUppercase('lastName')}
+              />
 
               <RHFTextField name="email" label="Email Address" />
 
