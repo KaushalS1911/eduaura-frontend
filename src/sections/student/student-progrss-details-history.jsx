@@ -1,8 +1,9 @@
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-
+import axios from 'axios';
+import { useSnackbar } from 'notistack';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Timeline from '@mui/lab/Timeline';
 import TimelineDot from '@mui/lab/TimelineDot';
@@ -12,48 +13,102 @@ import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
 import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineItem, { timelineItemClasses } from '@mui/lab/TimelineItem';
+import { Button } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
 
-import { fDateTime } from 'src/utils/format-time';
+export default function StudentProgressDetailsHistory({ language, currentStudent, mutate }) {
+  const { enqueueSnackbar } = useSnackbar();
+  const [clickedButtons, setClickedButtons] = useState({});
+  const [selectedDates, setSelectedDates] = useState({});
+  const [completed, setCompleted] = useState({});
+  const [completionDate, setCompletionDate] = useState({});
 
-// ----------------------------------------------------------------------
+  useEffect(() => {
+    if (currentStudent?.course_completed) {
+      const initialClickedButtons = {};
+      const initialSelectedDates = {};
+      const initialCompleted = {};
+      const initialCompletionDate = {};
 
-export default function StudentProgressDetailsHistory() {
-  const renderSummary = (
-    <Stack
-      spacing={2}
-      component={Paper}
-      variant="outlined"
-      sx={{
-        p: 2.5,
-        minWidth: 260,
-        flexShrink: 0,
-        borderRadius: 2,
-        typography: 'body2',
-        borderStyle: 'dashed',
-      }}
-    >
-      <Stack spacing={0.5}>
-        <Box sx={{ color: 'text.disabled' }}>Order time</Box>
-        {/* {fDateTime('22:00')} */}
-        22:00
-      </Stack>
-      <Stack spacing={0.5}>
-        <Box sx={{ color: 'text.disabled' }}>Payment time</Box>
-        {/* {fDateTime('22:00')} */}
-        22:00
-      </Stack>
-      <Stack spacing={0.5}>
-        <Box sx={{ color: 'text.disabled' }}>Delivery time for the carrier</Box>
-        {/* {fDateTime('22:00')} */}
-        22:00
-      </Stack>
-      <Stack spacing={0.5}>
-        <Box sx={{ color: 'text.disabled' }}>Completion time</Box>
-        {/* {fDateTime('22:00')} */}
-        22:00
-      </Stack>
-    </Stack>
-  );
+      currentStudent.course_completed.forEach((course) => {
+        const index = language.findIndex((lang) => lang.label === course.language.label);
+
+        if (index !== -1) {
+          initialClickedButtons[index] = true;
+          initialSelectedDates[index] = new Date(course.date) || new Date();
+          initialCompleted[index] = true;
+          initialCompletionDate[index] = new Date(course.date) || new Date();
+        }
+      });
+
+      setClickedButtons(initialClickedButtons);
+      setSelectedDates(initialSelectedDates);
+      setCompleted(initialCompleted);
+      setCompletionDate(initialCompletionDate);
+    }
+  }, [currentStudent, language]);
+
+  const handleButtonClick = (index) => {
+    // Check if all previous languages are completed before allowing current language to be marked as completed
+    let canComplete = true;
+    for (let i = 0; i < index; i++) {
+      if (!completed[i]) {
+        canComplete = false;
+        break;
+      }
+    }
+
+    if (canComplete) {
+      setClickedButtons((prev) => ({ ...prev, [index]: true }));
+      setCompleted((prev) => ({ ...prev, [index]: true }));
+    } else {
+      enqueueSnackbar('Complete previous languages first', { variant: 'error' });
+    }
+  };
+
+  const handleDateChange = (index, date) => {
+    setSelectedDates((prev) => ({
+      ...prev,
+      [index]: date !== null ? date : new Date(),
+    }));
+    setCompletionDate((prev) => ({
+      ...prev,
+      [index]: date !== null ? date : new Date(),
+    }));
+  };
+
+  const handleReset = () => {
+    setClickedButtons({});
+    setSelectedDates({});
+    setCompleted({});
+    setCompletionDate({});
+  };
+
+  const handleSubmit = async () => {
+    const payload = {
+      course_completed: language?.reduce((acc, item, index) => {
+        if (completed[index]) {
+          acc.push({
+            language: item,
+            date: completionDate[index] || null,
+          });
+        }
+        return acc;
+      }, []),
+    };
+
+    const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/student/${currentStudent?._id}`;
+    try {
+      const response = await axios.put(URL, payload);
+      enqueueSnackbar(response?.data?.message || 'Progress added successfully', {
+        variant: 'success',
+      });
+      mutate();
+    } catch (error) {
+      console.error('Failed to update student:', error);
+      enqueueSnackbar('Failed to update student', { variant: 'error' });
+    }
+  };
 
   const renderTimeline = (
     <Timeline
@@ -66,24 +121,48 @@ export default function StudentProgressDetailsHistory() {
         },
       }}
     >
-      {['','',''].map((item, index) => {
-        const firstTimeline = index === 0;
-
-        const lastTimeline = index === 3 - 1;
-
+      {language.map((item, index) => {
+        const isLastItem = index === language?.length - 1;
+        const canComplete = index === 0 || completed[index - 1];
         return (
-          <TimelineItem>
+          <TimelineItem key={index}>
             <TimelineSeparator>
-              <TimelineDot color={(firstTimeline && 'primary') || 'grey'} />
-              {lastTimeline ? null : <TimelineConnector />}
+              <TimelineDot color={clickedButtons[index] ? 'primary' : 'grey'} />
+              {!isLastItem && <TimelineConnector />}
             </TimelineSeparator>
 
             <TimelineContent>
-              <Typography variant="subtitle2">java script</Typography>
-
-              <Box sx={{ color: 'text.disabled', typography: 'caption', mt: 0.5 }}>
-                {/* {fDateTime("22:00")} */}
-                22:00
+              <Box display={'flex'} justifyContent={'space-between'}>
+                <Box>
+                  <Typography variant="subtitle2">{item?.label}</Typography>
+                </Box>
+                <Box display={'flex'} alignItems={'center'}>
+                  <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                    <Box mx={1}>
+                      <DatePicker
+                        value={selectedDates[index] || null}
+                        onChange={(date) => handleDateChange(index, date)}
+                        sx={{ p: '0px 0px' }}
+                      />
+                    </Box>
+                  </Box>
+                  <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                    <Box mx={1}>
+                      <Button
+                        sx={{
+                          backgroundColor: clickedButtons[index] ? '#454F5B' : '#212B36',
+                          color: 'white',
+                          margin: '0px 5px',
+                          ':hover': { backgroundColor: '#454F5B', color: 'white' },
+                        }}
+                        onClick={() => handleButtonClick(index)}
+                        disabled={!canComplete || clickedButtons[index]}
+                      >
+                        {clickedButtons[index] ? 'Completed' : 'Complete'}
+                      </Button>
+                    </Box>
+                  </Box>
+                </Box>
               </Box>
             </TimelineContent>
           </TimelineItem>
@@ -94,7 +173,7 @@ export default function StudentProgressDetailsHistory() {
 
   return (
     <Card>
-      <CardHeader title="History" />
+      <CardHeader title="Progress" />
       <Stack
         spacing={3}
         alignItems={{ md: 'flex-start' }}
@@ -102,13 +181,51 @@ export default function StudentProgressDetailsHistory() {
         sx={{ p: 3 }}
       >
         {renderTimeline}
-
-        {renderSummary}
       </Stack>
+      <Box display={'flex'} justifyContent={'end'} mx={5} my={2}>
+        <Button
+          sx={{
+            backgroundColor: '#212B36',
+            color: 'white',
+            margin: '0px 5px',
+            ':hover': { backgroundColor: '#454F5B', color: 'white' },
+          }}
+          onClick={handleReset}
+        >
+          Reset
+        </Button>
+
+        <Button
+          sx={{
+            backgroundColor: '#212B36',
+            color: 'white',
+            margin: '0px 5px',
+            ':hover': { backgroundColor: '#454F5B', color: 'white' },
+          }}
+          onClick={handleSubmit}
+        >
+          Submit
+        </Button>
+      </Box>
     </Card>
   );
 }
 
 StudentProgressDetailsHistory.propTypes = {
-  history: PropTypes.object,
+  language: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  currentStudent: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    course_completed: PropTypes.arrayOf(
+      PropTypes.shape({
+        language: PropTypes.shape({
+          label: PropTypes.string.isRequired,
+        }).isRequired,
+        date: PropTypes.string,
+      })
+    ),
+  }).isRequired,
 };

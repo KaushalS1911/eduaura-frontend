@@ -41,21 +41,16 @@ const TABS = [
     label: 'Attendance',
     icon: <Iconify icon="solar:share-bold" width={24} />,
   },
-  // {
-  //   value: 'Progress',
-  //   label: 'Progress',
-  //   icon: <Iconify icon="ic:round-vpn-key" width={24} />,
-  // },
+  {
+    value: 'Progress',
+    label: 'Progress',
+    icon: <Iconify icon="ic:round-vpn-key" width={24} />,
+  },
   {
     value: 'Examination',
     label: 'Examination',
     icon: <Iconify icon="ic:round-vpn-key" width={24} />,
   },
-  // {
-  //   value: 'Complains',
-  //   label: 'Complains',
-  //   icon: <Iconify icon="ic:round-vpn-key" width={24} />,
-  // },
   {
     value: 'Remarks',
     label: 'Remarks',
@@ -105,7 +100,9 @@ export default function StudentCreateView({ currentStudent, mutate }) {
       )}
       {currentTab === 'fees details' && <FeesView currentStudent={currentStudent} />}
       {currentTab === 'Attendance' && <StudentAttendanceView currentStudent={currentStudent} />}
-      {currentTab === 'Progress' && <StudentDetailsView currentStudent={currentStudent} />}
+      {currentTab === 'Progress' && (
+        <StudentDetailsView currentStudent={currentStudent} mutate={mutate} />
+      )}
       {currentTab === 'Examination' && <ExaminationListView currentStudent={currentStudent} />}
       {currentTab === 'Remarks' && <RemarkView currentStudent={currentStudent} mutate={mutate} />}
     </Container>
