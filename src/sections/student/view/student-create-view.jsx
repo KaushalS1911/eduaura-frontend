@@ -24,32 +24,32 @@ const TABS = [
   {
     value: 'Personal Details',
     label: 'Personal Details',
-    icon: <Iconify icon="solar:user-id-bold" width={24} />,
+    icon: <Iconify icon="mdi:card-account-details" width={24} />,
   },
   {
     value: 'Guardian Info',
     label: 'Guardian Info',
-    icon: <Iconify icon="solar:bill-list-bold" width={24} />,
+    icon: <Iconify icon="fluent:guardian-24-regular" width={24} />,
   },
   {
     value: 'fees details',
     label: 'Fees Details',
-    icon: <Iconify icon="solar:bell-bing-bold" width={24} />,
+    icon: <Iconify icon="tdesign:money" width={24} />,
   },
   {
     value: 'Attendance',
     label: 'Attendance',
-    icon: <Iconify icon="solar:share-bold" width={24} />,
+    icon: <Iconify icon="ic:outline-co-present" width={24} />,
   },
   {
     value: 'Progress',
     label: 'Progress',
-    icon: <Iconify icon="ic:round-vpn-key" width={24} />,
+    icon: <Iconify icon="grommet-icons:in-progress" width={24} />,
   },
   {
     value: 'Examination',
     label: 'Examination',
-    icon: <Iconify icon="ic:round-vpn-key" width={24} />,
+    icon: <Iconify icon="healthicons:i-exam-multiple-choice-outline" width={24} />,
   },
   {
     value: 'Remarks',

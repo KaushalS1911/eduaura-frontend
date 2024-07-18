@@ -49,7 +49,6 @@ export default function StudentProgressDetailsHistory({ language, currentStudent
   }, [currentStudent, language]);
 
   const handleButtonClick = (index) => {
-    // Check if all previous languages are completed before allowing current language to be marked as completed
     let canComplete = true;
     for (let i = 0; i < index; i++) {
       if (!completed[i]) {
@@ -61,6 +60,7 @@ export default function StudentProgressDetailsHistory({ language, currentStudent
     if (canComplete) {
       setClickedButtons((prev) => ({ ...prev, [index]: true }));
       setCompleted((prev) => ({ ...prev, [index]: true }));
+      setCompletionDate((prev) => ({ ...prev, [index]: selectedDates[index] || new Date() }));
     } else {
       enqueueSnackbar('Complete previous languages first', { variant: 'error' });
     }
@@ -90,7 +90,7 @@ export default function StudentProgressDetailsHistory({ language, currentStudent
         if (completed[index]) {
           acc.push({
             language: item,
-            date: completionDate[index] || null,
+            date: completionDate[index] || new Date(),
           });
         }
         return acc;
@@ -140,8 +140,9 @@ export default function StudentProgressDetailsHistory({ language, currentStudent
                   <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
                     <Box mx={1}>
                       <DatePicker
-                        value={selectedDates[index] || null}
+                        value={selectedDates[index] || new Date()}
                         onChange={(date) => handleDateChange(index, date)}
+                        disabled={clickedButtons[index] || !canComplete}
                         sx={{ p: '0px 0px' }}
                       />
                     </Box>
