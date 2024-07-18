@@ -63,16 +63,10 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
     city: Yup.string().required('City is required'),
     zipcode: Yup.string().required('Zip/Code is required'),
     enrollment_no: Yup.number().required('Enrollment No is required'),
-    total_amount: Yup.number().required('Total Amount is required'),
+    // total_amount: Yup.number().required('Total Amount is required'),
     amount_paid: Yup.number().required('Amount Paid is required'),
-    // discount: Yup.number().required('Discount is required'),
-    // no_of_installments: Yup.number().required('Number of Installments is required'),
-    // upcoming_installment_date: Yup.date()
-    //   .nullable()
-    //   .required('Upcoming Installment Date is required'),
     profile_pic: Yup.mixed().required('Profile Picture is required'),
   });
-
   const defaultValues = useMemo(
     () => ({
       profile_pic: currentStudent?.profile_pic || '',
@@ -94,9 +88,9 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
       city: currentStudent?.address_detail?.city || 'Surat',
       zipcode: currentStudent?.address_detail?.zipcode || '',
       enrollment_no: currentStudent?.enrollment_no || '',
-      total_amount: currentStudent?.fee_detail?.total_amount || '',
-      discount: currentStudent?.fee_detail?.discount || null,
-      amount_paid: currentStudent?.fee_detail?.amount_paid || '',
+      total_amount: currentStudent?.fee_detail?.total_amount || 0,
+      discount: currentStudent?.fee_detail?.discount || 0,
+      amount_paid: currentStudent?.fee_detail?.amount_paid || 0,
       no_of_installments: currentStudent?.fee_detail?.no_of_installments || 0,
       upcoming_installment_date: currentStudent?.fee_detail?.upcoming_installment_date
         ? new Date(currentStudent?.fee_detail?.upcoming_installment_date)
@@ -179,7 +173,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
       zipcode: data.zipcode,
       enrollment_no: Number(data.enrollment_no),
       total_amount: Number(data.total_amount),
-      amount_paid: Number(data.amount_paid),
+      amount_paid: Number(data.amount_paid) || 0,
       discount: Number(data.discount),
       upcoming_installment_date: data.upcoming_installment_date || new Date(),
       no_of_installments: Number(data.no_of_installments) || 0,

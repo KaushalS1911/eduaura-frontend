@@ -41,8 +41,17 @@ const BatchNewForm = () => {
     technology: Yup.string().required('Technology is required'),
     batch_time: Yup.string().required('Time is required'),
     batch_name: Yup.string().required('Batch Name is required'),
-    // faculty: Yup.string().required('Faculty Name is required'),
-    batch_members: Yup.array().required('Batch Member is required'),
+    faculty: Yup.object().shape({
+      _id: Yup.string().required('Faculty Name is required'),
+    }),
+    batch_members: Yup.array()
+      .of(
+        Yup.object().shape({
+          _id: Yup.string().required('Batch Member is required'),
+        })
+      )
+      .required('At least one Batch Member is required')
+      .min(1, 'At least one Batch Member is required'),
   });
 
   const methods = useForm({
@@ -57,11 +66,9 @@ const BatchNewForm = () => {
   });
 
   const {
-    reset,
-    setValue,
     handleSubmit,
     control,
-    formState: { isSubmitting },
+    formState: { errors },
   } = methods;
 
   const onSubmit = handleSubmit(async (data) => {
@@ -81,17 +88,6 @@ const BatchNewForm = () => {
       console.log('Error:', error);
     }
   });
-  const technology = [
-    'Full-Stack',
-    'Flutter',
-    'Game',
-    'Ui/Ux',
-    'C++ programing',
-    'C programing',
-    'CCC language',
-    'HTML',
-    'CSS',
-  ];
   const renderDetails = (
     <>
       {mdUp && (
@@ -118,26 +114,30 @@ const BatchNewForm = () => {
               options={configs?.courses?.map((option) => option)}
               getOptionLabel={(option) => option}
             />
-            {/* <RHFTextField name="technology" label="Technology" /> */}
             <RHFTextField name="batch_name" label="Batch Name" />
             <Controller
               name="batch_time"
               control={control}
               render={({ field }) => (
-                <MobileTimePicker
-                  orientation="portrait"
-                  label="Batch Time"
-                  value={field.value}
-                  onChange={(newValue) => field.onChange(newValue)}
-                  slotProps={{
-                    textField: {
-                      fullWidth: true,
-                      margin: 'normal',
-                    },
-                  }}
-                />
+                <>
+                  <MobileTimePicker
+                    orientation="portrait"
+                    label="Batch Time"
+                    value={field.value}
+                    onChange={(newValue) => field.onChange(newValue)}
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        margin: 'normal',
+                        error: !!errors.batch_time,
+                        helperText: errors.batch_time?.message,
+                      },
+                    }}
+                  />
+                </>
               )}
             />
+
             <RHFAutocomplete
               name="faculty"
               type="faculty"
@@ -152,6 +152,11 @@ const BatchNewForm = () => {
               labelName="Batch Members"
               control={control}
               studentName={studentName}
+              renderError={({ message }) => (
+                <Typography variant="body2" color="error">
+                  {message}
+                </Typography>
+              )}
             />
           </Stack>
         </Card>

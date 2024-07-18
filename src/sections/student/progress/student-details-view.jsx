@@ -54,12 +54,12 @@ export default function StudentDetailsView({ currentStudent, mutate }) {
       language: [{ value: 'nodejs', label: 'Node js' }],
     },
     {
-      course: 'Python',
-      language: [{ value: 'python', label: 'Python' }],
-    },
-    {
       course: 'React js',
       language: [{ value: 'reactjs', label: 'React js' }],
+    },
+    {
+      course: 'Python',
+      language: [{ value: 'python', label: 'Python' }],
     },
     {
       course: 'Angular JS',
@@ -82,10 +82,6 @@ export default function StudentDetailsView({ currentStudent, mutate }) {
       language: [{ value: 'ios', label: 'IOS' }],
     },
     {
-      course: 'PythonAdvance PHP',
-      language: [{ value: 'advancephp', label: 'Advance PHP' }],
-    },
-    {
       course: 'Advance PHP',
       language: [{ value: 'advancephp', label: 'Advance PHP' }],
     },
@@ -96,6 +92,16 @@ export default function StudentDetailsView({ currentStudent, mutate }) {
     {
       course: 'Wordpress',
       language: [{ value: 'wordpress', label: 'Wordpress' }],
+    },
+    {
+      course: 'Master in UI/UX Design',
+      language: [
+        { value: 'adobeillustrator', label: 'Adobe illustrator' },
+        { value: 'adobephotoshop', label: 'Adobe phtoshope' },
+        { value: 'adobexd', label: 'Adobe xd' },
+        { value: 'figma', label: 'Figma' },
+        { value: 'canva', label: 'Canva' },
+      ],
     },
     {
       course: 'Master In Web Design',

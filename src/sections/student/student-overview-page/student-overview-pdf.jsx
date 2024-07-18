@@ -588,33 +588,28 @@ const StudentOverviewPDF = ({
           </View>
         </View>
         <View>
-          {currentStudentExams?.map(
-            (row, index) => (
-              console.log(row),
-              (
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    padding: '6px 0px',
-                  }}
-                  key={row.id}
-                >
-                  <View style={{ width: '80px', textAlign: 'center' }}>
-                    <Text style={{ fontSize: '10px' }}>{index + 1}</Text>
-                  </View>
-                  <View style={{ width: '350px', textAlign: 'center' }}>
-                    <Text>{row?.examTitle}</Text>
-                  </View>
-                  <View style={{ width: '350px', textAlign: 'center' }}>
-                    <Text>{fDate(row?.examDate)}</Text>
-                  </View>
-                  <View style={{ width: '350px', textAlign: 'center' }}>
-                    <Text>{row?.totalMarks}</Text>
-                  </View>
-                </View>
-              )
-            )
-          )}
+          {studentData?.course_completed?.map((row, index) => (
+            <View
+              style={{
+                flexDirection: 'row',
+                padding: '6px 0px',
+              }}
+              key={row?.id}
+            >
+              <View style={{ width: '80px', textAlign: 'center' }}>
+                <Text style={{ fontSize: '10px' }}>{index + 1}</Text>
+              </View>
+              <View style={{ width: '350px', textAlign: 'center' }}>
+                <Text>{row?.language?.label}</Text>
+              </View>
+              <View style={{ width: '350px', textAlign: 'center' }}>
+                <Text>{fDate(row?.date)}</Text>
+              </View>
+              <View style={{ width: '350px', textAlign: 'center' }}>
+                <Text>Completed</Text>
+              </View>
+            </View>
+          ))}
         </View>
       </View>
     </>
@@ -671,6 +666,9 @@ const StudentOverviewPDF = ({
         {attendanceCounts != {} && <View style={{ margin: '5px 0px' }}>{AttendanceDetails}</View>}
         {currentStudentExams[0] && <View style={{ margin: '5px 0px' }}>{ExamDetails}</View>}
         {studentData?.remarks[0] && <View style={{ margin: '5px 0px' }}>{RemarkDetails}</View>}
+        {studentData?.course_completed[0] && (
+          <View style={{ margin: '5px 0px' }}>{CourseDetails}</View>
+        )}
       </Page>
     </Document>
   );

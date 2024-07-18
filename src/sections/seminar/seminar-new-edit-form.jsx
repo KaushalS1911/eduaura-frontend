@@ -25,6 +25,7 @@ import { useSnackbar } from 'src/components/snackbar';
 import { paths } from 'src/routes/paths';
 import { MobileDateTimePicker } from '@mui/x-date-pickers';
 import { useGetConfigs } from '../../api/config';
+
 export default function SeminarNewEditForm({ SeminarId }) {
   const { user } = useAuthContext();
   const [users, setUsers] = useState([]);
@@ -35,11 +36,16 @@ export default function SeminarNewEditForm({ SeminarId }) {
   const [dateTime, setDateTime] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
   const { configs } = useGetConfigs();
+
   const NewUserSchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
     schedule_by: Yup.string().required('Schedule by is required'),
-    date_time: Yup.date().required('Date and Time are required').nullable(),
+    date_time: Yup.date().required('Date and Time are required'),
+    role: Yup.string().required('Role is required'),
+    users: Yup.array().min(1, 'At least one user must be selected').required('Users are required'),
+    desc: Yup.string().required('Description is required'),
   });
+
   const methods = useForm({
     resolver: yupResolver(NewUserSchema),
     defaultValues: {
@@ -51,7 +57,16 @@ export default function SeminarNewEditForm({ SeminarId }) {
       users: [],
     },
   });
-  const ROLE = ['Employee', 'Student'];
+
+  const {
+    handleSubmit,
+    control,
+    formState: { isSubmitting, errors },
+    setValue,
+    reset,
+    watch,
+  } = methods;
+
   useEffect(() => {
     const getUsers = async () => {
       try {
@@ -65,15 +80,9 @@ export default function SeminarNewEditForm({ SeminarId }) {
     };
     getUsers();
   }, [user?.company_id]);
+
   const filter = allUser.map((data) => `${data?.firstName} ${data?.lastName}`);
-  const {
-    handleSubmit,
-    control,
-    formState: { isSubmitting },
-    setValue,
-    reset,
-    watch,
-  } = methods;
+
   useEffect(() => {
     const fetchSeminarById = async () => {
       try {
@@ -104,6 +113,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
     };
     fetchSeminarById();
   }, [SeminarId, reset]);
+
   const postSeminar = async (payload) => {
     try {
       const URL = `${import.meta.env.VITE_AUTH_API}/api/company/seminar`;
@@ -114,6 +124,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
       throw error;
     }
   };
+
   const updateSeminar = async (payload) => {
     try {
       const URL = `${import.meta.env.VITE_AUTH_API}/api/company/seminar/${SeminarId}`;
@@ -124,6 +135,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
       throw error;
     }
   };
+
   const onSubmit = async (data) => {
     const assignObject = allUser.find(
       (item) => `${item.firstName} ${item.lastName}` === data.schedule_by
@@ -157,6 +169,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
       });
     }
   };
+
   const fetchUsers = async (role) => {
     try {
       const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/role/${role}`;
@@ -166,11 +179,13 @@ export default function SeminarNewEditForm({ SeminarId }) {
       console.error('Failed to fetch users:', error);
     }
   };
+
   useEffect(() => {
     if (selectedRole) {
       fetchUsers(selectedRole);
     }
   }, [selectedRole]);
+
   useEffect(() => {
     const subscription = watch((value, { name }) => {
       if (name === 'role') {
@@ -180,6 +195,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
     });
     return () => subscription.unsubscribe();
   }, [watch, setValue]);
+
   const seminarDetails = (
     <>
       {mdUp && (
@@ -204,7 +220,8 @@ export default function SeminarNewEditForm({ SeminarId }) {
                 md: 'repeat(1, 1fr)',
               }}
             >
-              <RHFTextField name="title" label="Title" />
+              <RHFTextField name="title" label="Title" error={!!errors.title} />
+
               <RHFAutocomplete
                 name="schedule_by"
                 label="Schedule By"
@@ -212,7 +229,9 @@ export default function SeminarNewEditForm({ SeminarId }) {
                 fullWidth
                 options={filter}
                 getOptionLabel={(option) => option}
+                error={!!errors.schedule_by}
               />
+
               <MobileDateTimePicker
                 value={dateTime}
                 onChange={(newValue) => {
@@ -224,6 +243,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
                     margin: 'normal',
                   },
                 }}
+                error={!!errors?.date_time}
               />
               <RHFAutocomplete
                 name="role"
@@ -232,7 +252,9 @@ export default function SeminarNewEditForm({ SeminarId }) {
                 fullWidth
                 options={configs?.roles}
                 getOptionLabel={(option) => option}
+                error={!!errors.role}
               />
+
               <Controller
                 name="users"
                 control={control}
@@ -264,16 +286,25 @@ export default function SeminarNewEditForm({ SeminarId }) {
                       ))
                     }
                     renderInput={(params) => <TextField {...params} label="Users" />}
+                    error={!!errors?.users}
                   />
                 )}
               />
-              <RHFTextField name="desc" label="Description" multiline rows={4} />
+
+              <RHFTextField
+                name="desc"
+                label="Description"
+                multiline
+                rows={4}
+                error={!!errors?.desc}
+              />
             </Box>
           </Stack>
         </Card>
       </Grid>
     </>
   );
+
   const renderOption = (
     <>
       {mdUp && <Grid item md={8} />}
@@ -284,6 +315,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
       </Grid>
     </>
   );
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -295,6 +327,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
     </FormProvider>
   );
 }
+
 SeminarNewEditForm.propTypes = {
   SeminarId: PropTypes.string,
 };

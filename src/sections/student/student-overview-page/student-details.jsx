@@ -514,7 +514,7 @@ export default function StudentDetails({ studentData }) {
                       fontSize: '16px',
                     }}
                   >
-                    Course Name
+                    Language Name
                   </TableCell>
                   <TableCell
                     sx={{
@@ -537,12 +537,12 @@ export default function StudentDetails({ studentData }) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {currentStudentExams?.map((row, index) => (
-                  <TableRow key={row.id}>
+                {studentData?.course_completed?.map((row, index) => (
+                  <TableRow key={row?.id}>
                     <TableCell>{index + 1}</TableCell>
-                    <TableCell>{row?.examTitle}</TableCell>
-                    <TableCell>{fDate(row?.examDate)}</TableCell>
-                    <TableCell>{row?.totalMarks}</TableCell>
+                    <TableCell>{row?.language?.label}</TableCell>
+                    <TableCell>{fDate(row?.date)}</TableCell>
+                    <TableCell>Completed</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -601,7 +601,7 @@ export default function StudentDetails({ studentData }) {
         {attendanceCounts != {} && <Box sx={{ my: 5, py: 1 }}>{AttendanceDetails}</Box>}
         {currentStudentExams[0] && <Box sx={{ my: 5, py: 1 }}>{ExamDetails}</Box>}
         {studentData?.remarks[0] && <Box sx={{ my: 5, py: 1 }}>{RemarkDetails}</Box>}
-        {/* <Box sx={{ my: 5, py: 1 }}>{CourseDetails}</Box> */}
+        {studentData?.course_completed[0] && <Box sx={{ my: 5, py: 1 }}>{CourseDetails}</Box>}
       </Card>
     </>
   );

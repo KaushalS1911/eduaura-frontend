@@ -14,7 +14,13 @@ import DashboardCourseChart from '../dashboard-course-chart';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useAuthContext } from 'src/auth/hooks';
-import { useGetAttendance, useGetCourses, useGetDashboardData, useGetDemos } from '../../../api/dashboard';
+import {
+  useGetAttendance,
+  useGetCourses,
+  useGetDashboardData,
+  useGetDemos,
+} from '../../../api/dashboard';
+import { useGetConfigs } from 'src/api/config';
 
 // ----------------------------------------------------------------------
 
@@ -25,28 +31,34 @@ export default function DashboardView() {
   const [attendence, setAttendence] = useState({});
   const [course, setCourse] = useState({});
   const [dashboardData, setDashboardData] = useState([]);
-const {demos} = useGetDemos()
-  const {dashboard} = useGetDashboardData()
-  const {courses}= useGetCourses()
-  const {attendance} = useGetAttendance()
+  const [labs, setLabs] = useState(0); // Added state for labs
+
+  const { demos } = useGetDemos();
+  const { dashboard } = useGetDashboardData();
+  const { courses } = useGetCourses();
+  const { attendance } = useGetAttendance();
+  const { configs } = useGetConfigs();
 
   useEffect(() => {
-    if(demos){
-      setDemo(demos)
+    if (demos) {
+      setDemo(demos);
     }
-    if(dashboard){
-      setDashboardData(dashboard)
+    if (dashboard) {
+      setDashboardData(dashboard);
     }
-    if(courses){
-      setCourse(courses)
+    if (courses) {
+      setCourse(courses);
     }
-    if(attendance){
-      setAttendence(attendance)
+    if (attendance) {
+      setAttendence(attendance);
     }
+    if (configs && configs.classrooms) {
+      // Extract labs from configs
+      setLabs(configs.classrooms.length);
+    }
+  }, [demos, dashboard, courses, attendance, configs]);
 
-  }, [demos,dashboard,courses,attendance]);
-
-    const output = [];
+  const output = [];
 
   for (const [key, value] of Object.entries(course)) {
     output.push({ label: key, value: value });
@@ -54,49 +66,46 @@ const {demos} = useGetDemos()
 
   const settings = useSettingsContext();
 
-
-
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
-
       <Grid container spacing={3}>
         <Grid xs={12} sm={6} md={3}>
           <DashboardCount
-            title='Students'
+            title="Students"
             total={dashboardData?.students}
-            icon={<img alt='icon' src='/assets/icons/glass/ic_glass_bag.png' />}
+            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_bag.png" />}
           />
         </Grid>
         <Grid xs={12} sm={6} md={3}>
           <DashboardCount
-            title='Developers'
+            title="Developers"
             total={dashboardData?.developers}
-            color='info'
-            icon={<img alt='icon' src='/assets/icons/glass/ic_glass_users.png' />}
+            color="info"
+            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_users.png" />}
           />
         </Grid>
 
         <Grid xs={12} sm={6} md={3}>
           <DashboardCount
-            title='Faculties'
+            title="Faculties"
             total={dashboardData?.faculties}
-            color='warning'
-            icon={<img alt='icon' src='/assets/icons/glass/ic_glass_buy.png' />}
+            color="warning"
+            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_buy.png" />}
           />
         </Grid>
 
         <Grid xs={12} sm={6} md={3}>
           <DashboardCount
-            title='Labs'
-            total={20}
-            color='error'
-            icon={<img alt='icon' src='/assets/icons/glass/ic_glass_message.png' />}
+            title="Labs"
+            total={labs} 
+            color="error"
+            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_message.png" />}
           />
         </Grid>
         <Grid xs={12} md={8}>
           <Stack spacing={3}>
             <DashboardDemoInquiryChart
-              title='Visits & Inquiry'
+              title="Visits & Inquiry"
               // subheader="(+43% Income | +12% Expense) than last year"
               chart={{
                 categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
@@ -167,7 +176,7 @@ const {demos} = useGetDemos()
         <Grid xs={12} md={4}>
           <Stack spacing={3}>
             <DashboardUpcomingDemo
-              title='Upcoming Demos'
+              title="Upcoming Demos"
               subheader={`You have ${demo.length} demos`}
               list={demo.slice(-5)}
             />
@@ -176,7 +185,7 @@ const {demos} = useGetDemos()
         <Grid xs={12} md={8}>
           <Stack spacing={3}>
             <DashboardCourseChart
-              title='Courses analytics'
+              title="Courses analytics"
               chart={{
                 series: output,
                 colors: [

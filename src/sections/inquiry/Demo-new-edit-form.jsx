@@ -24,6 +24,13 @@ export default function DemoNewEditForm({ open, onClose, currentId }) {
   const [dateTime, setDateTime] = useState(null);
 
   const NewUserSchema = Yup.object().shape({
+    faculty_name: Yup.object()
+      .shape({
+        label: Yup.string().required('Faculty name is required'),
+        id: Yup.string().required('Faculty id is required'),
+      })
+      .nullable()
+      .required('Faculty name is required'),
     date: Yup.date().required('Date is required'),
     technology: Yup.string().required('Technology is required'),
     detail: Yup.string().required('Detail is required'),
@@ -56,7 +63,7 @@ export default function DemoNewEditForm({ open, onClose, currentId }) {
     defaultValues: {
       inquiry_id: currentId,
       company_id: user?.company_id,
-      faculty_id: '',
+      faculty_name: null,
       date: null,
       technology: '',
       detail: '',
@@ -87,7 +94,7 @@ export default function DemoNewEditForm({ open, onClose, currentId }) {
         detail: data.detail,
         technology: data.technology,
         date: dayjs(data.date).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'),
-        faculty_id: selectedFacultyId,
+        faculty_id: data.faculty_name.id,
       };
       const response = await createDemo(payload);
       enqueueSnackbar(response.message, {
@@ -126,25 +133,30 @@ export default function DemoNewEditForm({ open, onClose, currentId }) {
                   md: 'repeat(1, 1fr)',
                 }}
               >
-                <RHFAutocomplete
+                <Controller
                   name="faculty_name"
-                  label="Faculty Name"
-                  placeholder="Faculty Name"
-                  fullWidth
-                  options={facultyOptions}
-                  getOptionLabel={(option) => option.label}
-                  onChange={(event, value) => {
-                    const selectedOption = facultyOptions.find(
-                      (option) => option.label === value?.label
-                    );
-                    setSelectedFacultyId(selectedOption ? selectedOption.id : null);
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
+                  control={control}
+                  render={({ field, fieldState: { error } }) => (
+                    <RHFAutocomplete
+                      {...field}
                       label="Faculty Name"
                       placeholder="Faculty Name"
-                      fullWidth
+                      options={facultyOptions}
+                      getOptionLabel={(option) => option.label}
+                      onChange={(event, value) => {
+                        field.onChange(value);
+                        setSelectedFacultyId(value?.id || null);
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Faculty Name"
+                          placeholder="Faculty Name"
+                          fullWidth
+                          error={!!error}
+                          helperText={error ? error.message : null}
+                        />
+                      )}
                     />
                   )}
                 />
@@ -173,7 +185,6 @@ export default function DemoNewEditForm({ open, onClose, currentId }) {
                     </LocalizationProvider>
                   )}
                 />
-
                 {configs?.developer_type && (
                   <RHFAutocomplete
                     name="technology"

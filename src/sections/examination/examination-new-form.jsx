@@ -23,16 +23,6 @@ import { useGetFaculty } from 'src/api/faculty';
 import { programmingLanguages } from '../../_mock/_inquiry';
 import { paths } from '../../routes/paths';
 
-const types = [
-  'Rent',
-  'Electricity Bill',
-  'Salary',
-  'Stationary',
-  'Maintenance',
-  'New Asset Purchase',
-  'Office Expense',
-];
-
 const ExaminationNewForm = () => {
   const router = useRouter();
   const mdUp = useResponsive('up', 'md');
@@ -57,6 +47,8 @@ const ExaminationNewForm = () => {
     desc: Yup.string().required('Description is required'),
     date: Yup.date().required('Date is required'),
     total_marks: Yup.number().required('Total marks is required'),
+    conducted_by: Yup.object().required('Faculty is required'),
+    students: Yup.array().min(1, 'Select at least one student').required('Students are required'),
   });
 
   const methods = useForm({
@@ -143,7 +135,7 @@ const ExaminationNewForm = () => {
                     {...field}
                     value={field.value}
                     onChange={(newDate) => {
-                      setValue('date', newDate);
+                      setValue('date', newDate, { shouldValidate: true });
                       field.onChange(newDate);
                     }}
                     format="dd/MM/yyyy"
@@ -174,6 +166,7 @@ const ExaminationNewForm = () => {
               studentName={studentName}
               labelName="Select students"
             />
+
             <RHFTextField name="desc" label="Description" multiline rows={3} />
           </Stack>
         </Card>
