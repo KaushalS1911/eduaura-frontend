@@ -32,7 +32,8 @@ export default function BatchTableRow({
   onSelectRow,
   onEditRow,
   onDeleteRow,
-  index, onRegisterViewRow
+  index,
+  onRegisterViewRow,
 }) {
   const { technology, batch_name, batch_time, batch_members, faculty } = row;
 
@@ -107,7 +108,9 @@ export default function BatchTableRow({
                   },
                 }}
               >
-                <TableCell sx={{width: 88}}><Box >{item?.enrollment_no}</Box></TableCell>
+                <TableCell sx={{ width: 88 }}>
+                  <Box>{item?.enrollment_no}</Box>
+                </TableCell>
                 <Avatar
                   src={item?.profile_pic}
                   variant="circular"
@@ -127,8 +130,8 @@ export default function BatchTableRow({
                   }}
                 />
 
-                <TableCell sx={{width: 260}}>{item?.course}</TableCell>
-                <TableCell sx={{width: 126}}>{item?.contact}</TableCell>
+                <TableCell sx={{ width: 260 }}>{item?.course}</TableCell>
+                <TableCell sx={{ width: 126 }}>{item?.contact}</TableCell>
               </Stack>
             ))}
           </Stack>

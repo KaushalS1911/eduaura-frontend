@@ -63,7 +63,7 @@ export default function DashboardView() {
   for (const [key, value] of Object.entries(course)) {
     output.push({ label: key, value: value });
   }
-
+  console.log(output);
   const settings = useSettingsContext();
 
   return (
@@ -97,7 +97,7 @@ export default function DashboardView() {
         <Grid xs={12} sm={6} md={3}>
           <DashboardCount
             title="Labs"
-            total={labs} 
+            total={labs}
             color="error"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_message.png" />}
           />

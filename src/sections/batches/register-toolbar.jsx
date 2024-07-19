@@ -24,14 +24,14 @@ import BatchRegisterPDF from './batch-register-pdf';
 // ----------------------------------------------------------------------
 
 export default function BatchToolbar({
-                                         invoice,
-                                       configs,
-                                         currentStatus,
-                                         statusOptions,
-                                         onChangeStatus,
-                                         invoiceDetails,
-  data1
-                                       }) {
+  invoice,
+  configs,
+  currentStatus,
+  statusOptions,
+  onChangeStatus,
+  invoiceDetails,
+  data1,
+}) {
   const router = useRouter();
 
   const view = useBoolean();
@@ -52,13 +52,7 @@ export default function BatchToolbar({
           </Tooltip>
 
           <PDFDownloadLink
-            document={
-              <BatchRegisterPDF
-                student={invoice}
-                data={data1}
-                configs={configs}
-              />
-            }
+            document={<BatchRegisterPDF student={invoice} data={data1} configs={configs} />}
             fileName={invoice[0]?._id}
             style={{ textDecoration: 'none' }}
           >
@@ -96,11 +90,7 @@ export default function BatchToolbar({
 
           <Box sx={{ flexGrow: 1, height: 1, overflow: 'hidden' }}>
             <PDFViewer width="100%" height="100%" style={{ border: 'none' }}>
-              <BatchRegisterPDF
-                student={invoice}
-                data={data1}
-                configs={configs}
-              />
+              <BatchRegisterPDF student={invoice} data={data1} configs={configs} />
             </PDFViewer>
           </Box>
         </Box>

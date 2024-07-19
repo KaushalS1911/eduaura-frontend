@@ -52,7 +52,7 @@ import { LoadingScreen } from '../../../components/loading-screen';
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...ORDER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'srNo', label: '#', align: 'center'  },
+  { id: 'srNo', label: '#', align: 'center' },
   { id: 'faculty', label: 'Faculty' },
   { id: ' batchName', label: ' Batch' },
   { id: 'technology', label: 'Technology' },
@@ -73,7 +73,7 @@ const defaultFilters = {
 export default function BatchListView() {
   const { enqueueSnackbar } = useSnackbar();
   const { user } = useAuthContext();
-  const { batch,batchLoading, mutate } = useGetBatches(`${user?.company_id}`);
+  const { batch, batchLoading, mutate } = useGetBatches(`${user?.company_id}`);
   const table = useTable({ defaultOrderBy: 'orderNumber' });
 
   const settings = useSettingsContext();
@@ -197,115 +197,118 @@ export default function BatchListView() {
 
   return (
     <>
-      {batchLoading ? <LoadingScreen /> : <Container maxWidth={settings.themeStretch ? false : 'lg'}>
-        <CustomBreadcrumbs
-          heading="Batch"
-          links={[
-            {
-              name: 'Dashboard',
-              href: paths.dashboard.root,
-            },
-            {
-              name: 'Batch',
-              href: paths.dashboard.batches.root,
-            },
-          ]}
-          action={
-            <Button
-              component={RouterLink}
-              href={paths.dashboard.batches.new}
-              variant="contained"
-              startIcon={<Iconify icon="mingcute:add-line" />}
-            >
-              New Batch
-            </Button>
-          }
-          sx={{
-            mb: { xs: 3, md: 5 },
-          }}
-        />
+      {batchLoading ? (
+        <LoadingScreen />
+      ) : (
+        <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+          <CustomBreadcrumbs
+            heading="Batch"
+            links={[
+              {
+                name: 'Dashboard',
+                href: paths.dashboard.root,
+              },
+              {
+                name: 'Batch',
+                href: paths.dashboard.batches.root,
+              },
+            ]}
+            action={
+              <Button
+                component={RouterLink}
+                href={paths.dashboard.batches.new}
+                variant="contained"
+                startIcon={<Iconify icon="mingcute:add-line" />}
+              >
+                New Batch
+              </Button>
+            }
+            sx={{
+              mb: { xs: 3, md: 5 },
+            }}
+          />
 
-        <Card>
-          <BatchTableToolbar filters={filters} onFilters={handleFilters} dateError={dateError} />
+          <Card>
+            <BatchTableToolbar filters={filters} onFilters={handleFilters} dateError={dateError} />
 
-          {canReset && (
-            <BatchTableFiltersResult
-              filters={filters}
-              onFilters={handleFilters}
-              onResetFilters={handleResetFilters}
-              results={dataFiltered.length}
-              sx={{ p: 2.5, pt: 0 }}
-            />
-          )}
+            {canReset && (
+              <BatchTableFiltersResult
+                filters={filters}
+                onFilters={handleFilters}
+                onResetFilters={handleResetFilters}
+                results={dataFiltered.length}
+                sx={{ p: 2.5, pt: 0 }}
+              />
+            )}
 
-          <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-            <TableSelectedAction
-              dense={table.dense}
-              numSelected={table.selected.length}
-              rowCount={dataFiltered.length}
-              action={
-                <Tooltip title="Delete">
-                  <IconButton color="primary" onClick={confirm.onTrue}>
-                    <Iconify icon="solar:trash-bin-trash-bold" />
-                  </IconButton>
-                </Tooltip>
-              }
-            />
+            <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+              <TableSelectedAction
+                dense={table.dense}
+                numSelected={table.selected.length}
+                rowCount={dataFiltered.length}
+                action={
+                  <Tooltip title="Delete">
+                    <IconButton color="primary" onClick={confirm.onTrue}>
+                      <Iconify icon="solar:trash-bin-trash-bold" />
+                    </IconButton>
+                  </Tooltip>
+                }
+              />
 
-            <Scrollbar>
-              <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
-                <TableHeadCustom
-                  order={table.order}
-                  orderBy={table.orderBy}
-                  headLabel={TABLE_HEAD}
-                  rowCount={dataFiltered.length}
-                  numSelected={table.selected.length}
-                  onSort={table.onSort}
-                />
-
-                <TableBody>
-                  {dataFiltered
-                    .slice(
-                      table.page * table.rowsPerPage,
-                      table.page * table.rowsPerPage + table.rowsPerPage
-                    )
-                    .map((row, index) => (
-                      <BatchTableRow
-                        key={row.id}
-                        row={row}
-                        index={index}
-                        selected={table.selected.includes(row._id)}
-                        onSelectRow={() => table.onSelectRow(row._id)}
-                        onDeleteRow={() => handleDeleteRow(row._id)}
-                        onEditRow={() => handleEditRow(row._id)}
-                        onViewRow={() => handleViewRow(row._id)}
-                        onRegisterViewRow={() => handleRegisterViewRow(row._id)}
-                      />
-                    ))}
-
-                  <TableEmptyRows
-                    height={denseHeight}
-                    emptyRows={emptyRows(table.page, table.rowsPerPage, dataFiltered.length)}
+              <Scrollbar>
+                <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
+                  <TableHeadCustom
+                    order={table.order}
+                    orderBy={table.orderBy}
+                    headLabel={TABLE_HEAD}
+                    rowCount={dataFiltered.length}
+                    numSelected={table.selected.length}
+                    onSort={table.onSort}
                   />
 
-                  <TableNoData notFound={notFound} />
-                </TableBody>
-              </Table>
-            </Scrollbar>
-          </TableContainer>
+                  <TableBody>
+                    {dataFiltered
+                      .slice(
+                        table.page * table.rowsPerPage,
+                        table.page * table.rowsPerPage + table.rowsPerPage
+                      )
+                      .map((row, index) => (
+                        <BatchTableRow
+                          key={row.id}
+                          row={row}
+                          index={index}
+                          selected={table.selected.includes(row._id)}
+                          onSelectRow={() => table.onSelectRow(row._id)}
+                          onDeleteRow={() => handleDeleteRow(row._id)}
+                          onEditRow={() => handleEditRow(row._id)}
+                          onViewRow={() => handleViewRow(row._id)}
+                          onRegisterViewRow={() => handleRegisterViewRow(row._id)}
+                        />
+                      ))}
 
-          <TablePaginationCustom
-            count={dataFiltered.length}
-            page={table.page}
-            rowsPerPage={table.rowsPerPage}
-            onPageChange={table.onChangePage}
-            onRowsPerPageChange={table.onChangeRowsPerPage}
-            dense={table.dense}
-            onChangeDense={table.onChangeDense}
-          />
-        </Card>
-      </Container>}
+                    <TableEmptyRows
+                      height={denseHeight}
+                      emptyRows={emptyRows(table.page, table.rowsPerPage, dataFiltered.length)}
+                    />
 
+                    <TableNoData notFound={notFound} />
+                  </TableBody>
+                </Table>
+              </Scrollbar>
+            </TableContainer>
+
+            <TablePaginationCustom
+              count={dataFiltered.length}
+              page={table.page}
+              rowsPerPage={table.rowsPerPage}
+              onPageChange={table.onChangePage}
+              onRowsPerPageChange={table.onChangeRowsPerPage}
+              dense={table.dense}
+              onChangeDense={table.onChangeDense}
+            />
+          </Card>
+        </Container>
+      )}
 
       <ConfirmDialog
         open={confirm.value}

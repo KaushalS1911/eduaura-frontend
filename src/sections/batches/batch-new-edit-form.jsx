@@ -29,7 +29,6 @@ export default function BatchNewEditForm({ batchId }) {
   const { faculty } = useGetFaculty();
   const { configs } = useGetConfigs();
 
-
   const [studentName, setStudentName] = useState([]);
   const [facultyName, setFacultyName] = useState([]);
   useEffect(() => {
@@ -52,7 +51,7 @@ export default function BatchNewEditForm({ batchId }) {
     resolver: yupResolver(NewBlogSchema),
     defaultValues: {
       technology: '',
-      faculty:null ,
+      faculty: null,
       batch_time: null,
       batch_name: '',
       batch_members: [],
@@ -98,7 +97,10 @@ export default function BatchNewEditForm({ batchId }) {
         faculty: data?.faculty?._id,
       };
       const URL = `${import.meta.env.VITE_AUTH_API}/api/company/batch/${batchId}`;
-      await axios.put(URL, formattedData).then((res) => enqueueSnackbar('Update success!')).catch((err) => console.log(err));
+      await axios
+        .put(URL, formattedData)
+        .then((res) => enqueueSnackbar('Update success!'))
+        .catch((err) => console.log(err));
 
       router.push(paths.dashboard.batches.root);
       preview.onFalse();
@@ -106,17 +108,17 @@ export default function BatchNewEditForm({ batchId }) {
       console.log('Error:', error);
     }
   });
-    const technology = [
-      'Full-Stack',
-      'Flutter',
-      'Game',
-      'Ui/Ux',
-      'C++ programing',
-      'C programing',
-      'CCC language',
-      'HTML',
-      'CSS',
-    ];
+  const technology = [
+    'Full-Stack',
+    'Flutter',
+    'Game',
+    'Ui/Ux',
+    'C++ programing',
+    'C programing',
+    'CCC language',
+    'HTML',
+    'CSS',
+  ];
 
   const renderDetails = (
     <>
@@ -174,7 +176,7 @@ export default function BatchNewEditForm({ batchId }) {
               getOptionLabel={(option) => `${option?.firstName} ${option?.lastName}`}
             />
             <RHFAutocomplete1
-              name='batch_members'
+              name="batch_members"
               labelName="Batch Members"
               control={control}
               studentName={studentName}
@@ -192,9 +194,7 @@ export default function BatchNewEditForm({ batchId }) {
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
-      <Grid container>
-        {renderDetails}
-      </Grid>
+      <Grid container>{renderDetails}</Grid>
     </FormProvider>
   );
 }

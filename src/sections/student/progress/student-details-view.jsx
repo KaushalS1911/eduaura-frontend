@@ -150,6 +150,26 @@ export default function StudentDetailsView({ currentStudent, mutate }) {
       course: 'CSS',
       language: [{ value: 'css', label: 'CSS' }],
     },
+    {
+      course: 'Backend Development',
+      language: [
+        { value: 'mongodb', label: 'MongoDB' },
+        { value: 'mysql', label: 'MySQL' },
+        { value: 'node js', label: 'Node Js' },
+      ],
+    },
+    {
+      course: 'Frontend Development',
+      language: [
+        { value: 'c', label: 'C Programming' },
+        { value: 'c++', label: 'C++ programming' },
+        { value: 'html', label: 'HTML' },
+        { value: 'css', label: 'CSS' },
+        { value: 'bootstrap', label: 'Bootstrap' },
+        { value: 'javascript', label: 'JavaScript' },
+        { value: 'react', label: 'React' },
+      ],
+    },
   ];
 
   const courseDetails = allCourse.find((e) => e.course === currentStudent.course);

@@ -6,7 +6,6 @@ import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import BatchNewForm from '../batch-new-form';
 
-
 // ----------------------------------------------------------------------
 
 export default function BatchCreateView() {

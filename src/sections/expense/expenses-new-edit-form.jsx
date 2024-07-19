@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import * as Yup from 'yup';
 import PropTypes from 'prop-types';
 import { Controller, useForm } from 'react-hook-form';
@@ -33,34 +33,36 @@ const types = [
   'Office Expense',
 ];
 
+const NewBlogSchema = Yup.object().shape({
+  type: Yup.string().required('Type is required'),
+  desc: Yup.string().required('Description is required'),
+  date: Yup.date().nullable().required('Date is required'),
+  amount: Yup.number()
+    .required('Amount is required')
+    .positive('Amount must be positive')
+    .min(1, 'Amount must be greater than 0'),
+});
+
 export default function PostNewEditForm({ expensesId }) {
   const router = useRouter();
   const mdUp = useResponsive('up', 'md');
   const { enqueueSnackbar } = useSnackbar();
   const preview = useBoolean();
   const { configs } = useGetConfigs();
-
-
-  const NewBlogSchema = Yup.object().shape({
-    type: Yup.string().required('Type is required'),
-    desc: Yup.string().required('Description is required'),
-    date: Yup.date().required('Date is required'),
-    amount: Yup.number().required('Amount is required'),
-  });
+  const { user } = useAuthContext();
 
   const methods = useForm({
     resolver: yupResolver(NewBlogSchema),
     defaultValues: {
       type: '',
       desc: '',
-      date: null,
+      date: new Date() || '',
       amount: '',
     },
   });
-  const { user } = useAuthContext();
+
   const {
     reset,
-    setValue,
     handleSubmit,
     control,
     formState: { isSubmitting },
@@ -70,15 +72,13 @@ export default function PostNewEditForm({ expensesId }) {
     const fetchExpenseById = async () => {
       try {
         if (expensesId) {
-          const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${
-            user?.company_id
-          }/${expensesId}/expense`;
+          const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/${expensesId}/expense`;
           const response = await axios.get(URL);
           const { data } = response.data;
           reset({
             type: data.type,
             desc: data.desc,
-            date: data.date ? new Date(data.date) : null,
+            date: data.date ? new Date(data.date) : new Date(),
             amount: data.amount,
           });
         }
@@ -87,21 +87,19 @@ export default function PostNewEditForm({ expensesId }) {
       }
     };
     fetchExpenseById();
-  }, [expensesId, reset]);
+  }, [expensesId, reset, user?.company_id]);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      if (data) {
-        const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/${expensesId}/update-expense`;
-        await axios
-          .put(URL, data)
-          .then((res) => router.push(paths.dashboard.expenses.list))
-          .catch((err) => console.log(err));
-      }
-      preview.onFalse();
+      const URL = expensesId
+        ? `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/${expensesId}/update-expense`
+        : `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/create-expense`;
+
+      await axios.post(URL, data);
+      router.push(paths.dashboard.expenses.list);
       enqueueSnackbar(expensesId ? 'Update success!' : 'Create success!');
     } catch (error) {
-      console.error(error);
+      console.error('Submission Error:', error);
     }
   });
 
@@ -128,7 +126,7 @@ export default function PostNewEditForm({ expensesId }) {
               label="Type"
               placeholder="Choose a Type"
               fullWidth
-              options={configs?.expenses}
+              options={configs?.expenses || types}
               getOptionLabel={(option) => option}
             />
             <RHFTextField name="desc" label="Description" multiline rows={3} />
@@ -137,31 +135,31 @@ export default function PostNewEditForm({ expensesId }) {
               <Controller
                 name="date"
                 control={control}
-                render={({ field, fieldState: { error } }) => (
-                  <DatePicker
-                    {...field}
-                    value={field.value}
-                    onChange={(newDate) => {
-                      setValue('expenseDate', newDate);
-                      field.onChange(newDate);
-                    }}
-                    format="dd/MM/yyyy"
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        fullWidth
-                        error={!!error}
-                        helperText={error?.message}
-                      />
-                    )}
-                  />
-                )}
+                render={({ field, fieldState: { error } }) => {
+                  return (
+                    <DatePicker
+                      {...field}
+                      value={field.value || new Date()}
+                      onChange={(newDate) => {
+                        field.onChange(newDate);
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          fullWidth
+                          error={!!error}
+                          helperText={error?.message}
+                        />
+                      )}
+                    />
+                  );
+                }}
               />
             </Stack>
           </Stack>
         </Card>
         <Stack sx={{ my: '30px', alignItems: 'flex-end' }}>
-          <Button type="submit" variant="contained">
+          <Button type="submit" variant="contained" disabled={isSubmitting}>
             Submit
           </Button>
         </Stack>

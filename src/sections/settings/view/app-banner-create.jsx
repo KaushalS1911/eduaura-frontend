@@ -53,7 +53,6 @@ export default function AppbanerCreate() {
   };
   const handleUpload = () => {
     const formData = new FormData();
-    //f-banner:banner-imag
     formData.append('banner-image', files[0]);
     axios.post(`${import.meta.env.VITE_AUTH_API}/api/v1/company/${user?.company_id}/app-banner`, formData).then((res) => enqueueSnackbar('Banner Upload Successfully')).catch((err) => 'Something want wrong',{variant:"error"});
   };
