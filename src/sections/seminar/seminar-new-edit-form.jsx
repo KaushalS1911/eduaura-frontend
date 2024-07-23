@@ -15,7 +15,7 @@ import {
   Checkbox,
   Chip,
 } from '@mui/material';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { DateTimePicker, MobileDateTimePicker } from '@mui/x-date-pickers';
 import { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { useAuthContext } from 'src/auth/hooks';
@@ -23,9 +23,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import axios from 'axios';
 import { useSnackbar } from 'src/components/snackbar';
 import { paths } from 'src/routes/paths';
-import { MobileDateTimePicker } from '@mui/x-date-pickers';
 import { useGetConfigs } from '../../api/config';
-
 export default function SeminarNewEditForm({ SeminarId }) {
   const { user } = useAuthContext();
   const [users, setUsers] = useState([]);
@@ -33,10 +31,8 @@ export default function SeminarNewEditForm({ SeminarId }) {
   const [selectedRole, setSelectedRole] = useState('');
   const router = useRouter();
   const [allUser, setAllUser] = useState([]);
-  const [dateTime, setDateTime] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
   const { configs } = useGetConfigs();
-
   const NewUserSchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
     schedule_by: Yup.string().required('Schedule by is required'),
@@ -45,7 +41,6 @@ export default function SeminarNewEditForm({ SeminarId }) {
     users: Yup.array().min(1, 'At least one user must be selected').required('Users are required'),
     desc: Yup.string().required('Description is required'),
   });
-
   const methods = useForm({
     resolver: yupResolver(NewUserSchema),
     defaultValues: {
@@ -57,16 +52,14 @@ export default function SeminarNewEditForm({ SeminarId }) {
       users: [],
     },
   });
-
   const {
+    reset,
+    setValue,
     handleSubmit,
     control,
-    formState: { isSubmitting, errors },
-    setValue,
-    reset,
     watch,
+    formState: { isSubmitting, errors },
   } = methods;
-
   useEffect(() => {
     const getUsers = async () => {
       try {
@@ -80,9 +73,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
     };
     getUsers();
   }, [user?.company_id]);
-
   const filter = allUser.map((data) => `${data?.firstName} ${data?.lastName}`);
-
   useEffect(() => {
     const fetchSeminarById = async () => {
       try {
@@ -105,7 +96,6 @@ export default function SeminarNewEditForm({ SeminarId }) {
             })),
           });
           setSelectedRole(data?.attended_by[0]?.role);
-          setDateTime(data?.date_time ? new Date(data.date_time) : null);
         }
       } catch (error) {
         console.error('Failed to fetch seminar:', error);
@@ -113,7 +103,6 @@ export default function SeminarNewEditForm({ SeminarId }) {
     };
     fetchSeminarById();
   }, [SeminarId, reset]);
-
   const postSeminar = async (payload) => {
     try {
       const URL = `${import.meta.env.VITE_AUTH_API}/api/company/seminar`;
@@ -124,7 +113,6 @@ export default function SeminarNewEditForm({ SeminarId }) {
       throw error;
     }
   };
-
   const updateSeminar = async (payload) => {
     try {
       const URL = `${import.meta.env.VITE_AUTH_API}/api/company/seminar/${SeminarId}`;
@@ -135,8 +123,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
       throw error;
     }
   };
-
-  const onSubmit = async (data) => {
+  const onSubmit = handleSubmit(async (data) => {
     const assignObject = allUser.find(
       (item) => `${item.firstName} ${item.lastName}` === data.schedule_by
     );
@@ -144,7 +131,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
       title: data.title,
       desc: data.desc,
       company_id: user?.company_id,
-      date_time: dateTime,
+      date_time: data.date_time,
       schedule_by: assignObject?._id,
       attended_by: data.users.map((attended_by) => ({
         _id: attended_by._id,
@@ -168,8 +155,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
         variant: 'error',
       });
     }
-  };
-
+  });
   const fetchUsers = async (role) => {
     try {
       const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/role/${role}`;
@@ -179,13 +165,11 @@ export default function SeminarNewEditForm({ SeminarId }) {
       console.error('Failed to fetch users:', error);
     }
   };
-
   useEffect(() => {
     if (selectedRole) {
       fetchUsers(selectedRole);
     }
   }, [selectedRole]);
-
   useEffect(() => {
     const subscription = watch((value, { name }) => {
       if (name === 'role') {
@@ -195,7 +179,6 @@ export default function SeminarNewEditForm({ SeminarId }) {
     });
     return () => subscription.unsubscribe();
   }, [watch, setValue]);
-
   const seminarDetails = (
     <>
       {mdUp && (
@@ -221,7 +204,6 @@ export default function SeminarNewEditForm({ SeminarId }) {
               }}
             >
               <RHFTextField name="title" label="Title" error={!!errors.title} />
-
               <RHFAutocomplete
                 name="schedule_by"
                 label="Schedule By"
@@ -231,19 +213,23 @@ export default function SeminarNewEditForm({ SeminarId }) {
                 getOptionLabel={(option) => option}
                 error={!!errors.schedule_by}
               />
-
-              <MobileDateTimePicker
-                value={dateTime}
-                onChange={(newValue) => {
-                  setDateTime(newValue);
-                }}
-                slotProps={{
-                  textField: {
-                    fullWidth: true,
-                    margin: 'normal',
-                  },
-                }}
-                error={!!errors?.date_time}
+              <Controller
+                name="date_time"
+                control={control}
+                render={({ field }) => (
+                  <MobileDateTimePicker
+                    {...field}
+                    value={field.value || null}
+                    onChange={(newValue) => field.onChange(newValue)}
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        margin: 'normal',
+                      },
+                    }}
+                    error={!!errors?.date_time}
+                  />
+                )}
               />
               <RHFAutocomplete
                 name="role"
@@ -254,7 +240,6 @@ export default function SeminarNewEditForm({ SeminarId }) {
                 getOptionLabel={(option) => option}
                 error={!!errors.role}
               />
-
               <Controller
                 name="users"
                 control={control}
@@ -290,7 +275,6 @@ export default function SeminarNewEditForm({ SeminarId }) {
                   />
                 )}
               />
-
               <RHFTextField
                 name="desc"
                 label="Description"
@@ -304,7 +288,6 @@ export default function SeminarNewEditForm({ SeminarId }) {
       </Grid>
     </>
   );
-
   const renderOption = (
     <>
       {mdUp && <Grid item md={8} />}
@@ -315,10 +298,9 @@ export default function SeminarNewEditForm({ SeminarId }) {
       </Grid>
     </>
   );
-
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={onSubmit}>
         <Grid container spacing={3}>
           {seminarDetails}
           {renderOption}
@@ -327,7 +309,6 @@ export default function SeminarNewEditForm({ SeminarId }) {
     </FormProvider>
   );
 }
-
 SeminarNewEditForm.propTypes = {
   SeminarId: PropTypes.string,
 };
