@@ -93,7 +93,6 @@ const ExamOverviewPDF = ({
   calculateAveragePercentage,
 }) => {
   const styles = useStyles();
-  console.log(examData);
 
   return (
     <Document>
@@ -216,7 +215,11 @@ const ExamOverviewPDF = ({
                     <Text>{row?.rank}</Text>
                   </View>
                   <View style={{ width: '150px', textAlign: 'center' }}>
-                    <Text>{calculateGrade(row?.obtained_marks)}</Text>
+                    <Text>
+                      {calculateGrade(
+                        calculatePercentage(row?.obtained_marks, examData?.total_marks)
+                      )}
+                    </Text>
                   </View>
                 </View>
               ))}

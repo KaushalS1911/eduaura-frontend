@@ -20,16 +20,17 @@ import moment from 'moment';
 export default function ExamDetails({ examData }) {
   const { configs } = useGetConfigs();
 
-  const calculateGrade = (marks) => {
-    if (marks >= 90) return 'A';
-    if (marks >= 80) return 'B';
-    if (marks >= 70) return 'C';
-    if (marks >= 60) return 'D';
-    return 'F';
-  };
-
   const calculatePercentage = (obtainedMarks, totalMarks) => {
     return ((obtainedMarks / totalMarks) * 100).toFixed(2);
+  };
+
+  const calculateGrade = (percentage) => {
+    if (percentage >= 90) return 'A';
+    if (percentage >= 80) return 'B';
+    if (percentage >= 70) return 'C';
+    if (percentage >= 60) return 'D';
+    if (percentage >= 50) return 'E';
+    return 'F';
   };
 
   const calculateResult = (obtainedMarks, totalMarks) => {
@@ -82,8 +83,13 @@ export default function ExamDetails({ examData }) {
       F: 0,
     };
     examData?.students?.forEach((student) => {
-      const grade = calculateGrade(student?.obtained_marks);
-      gradeCounts[grade]++;
+      const percentage = parseFloat(
+        calculatePercentage(student?.obtained_marks, examData.total_marks)
+      );
+      const grade = calculateGrade(percentage);
+      if (gradeCounts[grade] !== undefined) {
+        gradeCounts[grade]++;
+      }
     });
     return gradeCounts;
   }, [examData?.students]);
@@ -257,7 +263,9 @@ export default function ExamDetails({ examData }) {
                       </TableCell>
                       <TableCell sx={{ textAlign: 'center' }}>{row?.rank}</TableCell>
                       <TableCell sx={{ textAlign: 'center' }}>
-                        {calculateGrade(row?.obtained_marks)}
+                        {calculateGrade(
+                          calculatePercentage(row?.obtained_marks, examData?.total_marks)
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -314,7 +322,7 @@ export default function ExamDetails({ examData }) {
                       sx={{ borderTop: '3px solid #E6E6E6', borderBottom: '3px solid #E6E6E6' }}
                     >
                       <TableCell sx={{ backgroundColor: 'transparent' }}>Grade</TableCell>
-                      {Object.entries(gradeSummary).map(([grade, count]) => (
+                      {Object.entries(gradeSummary)?.map(([grade, count]) => (
                         <>
                           <TableCell sx={{ textAlign: 'center', backgroundColor: 'transparent' }}>
                             {grade}

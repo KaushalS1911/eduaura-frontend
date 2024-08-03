@@ -42,25 +42,21 @@ export default function InquiryTableRow({
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell> */}
 
-        <TableCell align={"center"}>
-          {index + 1}
-        </TableCell>
+        <TableCell align={'center'}>{index + 1}</TableCell>
 
-        <TableCell>{firstName + lastName}</TableCell>
+        <TableCell>{firstName + ' ' + lastName}</TableCell>
 
-
-        <TableCell > {contact} </TableCell>
+        <TableCell> {contact} </TableCell>
 
         <TableCell> {email} </TableCell>
 
-        <TableCell>{moment(dob).format("DD/MM/YYYY")}</TableCell>
-        <TableCell >
+        <TableCell>{moment(dob).format('DD/MM/YYYY')}</TableCell>
+        <TableCell>
           <Tooltip title="Add a new Demo" placement="top" arrow>
             <Button variant="outlined" onClick={quickEdit.onTrue}>
               + Demo
             </Button>
           </Tooltip>
-
         </TableCell>
 
         <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
