@@ -36,8 +36,12 @@ export default function GuardianAddForm({ open, onClose, currentStudent, mutate,
   const [allGuardian, setAllGuardian] = useState([]);
 
   const NewAddressSchema = Yup.object().shape({
-    firstName: Yup.string().required('First Name is required'),
-    lastName: Yup.string().required('Last Name is required'),
+    firstName: Yup.string()
+      .required('First Name is required')
+      .transform((value) => value.toUpperCase()),
+    lastName: Yup.string()
+      .required('Last Name is required')
+      .transform((value) => value.toUpperCase()),
     contact: Yup.string().max(10).min(10).required('Contact number is required'),
     relation_type: Yup.string().required('Guardian Type is required'),
   });
@@ -67,8 +71,8 @@ export default function GuardianAddForm({ open, onClose, currentStudent, mutate,
   useEffect(() => {
     if (updateGuardian) {
       reset({
-        firstName: updateGuardian.firstName || '',
-        lastName: updateGuardian.lastName || '',
+        firstName: updateGuardian.firstName?.toUpperCase() || '',
+        lastName: updateGuardian.lastName?.toUpperCase() || '',
         contact: updateGuardian.contact || '',
         relation_type: updateGuardian.relation_type || '',
       });

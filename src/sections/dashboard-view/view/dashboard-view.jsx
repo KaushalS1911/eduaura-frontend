@@ -2,16 +2,12 @@ import Stack from '@mui/material/Stack';
 import { useTheme } from '@mui/material/styles';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
-
 import { useSettingsContext } from 'src/components/settings';
-
 import DashboardAttendenceChart from '../dashboard-attendence-chart';
 import DashboardCount from '../dashboard-compony-count';
-import { Typography } from '@mui/material';
 import DashboardDemoInquiryChart from '../dashboard-demo-inquiry-chart';
 import DashboardUpcomingDemo from '../dashboard-upcoming-demo';
 import DashboardCourseChart from '../dashboard-course-chart';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useAuthContext } from 'src/auth/hooks';
 import {
@@ -21,23 +17,25 @@ import {
   useGetDemos,
 } from '../../../api/dashboard';
 import { useGetConfigs } from 'src/api/config';
-
-// ----------------------------------------------------------------------
+import { useGetVisitsOverview } from '../../../api/visit_overview';
+import { useGetInquiryOverview } from '../../../api/inquiry_overview';
 
 export default function DashboardView() {
   const theme = useTheme();
   const { user } = useAuthContext();
+  const [seriesData, setSeriesData] = useState('Month');
   const [demo, setDemo] = useState([]);
   const [attendence, setAttendence] = useState({});
   const [course, setCourse] = useState({});
   const [dashboardData, setDashboardData] = useState([]);
-  const [labs, setLabs] = useState(0); // Added state for labs
-
+  const [labs, setLabs] = useState(0);
   const { demos } = useGetDemos();
   const { dashboard } = useGetDashboardData();
   const { courses } = useGetCourses();
   const { attendance } = useGetAttendance();
   const { configs } = useGetConfigs();
+  const { visit } = useGetVisitsOverview();
+  const { inquiry } = useGetInquiryOverview();
 
   useEffect(() => {
     if (demos) {
@@ -53,7 +51,6 @@ export default function DashboardView() {
       setAttendence(attendance);
     }
     if (configs && configs.classrooms) {
-      // Extract labs from configs
       setLabs(configs.classrooms.length);
     }
   }, [demos, dashboard, courses, attendance, configs]);
@@ -63,63 +60,72 @@ export default function DashboardView() {
   for (const [key, value] of Object.entries(course)) {
     output.push({ label: key, value: value });
   }
-  console.log(output);
   const settings = useSettingsContext();
+
+  const currentYear = new Date().getFullYear();
+
+  const categories =
+    seriesData === 'Year'
+      ? Array.from({ length: currentYear - 2020 + 1 }, (_, i) => (2020 + i).toString())
+      : seriesData === 'Month'
+      ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+      : seriesData === 'Week'
+        ? ['week-1', 'week-2', 'week-3', 'week-4', 'week-5']
+        : [];
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <Grid container spacing={3}>
         <Grid xs={12} sm={6} md={3}>
           <DashboardCount
-            title="Students"
+            title='Students'
             total={dashboardData?.students}
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_bag.png" />}
+            icon={<img alt='icon' src='/assets/icons/glass/ic_glass_bag.png' />}
           />
         </Grid>
         <Grid xs={12} sm={6} md={3}>
           <DashboardCount
-            title="Developers"
+            title='Developers'
             total={dashboardData?.developers}
-            color="info"
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_users.png" />}
+            color='info'
+            icon={<img alt='icon' src='/assets/icons/glass/ic_glass_users.png' />}
           />
         </Grid>
-
         <Grid xs={12} sm={6} md={3}>
           <DashboardCount
-            title="Faculties"
+            title='Faculties'
             total={dashboardData?.faculties}
-            color="warning"
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_buy.png" />}
+            color='warning'
+            icon={<img alt='icon' src='/assets/icons/glass/ic_glass_buy.png' />}
           />
         </Grid>
-
         <Grid xs={12} sm={6} md={3}>
           <DashboardCount
-            title="Labs"
+            title='Labs'
             total={labs}
-            color="error"
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_message.png" />}
+            color='error'
+            icon={<img alt='icon' src='/assets/icons/glass/ic_glass_message.png' />}
           />
         </Grid>
         <Grid xs={12} md={8}>
           <Stack spacing={3}>
             <DashboardDemoInquiryChart
-              title="Visits & Inquiry"
-              // subheader="(+43% Income | +12% Expense) than last year"
+              title='Visits & Inquiry'
+              setSeriesData={setSeriesData}
+              seriesData={seriesData}
               chart={{
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+                categories,
                 series: [
                   {
                     type: 'Week',
                     data: [
                       {
                         name: 'Inquiry',
-                        data: [10, 41, 35, 151, 49, 62, 69, 91, 48],
+                        data: inquiry.weekWiseInquiries,
                       },
                       {
                         name: 'Visits',
-                        data: [10, 34, 13, 56, 77, 88, 99, 77, 45],
+                        data: visit.weekWiseVisits,
                       },
                     ],
                   },
@@ -128,11 +134,11 @@ export default function DashboardView() {
                     data: [
                       {
                         name: 'Inquiry',
-                        data: [148, 91, 69, 62, 49, 51, 35, 41, 10],
+                        data: inquiry.monthWiseInquiries,
                       },
                       {
                         name: 'Visits',
-                        data: [45, 77, 99, 88, 77, 56, 13, 34, 10],
+                        data: visit?.monthWiseVisits,
                       },
                     ],
                   },
@@ -141,11 +147,11 @@ export default function DashboardView() {
                     data: [
                       {
                         name: 'Inquiry',
-                        data: [76, 42, 29, 41, 27, 138, 117, 86, 63],
+                        data: inquiry.yearWiseInquiries,
                       },
                       {
                         name: 'Visits',
-                        data: [80, 55, 34, 114, 80, 130, 15, 28, 55],
+                        data: visit.yearWiseVisits,
                       },
                     ],
                   },
@@ -172,11 +178,10 @@ export default function DashboardView() {
             />
           </Stack>
         </Grid>
-
         <Grid xs={12} md={4}>
           <Stack spacing={3}>
             <DashboardUpcomingDemo
-              title="Upcoming Demos"
+              title='Upcoming Demos'
               subheader={`You have ${demo.length} demos`}
               list={demo.slice(-5)}
             />
@@ -185,7 +190,7 @@ export default function DashboardView() {
         <Grid xs={12} md={8}>
           <Stack spacing={3}>
             <DashboardCourseChart
-              title="Courses analytics"
+              title='Courses analytics'
               chart={{
                 series: output,
                 colors: [

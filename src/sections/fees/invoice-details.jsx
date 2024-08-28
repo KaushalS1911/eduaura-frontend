@@ -25,6 +25,7 @@ import Scrollbar from 'src/components/scrollbar';
 import InvoiceToolbar from './invoice-toolbar';
 import { useParams } from 'react-router';
 import Logo from 'src/components/logo';
+import { useGetConfigs } from 'src/api/config';
 
 // ----------------------------------------------------------------------
 
@@ -42,6 +43,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function InvoiceDetails({ invoice }) {
   const params = useParams();
   const [currentStatus, setCurrentStatus] = useState(invoice?.status || '');
+  const config = useGetConfigs();
 
   const invoiceDetails = invoice?.fee_detail?.installments.find(
     (e) => e._id === params.installmentID
@@ -120,7 +122,7 @@ export default function InvoiceDetails({ invoice }) {
       <Grid xs={12} md={3} sx={{ py: 3, textAlign: 'right' }}>
         <Typography variant="subtitle2">Have a Question?</Typography>
 
-        <Typography variant="body2">jbs.itinstitute@gmail.com</Typography>
+        <Typography variant="body2">{config?.configs?.company_details?.email}</Typography>
       </Grid>
     </Grid>
   );
@@ -177,6 +179,7 @@ export default function InvoiceDetails({ invoice }) {
         onChangeStatus={handleChangeStatus}
         statusOptions={INVOICE_STATUS_OPTIONS}
         invoiceDetails={invoiceDetails}
+        config={config}
       />
 
       <Card sx={{ pt: 0, px: 5 }}>
@@ -212,11 +215,17 @@ export default function InvoiceDetails({ invoice }) {
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
               Invoice From
             </Typography>
-            JBS IT INSTITUTE
+            {config?.configs?.company_details?.name}
             <br />
-            F-38 , yogichowk , city center nana varachha surat
+            {config?.configs?.company_details?.address_1 +
+              ' ' +
+              config?.configs?.company_details?.city +
+              ' ' +
+              config?.configs?.company_details?.state +
+              ' ' +
+              config?.configs?.company_details?.country}
             <br />
-            Phone : 9875263080
+            Phone : {config?.configs?.company_details?.contact}
             <br />
           </Stack>
 

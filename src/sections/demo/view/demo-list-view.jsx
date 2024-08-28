@@ -47,11 +47,12 @@ import DemoTableFiltersResult from '../demo-table-filters-result';
 // const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...ORDER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'srNo', label: '#', align: "center"},
+  { id: 'srNo', label: '#', align: 'center' },
   { id: 'name', label: 'Name' },
   { id: 'contact', label: 'Contact' },
   { id: 'email', label: 'Email' },
-  { id: '', label: "Demo", align: "center" },
+  { id: 'status', label: 'Status' },
+  { id: '', label: 'Demo', align: 'center' },
 ];
 
 const defaultFilters = {
@@ -97,7 +98,7 @@ export default function DemoListView() {
 
   const dataInPage = dataFiltered.slice(
     table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
+    table.page * table.rowsPerPage + table.rowsPerPage,
   );
 
   const denseHeight = table.dense ? 56 : 56 + 20;
@@ -115,7 +116,7 @@ export default function DemoListView() {
         [name]: value,
       }));
     },
-    [table]
+    [table],
   );
 
   const handleResetFilters = useCallback(() => {
@@ -132,7 +133,7 @@ export default function DemoListView() {
 
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
-    [dataInPage.length, enqueueSnackbar, table, tableData]
+    [dataInPage.length, enqueueSnackbar, table, tableData],
   );
 
   const handleDeleteRows = useCallback(() => {
@@ -152,21 +153,21 @@ export default function DemoListView() {
     (id) => {
       router.push(paths.dashboard.order.details(id));
     },
-    [router]
+    [router],
   );
 
   const handleFilterStatus = useCallback(
     (event, newValue) => {
       handleFilters('status', newValue);
     },
-    [handleFilters]
+    [handleFilters],
   );
 
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="Demo"
+          heading='Demo'
           links={[
             {
               name: 'Dashboard',
@@ -210,13 +211,13 @@ export default function DemoListView() {
               onSelectAllRows={(checked) =>
                 table.onSelectAllRows(
                   checked,
-                  dataFiltered.map((row) => row.id)
+                  dataFiltered.map((row) => row.id),
                 )
               }
               action={
-                <Tooltip title="Delete">
-                  <IconButton color="primary" onClick={confirm.onTrue}>
-                    <Iconify icon="solar:trash-bin-trash-bold" />
+                <Tooltip title='Delete'>
+                  <IconButton color='primary' onClick={confirm.onTrue}>
+                    <Iconify icon='solar:trash-bin-trash-bold' />
                   </IconButton>
                 </Tooltip>
               }
@@ -243,7 +244,7 @@ export default function DemoListView() {
                   {dataFiltered
                     .slice(
                       table.page * table.rowsPerPage,
-                      table.page * table.rowsPerPage + table.rowsPerPage
+                      table.page * table.rowsPerPage + table.rowsPerPage,
                     )
                     .map((row, index) => (
                       <DemoTableRow
@@ -305,7 +306,7 @@ function applyFilter({ inputData, comparator, filters, dateError }) {
       (order) =>
         order.inquiry_id.firstName.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
         order.inquiry_id.lastName.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        order.inquiry_id.email.toLowerCase().indexOf(name.toLowerCase()) !== -1
+        order.inquiry_id.email.toLowerCase().indexOf(name.toLowerCase()) !== -1,
     );
   }
 
@@ -315,7 +316,7 @@ function applyFilter({ inputData, comparator, filters, dateError }) {
 
   if (!dateError) {
     if (startDate && endDate) {
-      inputData = inputData.filter((order) => isBetween(order.createdAt, startDate, endDate));
+      inputData = inputData.filter((order) => isBetween(order.demos.map((e) => e.date), startDate, endDate));
     }
   }
 

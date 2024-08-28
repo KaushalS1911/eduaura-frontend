@@ -15,7 +15,7 @@ import {
   Checkbox,
   Chip,
 } from '@mui/material';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { DateTimePicker, MobileDateTimePicker } from '@mui/x-date-pickers';
 import { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { useAuthContext } from 'src/auth/hooks';
@@ -23,7 +23,6 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import axios from 'axios';
 import { useSnackbar } from 'src/components/snackbar';
 import { paths } from 'src/routes/paths';
-import { MobileDateTimePicker } from '@mui/x-date-pickers';
 import { useGetConfigs } from '../../api/config';
 
 export default function SeminarNewEditForm({ SeminarId }) {
@@ -33,7 +32,6 @@ export default function SeminarNewEditForm({ SeminarId }) {
   const [selectedRole, setSelectedRole] = useState('');
   const router = useRouter();
   const [allUser, setAllUser] = useState([]);
-  const [dateTime, setDateTime] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
   const { configs } = useGetConfigs();
 
@@ -59,12 +57,12 @@ export default function SeminarNewEditForm({ SeminarId }) {
   });
 
   const {
+    reset,
+    setValue,
     handleSubmit,
     control,
-    formState: { isSubmitting, errors },
-    setValue,
-    reset,
     watch,
+    formState: { isSubmitting, errors },
   } = methods;
 
   useEffect(() => {
@@ -105,7 +103,6 @@ export default function SeminarNewEditForm({ SeminarId }) {
             })),
           });
           setSelectedRole(data?.attended_by[0]?.role);
-          setDateTime(data?.date_time ? new Date(data.date_time) : null);
         }
       } catch (error) {
         console.error('Failed to fetch seminar:', error);
@@ -136,7 +133,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
     }
   };
 
-  const onSubmit = async (data) => {
+  const onSubmit = handleSubmit(async (data) => {
     const assignObject = allUser.find(
       (item) => `${item.firstName} ${item.lastName}` === data.schedule_by
     );
@@ -144,7 +141,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
       title: data.title,
       desc: data.desc,
       company_id: user?.company_id,
-      date_time: dateTime,
+      date_time: data.date_time,
       schedule_by: assignObject?._id,
       attended_by: data.users.map((attended_by) => ({
         _id: attended_by._id,
@@ -168,7 +165,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
         variant: 'error',
       });
     }
-  };
+  });
 
   const fetchUsers = async (role) => {
     try {
@@ -231,19 +228,23 @@ export default function SeminarNewEditForm({ SeminarId }) {
                 getOptionLabel={(option) => option}
                 error={!!errors.schedule_by}
               />
-
-              <MobileDateTimePicker
-                value={dateTime}
-                onChange={(newValue) => {
-                  setDateTime(newValue);
-                }}
-                slotProps={{
-                  textField: {
-                    fullWidth: true,
-                    margin: 'normal',
-                  },
-                }}
-                error={!!errors?.date_time}
+              <Controller
+                name="date_time"
+                control={control}
+                render={({ field }) => (
+                  <MobileDateTimePicker
+                    {...field}
+                    value={field.value || null}
+                    onChange={(newValue) => field.onChange(newValue)}
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        margin: 'normal',
+                      },
+                    }}
+                    error={!!errors?.date_time}
+                  />
+                )}
               />
               <RHFAutocomplete
                 name="role"
@@ -254,7 +255,6 @@ export default function SeminarNewEditForm({ SeminarId }) {
                 getOptionLabel={(option) => option}
                 error={!!errors.role}
               />
-
               <Controller
                 name="users"
                 control={control}
@@ -290,7 +290,6 @@ export default function SeminarNewEditForm({ SeminarId }) {
                   />
                 )}
               />
-
               <RHFTextField
                 name="desc"
                 label="Description"
@@ -318,7 +317,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={onSubmit}>
         <Grid container spacing={3}>
           {seminarDetails}
           {renderOption}

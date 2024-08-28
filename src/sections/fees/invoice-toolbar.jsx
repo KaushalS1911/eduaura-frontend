@@ -29,6 +29,7 @@ export default function InvoiceToolbar({
   statusOptions,
   onChangeStatus,
   invoiceDetails,
+  config,
 }) {
   const router = useRouter();
 
@@ -52,6 +53,7 @@ export default function InvoiceToolbar({
           <PDFDownloadLink
             document={
               <FeesInvoicePDF
+                config={config}
                 invoice={invoice}
                 currentStatus={currentStatus}
                 invoiceDetails={invoiceDetails}
@@ -95,6 +97,7 @@ export default function InvoiceToolbar({
           <Box sx={{ flexGrow: 1, height: 1, overflow: 'hidden' }}>
             <PDFViewer width="100%" height="100%" style={{ border: 'none' }}>
               <FeesInvoicePDF
+                config={config}
                 invoice={invoice}
                 currentStatus={currentStatus}
                 invoiceDetails={invoiceDetails}

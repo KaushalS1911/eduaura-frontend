@@ -53,46 +53,46 @@ export default function DemoTableToolbar({ filters, onFilters, dateError }) {
           pr: { xs: 2.5, md: 1 },
         }}
       >
-        <MobileDatePicker
-          label="Start date"
-          value={filters.startDate}
-          onChange={handleFilterStartDate}
-          slotProps={{
-            textField: {
-              fullWidth: true,
-            },
-          }}
-          sx={{
-            maxWidth: { md: 200 },
-          }}
-        />
+        {/*<MobileDatePicker*/}
+        {/*  label="Start date"*/}
+        {/*  value={filters.startDate}*/}
+        {/*  onChange={handleFilterStartDate}*/}
+        {/*  slotProps={{*/}
+        {/*    textField: {*/}
+        {/*      fullWidth: true,*/}
+        {/*    },*/}
+        {/*  }}*/}
+        {/*  sx={{*/}
+        {/*    maxWidth: { md: 200 },*/}
+        {/*  }}*/}
+        {/*/>*/}
 
-        <MobileDatePicker
-          label="End date"
-          value={filters.endDate}
-          onChange={handleFilterEndDate}
-          slotProps={{
-            textField: {
-              fullWidth: true,
-              error: dateError,
-              helperText: dateError && 'End date must be later than start date',
-            },
-          }}
-          sx={{
-            maxWidth: { md: 200 },
-            [`& .${formHelperTextClasses.root}`]: {
-              position: { md: 'absolute' },
-              bottom: { md: -40 },
-            },
-          }}
-        />
+        {/*<MobileDatePicker*/}
+        {/*  label="End date"*/}
+        {/*  value={filters.endDate}*/}
+        {/*  onChange={handleFilterEndDate}*/}
+        {/*  slotProps={{*/}
+        {/*    textField: {*/}
+        {/*      fullWidth: true,*/}
+        {/*      error: dateError,*/}
+        {/*      helperText: dateError && 'End date must be later than start date',*/}
+        {/*    },*/}
+        {/*  }}*/}
+        {/*  sx={{*/}
+        {/*    maxWidth: { md: 200 },*/}
+        {/*    [`& .${formHelperTextClasses.root}`]: {*/}
+        {/*      position: { md: 'absolute' },*/}
+        {/*      bottom: { md: -40 },*/}
+        {/*    },*/}
+        {/*  }}*/}
+        {/*/>*/}
 
         <Stack direction="row" alignItems="center" spacing={2} flexGrow={1} sx={{ width: 1 }}>
           <TextField
             fullWidth
             value={filters.name}
             onChange={handleFilterName}
-            placeholder="Search customer or order number..."
+            placeholder="Search"
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">

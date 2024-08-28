@@ -22,6 +22,7 @@ import { useGetStudentsList } from 'src/api/student';
 import { useGetFaculty } from 'src/api/faculty';
 import { programmingLanguages } from '../../_mock/_inquiry';
 import { paths } from '../../routes/paths';
+import { useGetConfigs } from '../../api/config';
 
 const ExaminationNewForm = () => {
   const router = useRouter();
@@ -30,6 +31,7 @@ const ExaminationNewForm = () => {
   const preview = useBoolean();
   const { user } = useAuthContext();
   const { faculty } = useGetFaculty();
+  const { configs } = useGetConfigs();
   const { students } = useGetStudentsList(user?.company_id);
   const [studentName, setStudentName] = useState([]);
   const [facultyName, setFacultyName] = useState([]);
@@ -100,10 +102,10 @@ const ExaminationNewForm = () => {
     <>
       {mdUp && (
         <Grid md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
+          <Typography variant='h6' sx={{ mb: 0.5 }}>
             Details
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
             Title, short description, Date...
           </Typography>
         </Grid>
@@ -111,24 +113,21 @@ const ExaminationNewForm = () => {
 
       <Grid xs={12} md={8}>
         <Card>
-          {!mdUp && <CardHeader title="Details" />}
+          {!mdUp && <CardHeader title='Details' />}
 
           <Stack spacing={3} sx={{ p: 3 }}>
-            {/*<RHFTextField name="title" label="Title"
-             */}
             <RHFAutocomplete
-              name="title"
-              label="Title"
-              placeholder="Choose a title"
+              name='title'
+              label='Title'
+              placeholder='Choose a title'
               fullWidth
-              options={programmingLanguages}
-              getOptionLabel={(option) => option?.label}
+              options={configs?.courses?.flatMap(course => course.subcategories)}
+              isOptionEqualToValue={(option, value) => option === value}
             />
-            <RHFTextField name="total_marks" label="Total Marks" />
-
+            <RHFTextField name='total_marks' label='Total Marks' />
             <Stack spacing={1.5}>
               <Controller
-                name="date"
+                name='date'
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <DatePicker
@@ -138,7 +137,7 @@ const ExaminationNewForm = () => {
                       setValue('date', newDate, { shouldValidate: true });
                       field.onChange(newDate);
                     }}
-                    format="dd/MM/yyyy"
+                    format='dd/MM/yyyy'
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -152,26 +151,26 @@ const ExaminationNewForm = () => {
               />
             </Stack>
             <RHFAutocomplete
-              name="conducted_by"
-              type="faculty"
-              label="Facult Name"
-              placeholder="Choose a faculty"
+              name='conducted_by'
+              type='faculty'
+              label='Facult Name'
+              placeholder='Choose a faculty'
               fullWidth
               options={facultyName.map((option) => option)}
               getOptionLabel={(option) => `${option?.firstName} ${option?.lastName}`}
             />
             <RHFAutocomplete1
-              name="students"
+              name='students'
               control={control}
               studentName={studentName}
-              labelName="Select students"
+              labelName='Select students'
             />
 
-            <RHFTextField name="desc" label="Description" multiline rows={3} />
+            <RHFTextField name='desc' label='Description' multiline rows={3} />
           </Stack>
         </Card>
         <Stack sx={{ my: '30px', alignItems: 'flex-end' }}>
-          <Button type="submit" variant="contained">
+          <Button type='submit' variant='contained'>
             Submit
           </Button>
         </Stack>

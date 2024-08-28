@@ -84,9 +84,8 @@ const useStyles = () =>
     []
   );
 
-const FeesInvoicePDF = ({ currentStatus, invoice, invoiceDetails }) => {
+const FeesInvoicePDF = ({ currentStatus, invoice, invoiceDetails, config }) => {
   const styles = useStyles();
-  const [configs, setConfigs] = useState({});
 
   useEffect(() => {
     const fetchConfigs = async () => {
@@ -98,9 +97,6 @@ const FeesInvoicePDF = ({ currentStatus, invoice, invoiceDetails }) => {
   }, []);
 
   const [company, setCompany] = useState({});
-  useEffect(() => {
-    setCompany(configs);
-  }, [configs]);
 
   const logo1 = company?.company_details?.logo ? `${company?.company_details?.logo}` : defaultLogo;
 
@@ -126,9 +122,17 @@ const FeesInvoicePDF = ({ currentStatus, invoice, invoiceDetails }) => {
           <View style={[styles.gridContainer, styles.mb40]}>
             <View style={styles.col6}>
               <Text style={[styles.subtitle2, styles.mb4]}>Invoice from</Text>
-              <Text style={styles.body2}>JBS IT INSTITUTE</Text>
-              <Text style={styles.body2}>F-38 , yogichowk , city center nana varachha surat</Text>
-              <Text style={styles.body2}>9875263080</Text>
+              <Text style={styles.body2}>{config?.configs?.company_details?.name}</Text>
+              <Text style={styles.body2}>
+                {config?.configs?.company_details?.address_1 +
+                  ' ' +
+                  config?.configs?.company_details?.city +
+                  ' ' +
+                  config?.configs?.company_details?.state +
+                  ' ' +
+                  config?.configs?.company_details?.country}
+              </Text>
+              <Text style={styles.body2}>{config?.configs?.company_details?.contact}</Text>
             </View>
 
             <View style={styles.col6}>
@@ -251,7 +255,7 @@ const FeesInvoicePDF = ({ currentStatus, invoice, invoiceDetails }) => {
           </View>
           <View style={[styles.col4, styles.alignRight]}>
             <Text style={styles.subtitle2}>Have a Question?</Text>
-            <Text style={styles.body2}>jbs.itinstitute@gmail.com</Text>
+            <Text style={styles.body2}>{config?.configs?.company_details?.email}</Text>
           </View>
         </View>
       </Page>

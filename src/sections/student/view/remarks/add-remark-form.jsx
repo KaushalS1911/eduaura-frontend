@@ -83,7 +83,7 @@ export default function AddRemarkForm({ open, onClose, currentStudent }) {
   return (
     <Dialog fullWidth maxWidth="sm" open={open} onClose={onClose}>
       <FormProvider methods={methods} onSubmit={onSubmit}>
-        <DialogTitle>New Guardian Add</DialogTitle>
+        <DialogTitle>New Remark Add</DialogTitle>
 
         <DialogContent dividers>
           <Stack spacing={3}>

@@ -156,7 +156,11 @@ export default function DemoFormDialog({ open, setOpen, demosID, demoID, mutate 
     }
   };
 
-  const status = ['Pending', 'Completed', 'cancelled'];
+  const status = ['Pending', 'Completed', 'Cancelled'];
+  const uniqueSubcategories =
+    configs?.courses
+      ?.flatMap((course) => course.subcategories)
+      ?.filter((value, index, self) => self.indexOf(value) === index) || [];
 
   return (
     <div>
@@ -234,8 +238,7 @@ export default function DemoFormDialog({ open, setOpen, demosID, demoID, mutate 
                       label="Technology"
                       placeholder="Choose a Technology"
                       fullWidth
-                      options={configs?.developer_type?.map((option) => option)}
-                      getOptionLabel={(option) => option}
+                      options={uniqueSubcategories}
                     />
                   )}
                   <RHFAutocomplete

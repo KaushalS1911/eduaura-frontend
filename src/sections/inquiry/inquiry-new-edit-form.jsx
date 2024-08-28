@@ -10,6 +10,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { Autocomplete, CardHeader, TextField, Typography } from '@mui/material';
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, {
+  RHFAutocomplete,
   RHFMultiSelect,
   RHFRadioGroup,
   RHFTextField,
@@ -27,14 +28,15 @@ import {
 import { Box } from '@mui/system';
 import { useAuthContext } from 'src/auth/hooks';
 import countrystatecity from '../../_mock/map/csc.json';
+import { useGetConfigs } from 'src/api/config';
 
 export default function InquiryNewEditForm({ inquiryId }) {
   const { user } = useAuthContext();
   const mdUp = useResponsive('up', 'md');
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
-  const [radio,setRadio] = useState('')
-
+  const [radio, setRadio] = useState('');
+  const { configs } = useGetConfigs();
 
   const NewUserSchema = Yup.object().shape({
     firstName: Yup.string().required('First name is required'),
@@ -64,7 +66,7 @@ export default function InquiryNewEditForm({ inquiryId }) {
       father_contact: '',
       father_occupation: '',
       reference_by: '',
-      other_reference_by:'',
+      other_reference_by: '',
       interested_in: [],
       suggested_by: '',
     },
@@ -78,10 +80,9 @@ export default function InquiryNewEditForm({ inquiryId }) {
     getValues,
     formState: { isSubmitting },
   } = methods;
-const handleRadio = (e) =>{
-  setRadio(e.target.value === "Other")
-
-}
+  const handleRadio = (e) => {
+    setRadio(e.target.value === 'Other');
+  };
   useEffect(() => {
     const fetchInquiryById = async () => {
       try {
@@ -89,7 +90,9 @@ const handleRadio = (e) =>{
           const URL = `${import.meta.env.VITE_AUTH_API}/api/company/inquiry/${inquiryId}`;
           const response = await axios.get(URL);
           const { data } = response.data;
-          const condition = INQUIRY_REFERENCE_BY.find((item) => item.label == data.reference_by) ? data.reference_by : ("Other");
+          const condition = INQUIRY_REFERENCE_BY.find((item) => item.label == data.reference_by)
+            ? data.reference_by
+            : 'Other';
 
           reset({
             firstName: data.firstName,
@@ -110,16 +113,15 @@ const handleRadio = (e) =>{
             fatherName: data.fatherName,
             father_contact: data.father_contact,
             father_occupation: data.father_occupation,
-            reference_by:   condition,
-            other_reference_by:data.reference_by,
+            reference_by: condition,
+            other_reference_by: data.reference_by,
             interested_in: data.interested_in,
             suggested_by: data.suggested_by,
           });
-          if(condition == "Other"){
-            setRadio(true)
-          };
+          if (condition == 'Other') {
+            setRadio(true);
+          }
         }
-
       } catch (error) {
         console.error('Failed to fetch inquiry:', error);
       }
@@ -147,8 +149,8 @@ const handleRadio = (e) =>{
 
   const onSubmit = handleSubmit(async (data) => {
     const addInquiry = {
-      firstName: data.firstName,
-      lastName: data.lastName,
+      firstName: (data.firstName || '').toUpperCase(),
+      lastName: (data.lastName || '').toUpperCase(),
       contact: data.contact,
       dob: data.dob,
       occupation: data.occupation,
@@ -165,13 +167,12 @@ const handleRadio = (e) =>{
       fatherName: data.fatherName,
       father_contact: data.father_contact,
       father_occupation: data.father_occupation,
-      reference_by: data.reference_by === "Other" ? data.other_reference_by : data.reference_by,
+      reference_by: data.reference_by === 'Other' ? data.other_reference_by : data.reference_by,
       interested_in: data.interested_in,
       suggested_by: data.suggested_by,
     };
     try {
       let response;
-
 
       if (inquiryId) {
         response = await updateInquiry(addInquiry);
@@ -191,41 +192,41 @@ const handleRadio = (e) =>{
     <>
       {mdUp && (
         <Grid item md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
+          <Typography variant='h6' sx={{ mb: 0.5 }}>
             Personal Details
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
             Basic info, role, Occupation...
           </Typography>
         </Grid>
       )}
       <Grid item xs={12} md={8}>
         <Card>
-          {!mdUp && <CardHeader title="Personal Details" />}
+          {!mdUp && <CardHeader title='Personal Details' />}
           <Stack spacing={3} sx={{ p: 3 }}>
             <Box
               columnGap={2}
               rowGap={3}
-              display="grid"
+              display='grid'
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
                 md: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField name="firstName" label="First Name" />
-              <RHFTextField name="lastName" label="Last Name" />
-              <RHFTextField name="email" label="Email Address" />
-              <RHFTextField name="contact" label="Phone Number" />
-              <RHFTextField name="occupation" label="Occupation" />
-              <RHFTextField name="education" label="Education" />
+              <RHFTextField name='firstName' label='First Name' />
+              <RHFTextField name='lastName' label='Last Name' />
+              <RHFTextField name='email' label='Email Address' />
+              <RHFTextField name='contact' label='Phone Number' />
+              <RHFTextField name='occupation' label='Occupation' />
+              <RHFTextField name='education' label='Education' />
               <Stack spacing={1.5}>
                 <Controller
-                  name="dob"
+                  name='dob'
                   control={control}
                   render={({ field, fieldState: { error } }) => (
                     <DatePicker
                       {...field}
-                      label="Date of Birth"
+                      label='Date of Birth'
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -249,31 +250,31 @@ const handleRadio = (e) =>{
     <>
       {mdUp && (
         <Grid item md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
+          <Typography variant='h6' sx={{ mb: 0.5 }}>
             Address Details
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
             Address info, country, state, city...
           </Typography>
         </Grid>
       )}
       <Grid item xs={12} md={8}>
         <Card>
-          {!mdUp && <CardHeader title="Address Details" />}
+          {!mdUp && <CardHeader title='Address Details' />}
           <Stack spacing={3} sx={{ p: 3 }}>
             <Box
               columnGap={2}
               rowGap={3}
-              display="grid"
+              display='grid'
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
                 md: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField name="address.address_line1" label="Address 1" />
-              <RHFTextField name="address.address_line2" label="Address 2" />
+              <RHFTextField name='address.address_line1' label='Address 1' />
+              <RHFTextField name='address.address_line2' label='Address 2' />
               <Controller
-                name="address.country"
+                name='address.country'
                 control={control}
                 render={({ field }) => (
                   <Autocomplete
@@ -281,13 +282,13 @@ const handleRadio = (e) =>{
                     options={countrystatecity.map((country) => country.name)}
                     onChange={(event, value) => field.onChange(value)}
                     renderInput={(params) => (
-                      <TextField {...params} label="Country" variant="outlined" />
+                      <TextField {...params} label='Country' variant='outlined' />
                     )}
                   />
                 )}
               />
               <Controller
-                name="address.state"
+                name='address.state'
                 control={control}
                 render={({ field }) => (
                   <Autocomplete
@@ -295,19 +296,19 @@ const handleRadio = (e) =>{
                     options={
                       watch('address.country')
                         ? countrystatecity
-                            .find((country) => country.name === watch('address.country'))
-                            ?.states.map((state) => state.name) || []
+                        .find((country) => country.name === watch('address.country'))
+                        ?.states.map((state) => state.name) || []
                         : []
                     }
                     onChange={(event, value) => field.onChange(value)}
                     renderInput={(params) => (
-                      <TextField {...params} label="State" variant="outlined" />
+                      <TextField {...params} label='State' variant='outlined' />
                     )}
                   />
                 )}
               />
               <Controller
-                name="address.city"
+                name='address.city'
                 control={control}
                 render={({ field }) => (
                   <Autocomplete
@@ -315,19 +316,19 @@ const handleRadio = (e) =>{
                     options={
                       watch('address.state')
                         ? countrystatecity
-                            .find((country) => country.name === watch('address.country'))
-                            ?.states.find((state) => state.name === watch('address.state'))
-                            ?.cities.map((city) => city.name) || []
+                        .find((country) => country.name === watch('address.country'))
+                        ?.states.find((state) => state.name === watch('address.state'))
+                        ?.cities.map((city) => city.name) || []
                         : []
                     }
                     onChange={(event, value) => field.onChange(value)}
                     renderInput={(params) => (
-                      <TextField {...params} label="City" variant="outlined" />
+                      <TextField {...params} label='City' variant='outlined' />
                     )}
                   />
                 )}
               />
-              <RHFTextField name="address.zip_code" label="Zip Code" />
+              <RHFTextField name='address.zip_code' label='Zip Code' />
             </Box>
           </Stack>
         </Card>
@@ -339,30 +340,30 @@ const handleRadio = (e) =>{
     <>
       {mdUp && (
         <Grid item md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
+          <Typography variant='h6' sx={{ mb: 0.5 }}>
             Father Details
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
             Father info, Contact, Occupation...
           </Typography>
         </Grid>
       )}
       <Grid item xs={12} md={8}>
         <Card>
-          {!mdUp && <CardHeader title="Father Details" />}
+          {!mdUp && <CardHeader title='Father Details' />}
           <Stack spacing={3} sx={{ p: 3 }}>
             <Box
               columnGap={2}
               rowGap={3}
-              display="grid"
+              display='grid'
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
                 md: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField name="fatherName" label="Father Name" />
-              <RHFTextField name="father_contact" label="Father Phone Number" />
-              <RHFTextField name="father_occupation" label="Father Occupation" />
+              <RHFTextField name='fatherName' label='Father Name' />
+              <RHFTextField name='father_contact' label='Father Phone Number' />
+              <RHFTextField name='father_occupation' label='Father Occupation' />
             </Box>
           </Stack>
         </Card>
@@ -374,46 +375,58 @@ const handleRadio = (e) =>{
     <>
       {mdUp && (
         <Grid item md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
+          <Typography variant='h6' sx={{ mb: 0.5 }}>
             Other Details
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
             How did you come, Suggested By, Interested in...
           </Typography>
         </Grid>
       )}
       <Grid item xs={12} md={8}>
         <Card>
-          {!mdUp && <CardHeader title="Other Details" />}
+          {!mdUp && <CardHeader title='Other Details' />}
           <Stack spacing={3} sx={{ p: 3 }}>
             <Box
               columnGap={2}
               rowGap={3}
-              display="grid"
+              display='grid'
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
                 md: 'repeat(2, 1fr)',
               }}
             >
               <Stack spacing={1}>
-                <Typography variant="subtitle2">How did you come to know about us?</Typography>
-                <RHFRadioGroup row spacing={4} onClick={handleRadio}  sx={{width:"175px"}} name="reference_by" options={INQUIRY_REFERENCE_BY} />
+                <Typography variant='subtitle2'>How did you come to know about us?</Typography>
+                <RHFRadioGroup
+                  row
+                  spacing={4}
+                  onClick={handleRadio}
+                  sx={{ width: '175px' }}
+                  name='reference_by'
+                  options={INQUIRY_REFERENCE_BY}
+                />
               </Stack>
               <Stack spacing={1}>
-                <Typography variant="subtitle2">Why did you choose this Course?</Typography>
-                <RHFRadioGroup row spacing={4} name="suggested_by" options={INQUIRY_SUGGESTED_IN} />
+                <Typography variant='subtitle2'>Why did you choose this Course?</Typography>
+                <RHFRadioGroup row spacing={4} name='suggested_by' options={INQUIRY_SUGGESTED_IN} />
               </Stack>
-              {radio && <Stack spacing={1}>
-                <Typography variant='subtitle2'>Write other reference name </Typography>
-                <RHFTextField name='other_reference_by' label='Reference By' />
-              </Stack>}
+              {radio && (
+                <Stack spacing={1}>
+                  <Typography variant='subtitle2'>Write other reference name </Typography>
+                  <RHFTextField name='other_reference_by' label='Reference By' />
+                </Stack>
+              )}
               <Stack spacing={1}>
-                <Typography variant="subtitle2">Select Interested Options:</Typography>
+                <Typography variant='subtitle2'>Select Interested Options:</Typography>
                 <RHFMultiSelect
                   checkbox
-                  name="interested_in"
-                  label="Interested In"
-                  options={INQUIRY_INTERESTED_IN}
+                  name='interested_in'
+                  label='Interested In'
+                  options={configs?.courses?.map((course) => ({
+                    label: course.name,
+                    value: course.name,
+                  }))}
                 />
               </Stack>
             </Box>
@@ -432,7 +445,7 @@ const handleRadio = (e) =>{
         md={8}
         sx={{ display: 'flex', alignItems: 'center', justifyContent: 'end' }}
       >
-        <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+        <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
           {!inquiryId ? 'Create Inquiry' : 'Save Changes'}
         </LoadingButton>
       </Grid>

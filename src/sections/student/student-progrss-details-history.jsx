@@ -15,13 +15,18 @@ import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineItem, { timelineItemClasses } from '@mui/lab/TimelineItem';
 import { Button } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
+import StudentProgrssDetailsFormDialog from './student-progrss-details-form-dialog';
+import { useGetConfigs } from '../../api/config';
 
 export default function StudentProgressDetailsHistory({ language, currentStudent, mutate }) {
   const { enqueueSnackbar } = useSnackbar();
+  const { configs } = useGetConfigs();
+  const [open, setOpen] = useState(false);
   const [clickedButtons, setClickedButtons] = useState({});
   const [selectedDates, setSelectedDates] = useState({});
   const [completed, setCompleted] = useState({});
   const [completionDate, setCompletionDate] = useState({});
+  const [allCompleted, setAllCompleted] = useState(false);
 
   useEffect(() => {
     if (currentStudent?.course_completed) {
@@ -31,8 +36,7 @@ export default function StudentProgressDetailsHistory({ language, currentStudent
       const initialCompletionDate = {};
 
       currentStudent.course_completed.forEach((course) => {
-        const index = language.findIndex((lang) => lang.label === course.language.label);
-
+        const index = language.indexOf(course.language.label);
         if (index !== -1) {
           initialClickedButtons[index] = true;
           initialSelectedDates[index] = new Date(course.date) || new Date();
@@ -47,6 +51,17 @@ export default function StudentProgressDetailsHistory({ language, currentStudent
       setCompletionDate(initialCompletionDate);
     }
   }, [currentStudent, language]);
+
+  useEffect(() => {
+    const filtercourse = configs?.courses.find((course) => course.name === currentStudent.course);
+    if (filtercourse) {
+      const allCompletedStatus = currentStudent.course_completed.every((status, index) => {
+        return status && filtercourse.subcategories[index];
+      });
+      setAllCompleted(allCompletedStatus);
+    }
+  }, [currentStudent.course_completed, configs, currentStudent.course]);
+
 
   const handleButtonClick = (index) => {
     let canComplete = true;
@@ -82,6 +97,7 @@ export default function StudentProgressDetailsHistory({ language, currentStudent
     setSelectedDates({});
     setCompleted({});
     setCompletionDate({});
+    setAllCompleted(false); // Reset the completion status as well
   };
 
   const handleSubmit = async () => {
@@ -89,7 +105,7 @@ export default function StudentProgressDetailsHistory({ language, currentStudent
       course_completed: language?.reduce((acc, item, index) => {
         if (completed[index]) {
           acc.push({
-            language: item,
+            language: { label: item },
             date: completionDate[index] || new Date(),
           });
         }
@@ -134,7 +150,7 @@ export default function StudentProgressDetailsHistory({ language, currentStudent
             <TimelineContent>
               <Box display={'flex'} justifyContent={'space-between'}>
                 <Box>
-                  <Typography variant="subtitle2">{item?.label}</Typography>
+                  <Typography variant='subtitle2'>{item}</Typography>
                 </Box>
                 <Box display={'flex'} alignItems={'center'}>
                   <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
@@ -174,7 +190,7 @@ export default function StudentProgressDetailsHistory({ language, currentStudent
 
   return (
     <Card>
-      <CardHeader title="Progress" />
+      <CardHeader title='Progress' />
       <Stack
         spacing={3}
         alignItems={{ md: 'flex-start' }}
@@ -207,17 +223,33 @@ export default function StudentProgressDetailsHistory({ language, currentStudent
         >
           Submit
         </Button>
+        <Button
+          sx={{
+            backgroundColor: '#212B36',
+            color: 'white',
+            margin: '0px 5px',
+            ':hover': { backgroundColor: '#454F5B', color: 'white' },
+          }}
+          onClick={() => {
+            setOpen(true);
+          }}
+          disabled={!allCompleted}
+        >
+          Update Status
+        </Button>
       </Box>
+      <StudentProgrssDetailsFormDialog
+        open={open}
+        setOpen={setOpen}
+        currentStudent={currentStudent}
+        mutate={mutate}
+      />
     </Card>
   );
 }
 
 StudentProgressDetailsHistory.propTypes = {
-  language: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string.isRequired,
-    })
-  ).isRequired,
+  language: PropTypes.arrayOf(PropTypes.string).isRequired,
   currentStudent: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     course_completed: PropTypes.arrayOf(
@@ -226,7 +258,7 @@ StudentProgressDetailsHistory.propTypes = {
           label: PropTypes.string.isRequired,
         }).isRequired,
         date: PropTypes.string,
-      })
+      }),
     ),
   }).isRequired,
 };

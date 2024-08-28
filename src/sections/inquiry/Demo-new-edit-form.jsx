@@ -108,6 +108,11 @@ export default function DemoNewEditForm({ open, onClose, currentId }) {
     }
   };
 
+  const uniqueSubcategories =
+    configs?.courses
+      ?.flatMap((course) => course.subcategories)
+      ?.filter((value, index, self) => self.indexOf(value) === index) || [];
+
   return (
     <Dialog
       fullWidth
@@ -192,8 +197,7 @@ export default function DemoNewEditForm({ open, onClose, currentId }) {
                     label="Technology"
                     placeholder="Choose a Technology"
                     fullWidth
-                    options={configs?.developer_type?.map((option) => option)}
-                    getOptionLabel={(option) => option}
+                    options={uniqueSubcategories}
                   />
                 )}
                 <Controller

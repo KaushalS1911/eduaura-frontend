@@ -53,7 +53,6 @@ const BatchNewForm = () => {
       .required('At least one Batch Member is required')
       .min(1, 'At least one Batch Member is required'),
   });
-
   const methods = useForm({
     resolver: yupResolver(NewBlogSchema),
     defaultValues: {
@@ -111,8 +110,8 @@ const BatchNewForm = () => {
               label="Technology"
               placeholder="Choose a technology"
               fullWidth
-              options={configs?.courses?.map((option) => option)}
-              getOptionLabel={(option) => option}
+              options={configs?.courses?.flatMap(course => course.subcategories)}
+              isOptionEqualToValue={(option, value) => option === value}
             />
             <RHFTextField name="batch_name" label="Batch Name" />
             <Controller

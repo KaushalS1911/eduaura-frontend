@@ -13,12 +13,11 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 // ----------------------------------------------------------------------
 
-export default function DashboardDemoInquiryChart({ title, subheader, chart, ...other }) {
+export default function DashboardDemoInquiryChart({ title, subheader, chart, setSeriesData,seriesData,...other }) {
   const { categories, colors, series, options } = chart;
 
   const popover = usePopover();
 
-  const [seriesData, setSeriesData] = useState('Year');
 
   const chartOptions = useChart({
     colors,
@@ -43,9 +42,8 @@ export default function DashboardDemoInquiryChart({ title, subheader, chart, ...
       popover.onClose();
       setSeriesData(newValue);
     },
-    [popover]
+    [popover],
   );
-
   return (
     <>
       <Card {...other}>
@@ -79,11 +77,11 @@ export default function DashboardDemoInquiryChart({ title, subheader, chart, ...
           <Box key={item.type} sx={{ mt: 3, mx: 3 }}>
             {item.type === seriesData && (
               <Chart
-                dir="ltr"
-                type="bar"
+                dir='ltr'
+                type='bar'
                 series={item.data}
                 options={chartOptions}
-                width="100%"
+                width='100%'
                 height={364}
               />
             )}

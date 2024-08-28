@@ -30,7 +30,7 @@ export function useGetAccountOverDue(startDate, endDate) {
 
   const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
   const memoizedValue = useMemo(() => {
-    const overdue = data?.data?.data || [];
+    const overdue = data?.data || [];
     return {
       overdue,
       overdueLoading: isLoading,

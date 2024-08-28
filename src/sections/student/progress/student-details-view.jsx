@@ -10,11 +10,13 @@ import { _orders } from 'src/_mock';
 import { useSettingsContext } from 'src/components/settings';
 
 import StudentProgressDetailsHistory from '../student-progrss-details-history';
+import { useGetConfigs } from 'src/api/config';
 
 // ----------------------------------------------------------------------
 
 export default function StudentDetailsView({ currentStudent, mutate }) {
   const settings = useSettingsContext();
+  const { configs } = useGetConfigs();
 
   const allCourse = [
     {
@@ -172,8 +174,10 @@ export default function StudentDetailsView({ currentStudent, mutate }) {
     },
   ];
 
-  const courseDetails = allCourse.find((e) => e.course === currentStudent.course);
-  const language = courseDetails ? courseDetails.language : [];
+  const courseDetails = configs?.courses?.find(
+    (e) => e?.name.toLowerCase() === currentStudent?.course.toLowerCase()
+  );
+  const language = courseDetails ? courseDetails?.subcategories : [];
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -196,4 +200,5 @@ StudentDetailsView.propTypes = {
   currentStudent: PropTypes.shape({
     course: PropTypes.string.isRequired,
   }).isRequired,
+  mutate: PropTypes.func.isRequired,
 };

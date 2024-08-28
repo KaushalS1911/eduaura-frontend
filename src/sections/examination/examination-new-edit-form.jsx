@@ -24,6 +24,7 @@ import RHFAutocomplete1 from 'src/components/hook-form/batch-autocomplete';
 import { useGetFaculty } from 'src/api/faculty';
 import { mutate } from 'swr';
 import { programmingLanguages } from '../../_mock/_inquiry';
+import { useGetConfigs } from '../../api/config';
 
 // ----------------------------------------------------------------------
 
@@ -33,12 +34,13 @@ export default function ExaminationNewEditForm({ examinationId }) {
   const { enqueueSnackbar } = useSnackbar();
   const preview = useBoolean();
   const { user } = useAuthContext();
-
+  const { configs } = useGetConfigs();
   const { faculty } = useGetFaculty();
   const { students } = useGetStudentsList(user?.company_id);
   const [studentName, setStudentName] = useState([]);
   const [facultyName, setFacultyName] = useState([]);
   const [exam, setExam] = useState([]);
+
   useEffect(() => {
     if (students) {
       setStudentName(students);
@@ -47,6 +49,7 @@ export default function ExaminationNewEditForm({ examinationId }) {
       setFacultyName(faculty);
     }
   }, [students, faculty]);
+
   const NewBlogSchema = Yup.object().shape({
     title: Yup.object().required('Title is required'),
     desc: Yup.string().required('Description is required'),
@@ -65,6 +68,7 @@ export default function ExaminationNewEditForm({ examinationId }) {
       students: [],
     },
   });
+
   const {
     reset,
     setValue,
@@ -127,10 +131,10 @@ export default function ExaminationNewEditForm({ examinationId }) {
     <>
       {mdUp && (
         <Grid md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
+          <Typography variant='h6' sx={{ mb: 0.5 }}>
             Details
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
             Title, short description, Date...
           </Typography>
         </Grid>
@@ -138,24 +142,21 @@ export default function ExaminationNewEditForm({ examinationId }) {
 
       <Grid xs={12} md={8}>
         <Card>
-          {!mdUp && <CardHeader title="Details" />}
-
+          {!mdUp && <CardHeader title='Details' />}
           <Stack spacing={3} sx={{ p: 3 }}>
-            {/*<RHFTextField name="title" label="Title" />
-             */}
             <RHFAutocomplete
-              name="title"
-              label="Title"
-              placeholder="Choose a title"
+              name='title'
+              label='Title'
+              placeholder='Choose a title'
               fullWidth
-              options={programmingLanguages}
-              getOptionLabel={(option) => option?.label}
+              options={configs?.courses?.flatMap(course => course.subcategories)}
+              isOptionEqualToValue={(option, value) => option === value}
             />
-            <RHFTextField name="total_marks" label="Total Marks" />
+            <RHFTextField name='total_marks' label='Total Marks' />
 
             <Stack spacing={1.5}>
               <Controller
-                name="date"
+                name='date'
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <DatePicker
@@ -165,7 +166,7 @@ export default function ExaminationNewEditForm({ examinationId }) {
                       setValue('date', newDate);
                       field.onChange(newDate);
                     }}
-                    format="dd/MM/yyyy"
+                    format='dd/MM/yyyy'
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -179,25 +180,25 @@ export default function ExaminationNewEditForm({ examinationId }) {
               />
             </Stack>
             <RHFAutocomplete
-              name="conducted_by"
-              type="faculty"
-              label="Facult Name"
-              placeholder="Choose a faculty"
+              name='conducted_by'
+              type='faculty'
+              label='Facult Name'
+              placeholder='Choose a faculty'
               fullWidth
               options={facultyName.map((option) => option)}
               getOptionLabel={(option) => `${option?.firstName} ${option?.lastName}`}
             />
             <RHFAutocomplete1
-              labelName="Select student"
-              name="students"
+              labelName='Select student'
+              name='students'
               control={control}
               studentName={studentName}
             />
-            <RHFTextField name="desc" label="Description" multiline rows={3} />
+            <RHFTextField name='desc' label='Description' multiline rows={3} />
           </Stack>
         </Card>
         <Stack sx={{ my: '30px', alignItems: 'flex-end' }}>
-          <Button type="submit" variant="contained">
+          <Button type='submit' variant='contained'>
             Submit
           </Button>
         </Stack>

@@ -26,7 +26,6 @@ import { RHFAutocomplete } from 'src/components/hook-form';
 import axios from 'axios';
 import moment from 'moment';
 import { DatePicker } from '@mui/x-date-pickers';
-import { format } from 'date-fns';
 
 // ----------------------------------------------------------------------
 
@@ -70,7 +69,7 @@ export default function FeesTableRow({
     defaultValues: {
       status: '',
       payment_mode: '',
-      payment_date: format(new Date(), 'yyyy-MM-dd'),
+      payment_date: moment().format('YYYY-MM-DD'),
     },
   });
 
@@ -92,6 +91,10 @@ export default function FeesTableRow({
           if (currentStatus) {
             reset({
               status: OPTIONS.find((option) => option.value === currentStatus.status),
+              payment_mode: currentStatus?.payment_mode,
+              payment_date: currentStatus?.payment_date
+                ? new Date(currentStatus?.payment_date)
+                : new Date(),
             });
           }
         }

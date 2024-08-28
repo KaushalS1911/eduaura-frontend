@@ -72,6 +72,7 @@ export default function StudentTableRow({ row, selected, onEditRow, onSelectRow,
               (row.status === 'completed' && 'success') ||
               (row.status === 'running' && 'warning') ||
               (row.status === 'leaved' && 'error') ||
+              (row.status === 'training' && 'info') ||
               'default'
             }
           >

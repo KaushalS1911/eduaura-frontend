@@ -1,25 +1,25 @@
-import c from 'src/assets/all-language/c.png'
-import cplus from 'src/assets/all-language/c++.png'
-import html from 'src/assets/all-language/html.png'
-import css from 'src/assets/all-language/css.png'
-import javascript from 'src/assets/all-language/JavaScript.png'
-import dart from 'src/assets/all-language/Dart.png'
-import figma from 'src/assets/all-language/Figma.webp'
-import firebase from 'src/assets/all-language/Firebase.png'
-import flutter from 'src/assets/all-language/Flutter.png'
-import jquery from 'src/assets/all-language/jquery.png'
-import php from 'src/assets/all-language/PHP.png'
-import python from 'src/assets/all-language/Python.png'
-import photoshop from 'src/assets/all-language/Photoshop.png'
-import mobgodb from 'src/assets/all-language/MongoDB.png'
-import mysql from 'src/assets/all-language/MySQl.png'
-import xd from 'src/assets/all-language/XD.png'
-import react from 'src/assets/all-language/React js.png'
-import node from 'src/assets/all-language/Node js.png'
-import java from 'src/assets/all-language/Java.png'
-import illustrator from 'src/assets/all-language/Illustrator.png'
+import c from 'src/assets/all-language/c.png';
+import cplus from 'src/assets/all-language/c++.png';
+import html from 'src/assets/all-language/html.png';
+import css from 'src/assets/all-language/css.png';
+import javascript from 'src/assets/all-language/JavaScript.png';
+import dart from 'src/assets/all-language/Dart.png';
+import figma from 'src/assets/all-language/Figma.webp';
+import firebase from 'src/assets/all-language/Firebase.png';
+import flutter from 'src/assets/all-language/Flutter.png';
+import jquery from 'src/assets/all-language/jquery.png';
+import php from 'src/assets/all-language/PHP.png';
+import python from 'src/assets/all-language/Python.png';
+import photoshop from 'src/assets/all-language/Photoshop.png';
+import mobgodb from 'src/assets/all-language/MongoDB.png';
+import mysql from 'src/assets/all-language/MySQl.png';
+import xd from 'src/assets/all-language/XD.png';
+import react from 'src/assets/all-language/React js.png';
+import node from 'src/assets/all-language/Node js.png';
+import java from 'src/assets/all-language/Java.png';
+import illustrator from 'src/assets/all-language/Illustrator.png';
 
-export const  INQUIRY_REFERENCE_BY = [
+export const INQUIRY_REFERENCE_BY = [
   { value: 'Google', label: 'Google' },
   { value: 'Just Dial', label: 'Just Dial' },
   { value: 'Social Media', label: 'Social Media' },
@@ -48,7 +48,6 @@ export const INQUIRY_INTERESTED_IN = [
 
 export const DEMO_FACULTY = ['Kaushal Sir', 'Dixita Mam', 'Nisha Mam', 'Rutvik Sir'];
 
-
 export const programmingLanguages = [
   {
     label: 'C Language',
@@ -76,7 +75,7 @@ export const programmingLanguages = [
   },
   {
     label: 'React js',
-    image:react ,
+    image: react,
   },
   {
     label: 'Node js',
@@ -84,7 +83,7 @@ export const programmingLanguages = [
   },
   {
     label: 'MongoDB',
-    image:mobgodb ,
+    image: mobgodb,
   },
   {
     label: 'MySQl',
@@ -92,11 +91,11 @@ export const programmingLanguages = [
   },
   {
     label: 'Firebase',
-    image:firebase ,
+    image: firebase,
   },
   {
     label: 'Python',
-    image:python ,
+    image: python,
   },
   {
     label: 'Java',
@@ -132,15 +131,10 @@ export const programmingLanguages = [
   },
 ];
 
-
 export function ExamImage(data) {
- return programmingLanguages.find((item) => {
-    if(item.label === data){
-      return item.image
+  return programmingLanguages.find((item) => {
+    if (item.label === data) {
+      return item.image;
     }
-  })}
-
-
-
-
-
+  });
+}

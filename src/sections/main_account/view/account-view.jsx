@@ -36,7 +36,7 @@ export default function AccountView() {
     const totalAmount = Account?.expenses?.totalExpense ?? 0;
     const totalAmount1 =
       Account?.feesInfo?.feesReceived?.totalAmount +
-        Account?.feesInfo?.feesReceivable?.totalAmount ?? 0;
+      Account?.feesInfo?.feesReceivable?.totalAmount ?? 0;
     const value = totalAmount && totalExpenses ? (totalAmount / totalExpenses) * 100 : 0;
     const value1 = Account?.feesInfo?.feesReceived?.totalAmount;
 
@@ -68,7 +68,7 @@ export default function AccountView() {
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <Grid container spacing={SPACING} disableGutters>
         <Grid item xs={12} md={8} lg={8}>
-          <AccountSalesOverview title="Account Overview" data={_ecommerceSalesOverview} />
+          <AccountSalesOverview title='Account Overview' data={_ecommerceSalesOverview} />
         </Grid>
         <Grid item xs={12} md={4}>
           <AccountWidgetSummary
@@ -84,14 +84,14 @@ export default function AccountView() {
         ))}
         <Grid item xs={12} lg={8}>
           <AccountNewInvoice
-            title="Overdue payments"
+            title='Overdue payments'
             tableData={overdue}
             tableLabels={[
               { id: 'id', label: '#', align: 'center' },
               { id: 'category', label: 'Name' },
               { id: 'price', label: 'Fee' },
               { id: 'status', label: 'Contact' },
-              { id: '' },
+              { id: '', label: 'installments' },
             ]}
           />
         </Grid>

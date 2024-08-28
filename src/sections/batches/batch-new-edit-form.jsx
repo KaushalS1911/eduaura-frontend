@@ -124,10 +124,10 @@ export default function BatchNewEditForm({ batchId }) {
     <>
       {mdUp && (
         <Grid md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
+          <Typography variant='h6' sx={{ mb: 0.5 }}>
             Details
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
             Technology, Time...
           </Typography>
         </Grid>
@@ -135,26 +135,26 @@ export default function BatchNewEditForm({ batchId }) {
 
       <Grid xs={12} md={8}>
         <Card>
-          {!mdUp && <CardHeader title="Details" />}
+          {!mdUp && <CardHeader title='Details' />}
           <Stack spacing={3} sx={{ p: 3 }}>
             {/* <RHFTextField name="technology" label="Technology" /> */}
             <RHFAutocomplete
-              name="technology"
-              type="technology"
-              label="Technology"
-              placeholder="Choose a technology"
+              name='technology'
+              type='technology'
+              label='Technology'
+              placeholder='Choose a technology'
               fullWidth
-              options={configs?.courses?.map((option) => option)}
-              getOptionLabel={(option) => option}
+              options={configs?.courses?.flatMap(course => course.subcategories)}
+              isOptionEqualToValue={(option, value) => option === value}
             />
-            <RHFTextField name="batch_name" label="Batch Name" />
+            <RHFTextField name='batch_name' label='Batch Name' />
             <Controller
-              name="batch_time"
+              name='batch_time'
               control={control}
               render={({ field }) => (
                 <MobileTimePicker
-                  orientation="portrait"
-                  label="Batch Time"
+                  orientation='portrait'
+                  label='Batch Time'
                   value={field.value}
                   onChange={(newValue) => field.onChange(newValue)}
                   slotProps={{
@@ -167,24 +167,24 @@ export default function BatchNewEditForm({ batchId }) {
               )}
             />
             <RHFAutocomplete
-              name="faculty"
-              type="faculty"
-              label="Facult Name"
-              placeholder="Choose a faculty"
+              name='faculty'
+              type='faculty'
+              label='Facult Name'
+              placeholder='Choose a faculty'
               fullWidth
               options={facultyName.map((option) => option)}
               getOptionLabel={(option) => `${option?.firstName} ${option?.lastName}`}
             />
             <RHFAutocomplete1
-              name="batch_members"
-              labelName="Batch Members"
+              name='batch_members'
+              labelName='Batch Members'
               control={control}
               studentName={studentName}
             />
           </Stack>
         </Card>
         <Stack sx={{ my: '30px', alignItems: 'flex-end' }}>
-          <Button type="submit" variant="contained" disabled={isSubmitting}>
+          <Button type='submit' variant='contained' disabled={isSubmitting}>
             Submit
           </Button>
         </Stack>

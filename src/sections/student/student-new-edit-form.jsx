@@ -287,7 +287,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
                 name="course"
                 label="Course"
                 placeholder="Choose a course"
-                options={configs?.courses?.map((course) => course)}
+                options={configs?.courses?.map((course) => course?.name)}
                 isOptionEqualToValue={(option, value) => option === value}
               />
               <Stack spacing={1.5}>
