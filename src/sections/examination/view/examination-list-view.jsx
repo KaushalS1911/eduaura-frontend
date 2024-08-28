@@ -77,7 +77,7 @@ export default function ExpenseListView() {
   const confirm = useBoolean();
   const [tableData, setTableData] = useState([]);
   const [filters, setFilters] = useState(defaultFilters);
-  const { exam,examLoading, mutate } = useGetExam(user?.company_id);
+  const { exam, examLoading, mutate } = useGetExam(user?.company_id);
 
   useEffect(() => {
     if (exam) {
@@ -89,7 +89,7 @@ export default function ExpenseListView() {
       try {
         const response = await axios.delete(
           `https://admin-panel-dmawv.ondigitalocean.app/api/company/exam/${id}`,
-          { data: { ids: id } }
+          { data: { ids: id } },
         );
         if (response.status === 200) {
           enqueueSnackbar('deleted successfully', { variant: 'success' });
@@ -104,7 +104,7 @@ export default function ExpenseListView() {
         enqueueSnackbar('Failed to delete expense', { variant: 'error' });
       }
     },
-    [enqueueSnackbar, mutate, table, tableData]
+    [enqueueSnackbar, mutate, table, tableData],
   );
 
   const handleDeleteRows = useCallback(async () => {
@@ -112,7 +112,7 @@ export default function ExpenseListView() {
       const selectedIdsArray = [...table.selected];
       const response = await axios.delete(
         `https://admin-panel-dmawv.ondigitalocean.app/api/company/exam`,
-        { data: { ids: selectedIdsArray } }
+        { data: { ids: selectedIdsArray } },
       );
       if (response.status === 200) {
         enqueueSnackbar('deleted successfully', { variant: 'success' });
@@ -137,7 +137,7 @@ export default function ExpenseListView() {
 
   const dataInPage = dataFiltered.slice(
     table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
+    table.page * table.rowsPerPage + table.rowsPerPage,
   );
 
   const denseHeight = table.dense ? 56 : 76;
@@ -154,7 +154,7 @@ export default function ExpenseListView() {
         [name]: value,
       }));
     },
-    [table]
+    [table],
   );
 
   const handleResetFilters = useCallback(() => {
@@ -165,28 +165,28 @@ export default function ExpenseListView() {
     (id) => {
       router.push(paths.dashboard.examination.edit(id));
     },
-    [router]
+    [router],
   );
 
   const handleFilterStatus = useCallback(
     (event, newValue) => {
       handleFilters('status', newValue);
     },
-    [handleFilters]
+    [handleFilters],
   );
 
   const handleViewRow = useCallback(
     (id) => {
       router.push(paths.dashboard.examination.edit(id));
     },
-    [router]
+    [router],
   );
 
   return (
     <>
-      {examLoading ? <LoadingScreen /> :       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+      {examLoading ? <LoadingScreen /> : <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="Exams"
+          heading='Exams'
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
             { name: 'Exams', href: paths.dashboard.examination.root },
@@ -195,8 +195,8 @@ export default function ExpenseListView() {
             <Button
               component={RouterLink}
               href={paths.dashboard.examination.new}
-              variant="contained"
-              startIcon={<Iconify icon="mingcute:add-line" />}
+              variant='contained'
+              startIcon={<Iconify icon='mingcute:add-line' />}
             >
               New Exam
             </Button>
@@ -231,13 +231,13 @@ export default function ExpenseListView() {
               onSelectAllRows={(checked) =>
                 table.onSelectAllRows(
                   checked,
-                  dataFiltered.map((row) => row._id)
+                  dataFiltered.map((row) => row._id),
                 )
               }
               action={
-                <Tooltip title="Delete">
-                  <IconButton color="primary" onClick={confirm.onTrue}>
-                    <Iconify icon="solar:trash-bin-trash-bold" />
+                <Tooltip title='Delete'>
+                  <IconButton color='primary' onClick={confirm.onTrue}>
+                    <Iconify icon='solar:trash-bin-trash-bold' />
                   </IconButton>
                 </Tooltip>
               }
@@ -264,7 +264,7 @@ export default function ExpenseListView() {
                   {dataFiltered
                     .slice(
                       table.page * table.rowsPerPage,
-                      table.page * table.rowsPerPage + table.rowsPerPage
+                      table.page * table.rowsPerPage + table.rowsPerPage,
                     )
                     .map((row, index) => (
                       <ExaminationTableRow
@@ -307,7 +307,7 @@ export default function ExpenseListView() {
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
+        title='Delete'
         content={
           <>
             Are you sure want to delete <strong> {table.selected.length} </strong> items?
@@ -315,8 +315,8 @@ export default function ExpenseListView() {
         }
         action={
           <Button
-            variant="contained"
-            color="error"
+            variant='contained'
+            color='error'
             onClick={() => {
               handleDeleteRows();
               confirm.onFalse();
@@ -351,7 +351,7 @@ function applyFilter({ inputData, comparator, filters }) {
         user.title.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
         user.conducted_by.firstName.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
         user.conducted_by.lastName.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        user.desc.toLowerCase().indexOf(name.toLowerCase()) !== -1
+        user.desc.toLowerCase().indexOf(name.toLowerCase()) !== -1,
     );
   }
 

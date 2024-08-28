@@ -149,11 +149,14 @@ export default function ExaminationNewEditForm({ examinationId }) {
               label='Title'
               placeholder='Choose a title'
               fullWidth
-              options={configs?.courses?.flatMap(course => course.subcategories)}
-              isOptionEqualToValue={(option, value) => option === value}
+              options={configs?.courses?.flatMap(course => [
+                { label: course.name, value: course.name },
+                ...course.subcategories.flatMap(sub => ({ label: sub, value: sub })),
+              ])}
+              isOptionEqualToValue={(option, value) => option.value === value.value}
+              getOptionLabel={(option) => option.label}
             />
             <RHFTextField name='total_marks' label='Total Marks' />
-
             <Stack spacing={1.5}>
               <Controller
                 name='date'
