@@ -53,14 +53,22 @@ export default function StudentProgressDetailsHistory({ language, currentStudent
   }, [currentStudent, language]);
 
   useEffect(() => {
-    const filtercourse = configs?.courses.find((course) => course.name === currentStudent.course);
-    if (filtercourse) {
-      const allCompletedStatus = currentStudent.course_completed.every((status, index) => {
-        return status && filtercourse.subcategories[index];
-      });
-      setAllCompleted(allCompletedStatus);
+    if (configs && currentStudent) {
+      const filtercourse = configs.courses.find(
+        (course) => course.name === currentStudent.course,
+      );
+      if (filtercourse) {
+        const allCompletedStatus = language.every((lang, index) => {
+          const completedCourse = currentStudent.course_completed.find(
+            (course) => course.language.label === lang,
+          );
+          return completedCourse && completed[index];
+        });
+
+        setAllCompleted(allCompletedStatus);
+      }
     }
-  }, [currentStudent.course_completed, configs, currentStudent.course]);
+  }, [currentStudent, configs, completed, language]);
 
 
   const handleButtonClick = (index) => {
