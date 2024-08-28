@@ -10,7 +10,6 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { Autocomplete, CardHeader, TextField, Typography } from '@mui/material';
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, {
-  RHFAutocomplete,
   RHFMultiSelect,
   RHFRadioGroup,
   RHFTextField,
@@ -340,30 +339,30 @@ export default function InquiryNewEditForm({ inquiryId }) {
     <>
       {mdUp && (
         <Grid item md={4}>
-          <Typography variant='h6' sx={{ mb: 0.5 }}>
+          <Typography variant="h6" sx={{ mb: 0.5 }}>
             Father Details
           </Typography>
-          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             Father info, Contact, Occupation...
           </Typography>
         </Grid>
       )}
       <Grid item xs={12} md={8}>
         <Card>
-          {!mdUp && <CardHeader title='Father Details' />}
+          {!mdUp && <CardHeader title="Father Details" />}
           <Stack spacing={3} sx={{ p: 3 }}>
             <Box
               columnGap={2}
               rowGap={3}
-              display='grid'
+              display="grid"
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
                 md: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField name='fatherName' label='Father Name' />
-              <RHFTextField name='father_contact' label='Father Phone Number' />
-              <RHFTextField name='father_occupation' label='Father Occupation' />
+              <RHFTextField name="fatherName" label="Father Name" />
+              <RHFTextField name="father_contact" label="Father Phone Number" />
+              <RHFTextField name="father_occupation" label="Father Occupation" />
             </Box>
           </Stack>
         </Card>
@@ -375,22 +374,22 @@ export default function InquiryNewEditForm({ inquiryId }) {
     <>
       {mdUp && (
         <Grid item md={4}>
-          <Typography variant='h6' sx={{ mb: 0.5 }}>
+          <Typography variant="h6" sx={{ mb: 0.5 }}>
             Other Details
           </Typography>
-          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             How did you come, Suggested By, Interested in...
           </Typography>
         </Grid>
       )}
       <Grid item xs={12} md={8}>
         <Card>
-          {!mdUp && <CardHeader title='Other Details' />}
+          {!mdUp && <CardHeader title="Other Details" />}
           <Stack spacing={3} sx={{ p: 3 }}>
             <Box
               columnGap={2}
               rowGap={3}
-              display='grid'
+              display="grid"
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
                 md: 'repeat(2, 1fr)',

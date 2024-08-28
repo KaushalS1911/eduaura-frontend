@@ -255,6 +255,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
                 getOptionLabel={(option) => option}
                 error={!!errors.role}
               />
+
               <Controller
                 name="users"
                 control={control}
@@ -290,6 +291,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
                   />
                 )}
               />
+
               <RHFTextField
                 name="desc"
                 label="Description"

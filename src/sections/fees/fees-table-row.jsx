@@ -41,14 +41,14 @@ const TABLE_HEAD = [
 const PAYMENT_OPTIONS = ['card', 'cash', 'cheque', 'upi'];
 
 export default function FeesTableRow({
-  row,
-  index,
-  selected,
-  onViewRow,
-  onSelectRow,
-  onDeleteRow,
-  mutate,
-}) {
+                                       row,
+                                       index,
+                                       selected,
+                                       onViewRow,
+                                       onSelectRow,
+                                       onDeleteRow,
+                                       mutate,
+                                     }) {
   const { enrollment_no } = row;
   const [deleteInstallmentId, setDeleteInstallmentId] = useState();
   const [singleInstallment, setSingleInstallment] = useState();
@@ -86,7 +86,7 @@ export default function FeesTableRow({
       try {
         if (deleteInstallmentId) {
           const currentStatus = row?.fee_detail?.installments.find(
-            (item) => item._id === deleteInstallmentId
+            (item) => item._id === deleteInstallmentId,
           );
           if (currentStatus) {
             reset({
@@ -115,7 +115,7 @@ export default function FeesTableRow({
       const statusValue = data.status.value;
       await axios.put(
         `${import.meta.env.VITE_AUTH_API}/api/v2/student/${row._id}/installment/${deleteInstallmentId}`,
-        { ...data, status: statusValue }
+        { ...data, status: statusValue },
       );
       mutate();
       dialog.onFalse();
@@ -127,10 +127,10 @@ export default function FeesTableRow({
 
   const renderPrimary = (
     <TableRow hover selected={selected}>
-      <TableCell align="center">{index + 1}</TableCell>
+      <TableCell align='center'>{index + 1}</TableCell>
 
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-        <Avatar alt="error" src={profile_pic} sx={{ mr: 2 }} />
+        <Avatar alt='error' src={profile_pic} sx={{ mr: 2 }} />
 
         <ListItemText
           primary={`${firstName} ${lastName}`}
@@ -151,7 +151,7 @@ export default function FeesTableRow({
 
       <TableCell>{moment(joining_date).format('DD/MM/YYYY')}</TableCell>
 
-      <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
+      <TableCell align='center' sx={{ px: 1, whiteSpace: 'nowrap' }}>
         <IconButton
           color={collapse.value ? 'inherit' : 'default'}
           onClick={collapse.onToggle}
@@ -161,7 +161,7 @@ export default function FeesTableRow({
             }),
           }}
         >
-          <Iconify icon="eva:arrow-ios-downward-fill" />
+          <Iconify icon='eva:arrow-ios-downward-fill' />
         </IconButton>
       </TableCell>
     </TableRow>
@@ -172,7 +172,7 @@ export default function FeesTableRow({
       <TableCell sx={{ p: 0, border: 'none' }} colSpan={9}>
         <Collapse
           in={collapse.value}
-          timeout="auto"
+          timeout='auto'
           unmountOnExit
           sx={{ bgcolor: 'background.neutral' }}
         >
@@ -180,8 +180,8 @@ export default function FeesTableRow({
             {row?.fee_detail?.installments?.map((item, index) => (
               <Stack
                 key={index}
-                direction="row"
-                alignItems="center"
+                direction='row'
+                alignItems='center'
                 sx={{
                   display: 'flex',
                   justifyContent: 'space-around',
@@ -203,7 +203,7 @@ export default function FeesTableRow({
                 <TableCell sx={{ width: 68 }}>{item.payment_mode}</TableCell>
                 <TableCell sx={{ width: 68 }}>
                   <Label
-                    variant="soft"
+                    variant='soft'
                     color={
                       (item.status === 'paid' && 'success') ||
                       (item.status === 'pending' && 'warning') ||
@@ -223,7 +223,7 @@ export default function FeesTableRow({
                         setSingleInstallment(item._id);
                     }}
                   >
-                    <Iconify icon="eva:more-vertical-fill" />
+                    <Iconify icon='eva:more-vertical-fill' />
                   </IconButton>
                 </TableCell>
               </Stack>
@@ -243,7 +243,7 @@ export default function FeesTableRow({
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
-        arrow="right-top"
+        arrow='right-top'
         sx={{ width: 140 }}
       >
         <MenuItem
@@ -252,7 +252,7 @@ export default function FeesTableRow({
             popover.onClose();
           }}
         >
-          <Iconify icon="solar:pen-bold" />
+          <Iconify icon='solar:pen-bold' />
           Edit
         </MenuItem>
         <MenuItem
@@ -261,7 +261,7 @@ export default function FeesTableRow({
             popover.onClose();
           }}
         >
-          <Iconify icon="solar:eye-bold" />
+          <Iconify icon='solar:eye-bold' />
           Invoice
         </MenuItem>
       </CustomPopover>
@@ -269,10 +269,10 @@ export default function FeesTableRow({
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
-        content="Are you sure want to delete?"
+        title='Delete'
+        content='Are you sure want to delete?'
         action={
-          <Button variant="contained" color="error" onClick={onDeleteRow}>
+          <Button variant='contained' color='error' onClick={onDeleteRow}>
             Delete
           </Button>
         }
@@ -294,8 +294,8 @@ export default function FeesTableRow({
               <DialogContent>
                 <Box sx={{ mt: 1 }}>
                   <RHFAutocomplete
-                    name="status"
-                    label="Status"
+                    name='status'
+                    label='Status'
                     options={OPTIONS}
                     getOptionLabel={(option) => option.label}
                     isOptionEqualToValue={(option, value) => option.value === value.value}
@@ -309,9 +309,9 @@ export default function FeesTableRow({
                   />
                   <RHFAutocomplete
                     sx={{ my: 3 }}
-                    name="payment_mode"
-                    label="Payment Mode"
-                    placeholder="Choose a Payment Mode"
+                    name='payment_mode'
+                    label='Payment Mode'
+                    placeholder='Choose a Payment Mode'
                     fullWidth
                     options={PAYMENT_OPTIONS}
                     getOptionLabel={(option) => option}
@@ -320,7 +320,7 @@ export default function FeesTableRow({
                   />
                   <Stack spacing={1.5}>
                     <Controller
-                      name="payment_date"
+                      name='payment_date'
                       control={control}
                       render={({ field, fieldState: { error } }) => (
                         <DatePicker
@@ -330,7 +330,7 @@ export default function FeesTableRow({
                             setValue('payment_date', newDate);
                             field.onChange(newDate);
                           }}
-                          format="dd/MM/yyyy"
+                          format='dd/MM/yyyy'
                           renderInput={(params) => (
                             <TextField
                               {...params}
@@ -347,11 +347,11 @@ export default function FeesTableRow({
               </DialogContent>
 
               <DialogActions>
-                <Button variant="outlined" onClick={dialog.onFalse}>
+                <Button variant='outlined' onClick={dialog.onFalse}>
                   Cancel
                 </Button>
 
-                <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+                <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
                   Update
                 </LoadingButton>
               </DialogActions>
