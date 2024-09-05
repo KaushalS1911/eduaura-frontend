@@ -34,15 +34,15 @@ const VIEW_OPTIONS = [
 // ----------------------------------------------------------------------
 
 export default function CalendarToolbar({
-  date,
-  view,
-  loading,
-  onToday,
-  onNextDate,
-  onPrevDate,
-  onChangeView,
-  onOpenFilters,
-}) {
+                                          date,
+                                          view,
+                                          loading,
+                                          onToday,
+                                          onNextDate,
+                                          onPrevDate,
+                                          onChangeView,
+                                          onOpenFilters,
+                                        }) {
   const smUp = useResponsive('up', 'sm');
 
   const popover = usePopover();
@@ -52,48 +52,42 @@ export default function CalendarToolbar({
   return (
     <>
       <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
+        direction='row'
+        alignItems='center'
+        justifyContent='space-between'
         sx={{ p: 2.5, pr: 2, position: 'relative' }}
       >
         {smUp && (
           <Button
-            size="small"
-            color="inherit"
+            size='small'
+            color='inherit'
             onClick={popover.onOpen}
             startIcon={<Iconify icon={selectedItem.icon} />}
-            endIcon={<Iconify icon="eva:arrow-ios-downward-fill" sx={{ ml: -0.5 }} />}
+            endIcon={<Iconify icon='eva:arrow-ios-downward-fill' sx={{ ml: -0.5 }} />}
           >
             {selectedItem.label}
           </Button>
         )}
-
-        <Stack direction="row" alignItems="center" spacing={1}>
+        <Stack direction='row' alignItems='center' spacing={1}>
           <IconButton onClick={onPrevDate}>
-            <Iconify icon="eva:arrow-ios-back-fill" />
+            <Iconify icon='eva:arrow-ios-back-fill' />
           </IconButton>
-
-          <Typography variant="h6">{fDate(date)}</Typography>
-
+          <Typography variant='h6'>{fDate(date)}</Typography>
           <IconButton onClick={onNextDate}>
-            <Iconify icon="eva:arrow-ios-forward-fill" />
+            <Iconify icon='eva:arrow-ios-forward-fill' />
           </IconButton>
         </Stack>
-
-        <Stack direction="row" alignItems="center" spacing={1}>
-          <Button size="small" variant="contained" onClick={onToday}>
+        <Stack direction='row' alignItems='center' spacing={1}>
+          <Button size='small' variant='contained' onClick={onToday}>
             Today
           </Button>
-
-           <IconButton onClick={onOpenFilters}>
-            <Iconify icon="ic:round-filter-list" />
+          <IconButton onClick={onOpenFilters}>
+            <Iconify icon='ic:round-filter-list' />
           </IconButton>
         </Stack>
-
         {loading && (
           <LinearProgress
-            color="inherit"
+            color='inherit'
             sx={{
               height: 2,
               width: 1,
@@ -104,11 +98,10 @@ export default function CalendarToolbar({
           />
         )}
       </Stack>
-
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
-        arrow="top-left"
+        arrow='top-left'
         sx={{ width: 160 }}
       >
         {VIEW_OPTIONS.map((viewOption) => (

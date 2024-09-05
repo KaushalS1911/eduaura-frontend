@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { useCallback } from 'react';
 import orderBy from 'lodash/orderBy';
-
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Badge from '@mui/material/Badge';
@@ -13,9 +12,7 @@ import Typography from '@mui/material/Typography';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemButton from '@mui/material/ListItemButton';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-
 import { fDateTime } from 'src/utils/format-time';
-
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { ColorPicker } from 'src/components/color-utils';
@@ -23,70 +20,64 @@ import { ColorPicker } from 'src/components/color-utils';
 // ----------------------------------------------------------------------
 
 export default function CalendarFilters({
-  open,
-  onClose,
-  //
-  filters,
-  onFilters,
-  //
-  canReset,
-  onResetFilters,
-  //
-  dateError,
-  //
-  events,
-  colorOptions,
-  onClickEvent,
-}) {
+                                          open,
+                                          onClose,
+                                          filters,
+                                          onFilters,
+                                          canReset,
+                                          onResetFilters,
+                                          dateError,
+                                          events,
+                                          colorOptions,
+                                          onClickEvent,
+                                        }) {
   const handleFilterColors = useCallback(
     (newValue) => {
       onFilters('colors', newValue);
     },
-    [onFilters]
+    [onFilters],
   );
 
   const handleFilterStartDate = useCallback(
     (newValue) => {
       onFilters('startDate', newValue);
     },
-    [onFilters]
+    [onFilters],
   );
 
   const handleFilterEndDate = useCallback(
     (newValue) => {
       onFilters('endDate', newValue);
     },
-    [onFilters]
+    [onFilters],
   );
 
   const renderHead = (
     <Stack
-      direction="row"
-      alignItems="center"
-      justifyContent="space-between"
+      direction='row'
+      alignItems='center'
+      justifyContent='space-between'
       sx={{ py: 2, pr: 1, pl: 2.5 }}
     >
-      <Typography variant="h6" sx={{ flexGrow: 1 }}>
+      <Typography variant='h6' sx={{ flexGrow: 1 }}>
         Filters
       </Typography>
-
-      <Tooltip title="Reset">
+      <Tooltip title='Reset'>
         <IconButton onClick={onResetFilters}>
-          <Badge color="error" variant="dot" invisible={!canReset}>
-            <Iconify icon="solar:restart-bold" />
+          <Badge color='error' variant='dot' invisible={!canReset}>
+            <Iconify icon='solar:restart-bold' />
           </Badge>
         </IconButton>
       </Tooltip>
-
       <IconButton onClick={onClose}>
-        <Iconify icon="mingcute:close-line" />
+        <Iconify icon='mingcute:close-line' />
       </IconButton>
     </Stack>
   );
 
   const renderColors = (
     <Stack spacing={1} sx={{ my: 3, px: 2.5 }}>
-      <Typography variant="subtitle2">Colors</Typography>
+      <Typography variant='subtitle2'>Colors</Typography>
       <ColorPicker
         colors={colorOptions}
         selected={filters.colors}
@@ -94,15 +85,14 @@ export default function CalendarFilters({
       />
     </Stack>
   );
+
   const renderDateRange = (
     <Stack spacing={1.5} sx={{ mb: 3, px: 2.5 }}>
-      <Typography variant="subtitle2">Range</Typography>
-
+      <Typography variant='subtitle2'>Range</Typography>
       <Stack spacing={2}>
-        <DatePicker label="Start date" value={filters.startDate} onChange={handleFilterStartDate} />
-
+        <DatePicker label='Start date' value={filters.startDate} onChange={handleFilterStartDate} />
         <DatePicker
-          label="End date"
+          label='End date'
           value={filters.endDate}
           onChange={handleFilterEndDate}
           slotProps={{
@@ -115,12 +105,12 @@ export default function CalendarFilters({
       </Stack>
     </Stack>
   );
+
   const renderEvents = (
     <>
-      <Typography variant="subtitle2" sx={{ px: 2.5, mb: 1 }}>
+      <Typography variant='subtitle2' sx={{ px: 2.5, mb: 1 }}>
         Events ({events?.length})
       </Typography>
-
       <Scrollbar sx={{ height: 1 }}>
         {orderBy(events, ['end'], ['desc']).map((event) => (
           <ListItemButton
@@ -142,18 +132,17 @@ export default function CalendarFilters({
                 borderTop: `10px solid ${event.color}`,
               }}
             />
-
             <ListItemText
               disableTypography
               primary={
-                <Typography variant="subtitle2" sx={{ fontSize: 13, mt: 0.5 }}>
+                <Typography variant='subtitle2' sx={{ fontSize: 13, mt: 0.5 }}>
                   {event.title}
                 </Typography>
               }
               secondary={
                 <Typography
-                  variant="caption"
-                  component="div"
+                  variant='caption'
+                  component='div'
                   sx={{ fontSize: 11, color: 'text.disabled' }}
                 >
                   {`${fDateTime(event.start, 'dd MMM yy')} - ${fDateTime(event.end, 'dd MMM yy')}`}
@@ -169,7 +158,7 @@ export default function CalendarFilters({
 
   return (
     <Drawer
-      anchor="right"
+      anchor='right'
       open={open}
       onClose={onClose}
       slotProps={{
@@ -180,11 +169,8 @@ export default function CalendarFilters({
       }}
     >
       {renderHead}
-
       <Divider sx={{ borderStyle: 'dashed' }} />
-
       {renderDateRange}
-
       {renderEvents}
     </Drawer>
   );

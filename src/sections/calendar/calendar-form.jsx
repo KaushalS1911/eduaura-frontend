@@ -31,13 +31,16 @@ import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useGetStudents } from 'src/api/student';
 import { useAuthContext } from 'src/auth/hooks';
 import axios from 'axios';
+import { useGetEmployees } from '../../api/employee';
 
 // ----------------------------------------------------------------------
 
 export default function CalendarForm({ currentEvent, colorOptions, onClose, mutate }) {
   const { enqueueSnackbar } = useSnackbar();
-  const { students}  = useGetStudents();
+  const { students } = useGetStudents();
+  const { employees } = useGetEmployees();
   const [studentId, setStudentId] = useState('');
+  const [employeeId, setEmployeeId] = useState('');
   const { user } = useAuthContext();
   const [leaveStatus, setLeaveStatus] = useState('pending');
   const EventSchema = Yup.object().shape({
@@ -67,22 +70,22 @@ export default function CalendarForm({ currentEvent, colorOptions, onClose, muta
 
   const dateError = isAfter(values.start, values.end);
 
-  const eventTypeOptions = ['holiday', 'student leave', 'notice'];
+  const eventTypeOptions = ['holiday', 'student leave', 'employee leave', 'notice'];
 
   const onSubmit = handleSubmit(async (data) => {
     const payload =
       getValues().event_type === 'student leave'
         ? {
-            ...getValues(),
-            user_id: studentId || currentEvent.user_id,
-            leave_status: leaveStatus,
-            company_id: user?.company_id,
-          }
+          ...getValues(),
+          user_id: studentId || currentEvent.user_id,
+          leave_status: leaveStatus,
+          company_id: user?.company_id,
+        }
         : {
-            ...getValues(),
-            user_id: user._id,
-            leave_status: leaveStatus,
-            company_id: user?.company_id,
+          ...getValues(),
+          user_id: user._id,
+          leave_status: leaveStatus,
+          company_id: user?.company_id,
         };
     try {
       if (!dateError) {
@@ -122,12 +125,20 @@ export default function CalendarForm({ currentEvent, colorOptions, onClose, muta
     }
   };
 
+  const handleemployeeId = (event, newValue) => {
+    if (newValue) {
+      setEmployeeId(newValue.user_id);
+    } else {
+      setEmployeeId('');
+    }
+  };
+
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Stack spacing={3} sx={{ px: 3 }}>
         <RHFAutocomplete
-          name="event_type"
-          label="Event Type"
+          name='event_type'
+          label='Event Type'
           options={eventTypeOptions}
           getOptionLabel={(option) => option}
           isOptionEqualToValue={(option, value) => option === value}
@@ -137,14 +148,15 @@ export default function CalendarForm({ currentEvent, colorOptions, onClose, muta
             </li>
           )}
         />
+
         {currentEvent?.event_type === 'student leave' ? (
-          <RHFTextField name="reason" label="Reason" multiline rows={3} />
+          <RHFTextField name='reason' label='Reason' multiline rows={3} />
         ) : (
           <>
             {getValues().event_type === 'student leave' && (
               <RHFAutocomplete
-                name=""
-                label="Student Name"
+                name=''
+                label='Student Name'
                 options={students}
                 getOptionLabel={(option) =>
                   `${option.firstName} ${option.lastName}`
@@ -158,83 +170,124 @@ export default function CalendarForm({ currentEvent, colorOptions, onClose, muta
                 onChange={handleStudentId}
               />
             )}
-
-            <RHFTextField name="event" label="Event" />
-
-            <Controller
-              name="from"
-              control={control}
-              render={({ field }) => (
-                <MobileDatePicker
-                  {...field}
-                  value={new Date(field.value)}
-                  onChange={(newValue) => {
-                    if (newValue) {
-                      field.onChange(fTimestamp(newValue));
-                    }
-                  }}
-                  label="Start date"
-                  format="dd/MM/yyyy"
-                  slotProps={{
-                    textField: {
-                      fullWidth: true,
-                    },
-                  }}
-                />
-              )}
-            />
-
-            <Controller
-              name="to"
-              control={control}
-              render={({ field }) => (
-                <MobileDatePicker
-                  {...field}
-                  value={new Date(field.value)}
-                  onChange={(newValue) => {
-                    if (newValue) {
-                      field.onChange(fTimestamp(newValue));
-                    }
-                  }}
-                  label="End date"
-                  format="dd/MM/yyyy"
-                  slotProps={{
-                    textField: {
-                      fullWidth: true,
-                      error: dateError,
-                      helperText: dateError && 'End date must be later than start date',
-                    },
-                  }}
-                />
-              )}
-            />
-            <RHFTextField name="description" label="Description" multiline rows={3} />
           </>
         )}
-      </Stack>
-      {currentEvent?.event_type === 'student leave' ? (
+
+        {currentEvent?.event_type === 'employee leave' ? (
+          <RHFTextField name='reason' label='Reason' multiline rows={3} />
+        ) : (
+          <>
+            {getValues().event_type === 'employee leave' && (
+              <>
+                <RHFAutocomplete
+                  name=''
+                  label='employee Name'
+                  options={employees}
+                  getOptionLabel={(option) =>
+                    `${option.firstName} ${option.lastName}`
+                  }
+                  isOptionEqualToValue={(option, value) => option === value}
+                  renderOption={(props, option) => (
+                    <li {...props} key={option.email}>
+                      {option.firstName} {option.lastName}
+                    </li>
+                  )}
+                  onChange={handleemployeeId}
+                />
+              </>
+            )}
+          </>
+        )}
+        {currentEvent?.event_type === 'student leave' || currentEvent?.event_type === 'employee leave' ? '' : (<>
+          {getValues().event_type === 'employee leave' ?
+            <RHFAutocomplete
+              name='event'
+              label='Event'
+              options={['Half time', 'Full time']}
+              getOptionLabel={(option) => option}
+              isOptionEqualToValue={(option, value) => option === value}
+              renderOption={(props, option) => (
+                <li {...props} key={option}>
+                  {option}
+                </li>
+              )}
+            />
+            :
+            <RHFTextField name='event' label='Event' />
+          }
+
+          <Controller
+            name='from'
+            control={control}
+            render={({ field }) => (
+              <MobileDatePicker
+                {...field}
+                value={new Date(field.value)}
+                onChange={(newValue) => {
+                  if (newValue) {
+                    field.onChange(fTimestamp(newValue));
+                  }
+                }}
+                label='Start date'
+                format='dd/MM/yyyy'
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                  },
+                }}
+              />
+            )}
+          />
+
+          <Controller
+            name='to'
+            control={control}
+            render={({ field }) => (
+              <MobileDatePicker
+                {...field}
+                value={new Date(field.value)}
+                onChange={(newValue) => {
+                  if (newValue) {
+                    field.onChange(fTimestamp(newValue));
+                  }
+                }}
+                label='End date'
+                format='dd/MM/yyyy'
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    error: dateError,
+                    helperText: dateError && 'End date must be later than start date',
+                  },
+                }}
+              />
+            )}
+          />
+          <RHFTextField name='description' label='Description' multiline rows={3} /></>)}
+      < /Stack>
+      {currentEvent?.event_type === 'student leave' || currentEvent?.event_type === 'employee leave' ? (
         <>
           <DialogActions>
-            <Tooltip title="Delete Event">
+            <Tooltip title='Delete Event'>
               <IconButton onClick={onDelete}>
-                <Iconify icon="solar:trash-bin-trash-bold" />
+                <Iconify icon='solar:trash-bin-trash-bold' />
               </IconButton>
             </Tooltip>
             <Box sx={{ flexGrow: 1 }} />
 
             <Button
-              color="error"
-              variant="contained"
-              type="submit"
+              color='error'
+              variant='contained'
+              type='submit'
               onClick={() => setLeaveStatus('reject')}
             >
               Reject
             </Button>
 
             <LoadingButton
-              type="submit"
-              variant="contained"
-              color="primary"
+              type='submit'
+              variant='contained'
+              color='primary'
               loading={isSubmitting}
               disabled={dateError}
               onClick={() => setLeaveStatus('approve')}
@@ -246,21 +299,21 @@ export default function CalendarForm({ currentEvent, colorOptions, onClose, muta
       ) : (
         <>
           <DialogActions>
-            <Tooltip title="Delete Event">
+            <Tooltip title='Delete Event'>
               <IconButton onClick={onDelete}>
-                <Iconify icon="solar:trash-bin-trash-bold" />
+                <Iconify icon='solar:trash-bin-trash-bold' />
               </IconButton>
             </Tooltip>
 
             <Box sx={{ flexGrow: 1 }} />
 
-            <Button variant="outlined" color="inherit" onClick={onClose}>
+            <Button variant='outlined' color='inherit' onClick={onClose}>
               Cancel
             </Button>
 
             <LoadingButton
-              type="submit"
-              variant="contained"
+              type='submit'
+              variant='contained'
               loading={isSubmitting}
               disabled={dateError}
             >

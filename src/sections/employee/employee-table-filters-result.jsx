@@ -31,6 +31,14 @@ export default function EmployeeTableFiltersResult({ filters, onFilters, onReset
     },
     [filters.role, onFilters],
   );
+  const handleRemoveTechnology = useCallback(
+    (inputValue) => {
+      const newValue = filters.technology.filter((item) => item !== inputValue);
+
+      onFilters('technology', newValue);
+    },
+    [filters.technology, onFilters],
+  );
 
   const handleRemoveDate = useCallback(() => {
     onFilters('startDate', null);
@@ -56,6 +64,13 @@ export default function EmployeeTableFiltersResult({ filters, onFilters, onReset
           <Block label='Role:'>
             {filters.role.map((item) => (
               <Chip key={item} label={item} size='small' onDelete={() => handleRemoveRole(item)} />
+            ))}
+          </Block>
+        )}
+        {!!filters.technology.length && (
+          <Block label='Technology:'>
+            {filters.technology.map((item) => (
+              <Chip key={item} label={item} size='small' onDelete={() => handleRemoveTechnology(item)} />
             ))}
           </Block>
         )}
