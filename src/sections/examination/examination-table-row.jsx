@@ -23,14 +23,14 @@ import { paths } from 'src/routes/paths';
 // ----------------------------------------------------------------------
 
 export default function ExaminationTableRow({
-  row,
-  selected,
-  onEditRow,
-  onSelectRow,
-  onDeleteRow,
-  index,
-  mutate,
-}) {
+                                              row,
+                                              selected,
+                                              onEditRow,
+                                              onSelectRow,
+                                              onDeleteRow,
+                                              index,
+                                              mutate,
+                                            }) {
   const { conducted_by, date, desc, title, total_marks } = row;
   const dta = ExamImage(title);
   const confirm = useBoolean();
@@ -45,10 +45,18 @@ export default function ExaminationTableRow({
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{moment(date).format('ll')}</TableCell>
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-          <Avatar alt={dta?.image} sx={{ mr: 2 }}>
-            {dta?.image.charAt(0).toUpperCase()}
+          <Avatar
+            src={title}
+            alt={title}
+            sx={{
+              width: 40,
+              margin: '0px 5px',
+              height: 40,
+              border: (theme) => `solid 2px ${theme.palette.background.default}`,
+            }}
+          >
+            {title.charAt(0).toUpperCase()}
           </Avatar>
-          {/* <Avatar alt={ExamImage(title)} src={dta?.image} sx={{ mr: 2 }} /> */}
           <ListItemText
             primary={title}
             primaryTypographyProps={{ typography: 'body2' }}
@@ -66,14 +74,14 @@ export default function ExaminationTableRow({
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{desc}</TableCell>
 
-        <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
-          <Tooltip title="Quick Edit" placement="top" arrow>
+        <TableCell align='right' sx={{ px: 1, whiteSpace: 'nowrap' }}>
+          <Tooltip title='Quick Edit' placement='top' arrow>
             <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={quickEdit.onTrue}>
-              <Iconify icon="solar:pen-bold" />
+              <Iconify icon='solar:pen-bold' />
             </IconButton>
           </Tooltip>
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
-            <Iconify icon="eva:more-vertical-fill" />
+            <Iconify icon='eva:more-vertical-fill' />
           </IconButton>
         </TableCell>
       </TableRow>
@@ -88,7 +96,7 @@ export default function ExaminationTableRow({
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
-        arrow="right-top"
+        arrow='right-top'
         sx={{ width: 'auto' }}
       >
         <MenuItem
@@ -98,7 +106,7 @@ export default function ExaminationTableRow({
           }}
           sx={{ color: 'error.main' }}
         >
-          <Iconify icon="solar:trash-bin-trash-bold" />
+          <Iconify icon='solar:trash-bin-trash-bold' />
           Delete
         </MenuItem>
 
@@ -108,7 +116,7 @@ export default function ExaminationTableRow({
             popover.onClose();
           }}
         >
-          <Iconify icon="solar:pen-bold" />
+          <Iconify icon='solar:pen-bold' />
           Edit
         </MenuItem>
         <MenuItem
@@ -117,19 +125,19 @@ export default function ExaminationTableRow({
             popover.onClose();
           }}
         >
-          <Iconify icon="healthicons:i-exam-multiple-choice" />
+          <Iconify icon='healthicons:i-exam-multiple-choice' />
           Exam Overview
         </MenuItem>
       </CustomPopover>
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
-        content="Are you sure want to delete?"
+        title='Delete'
+        content='Are you sure want to delete?'
         action={
           <Button
-            variant="contained"
-            color="error"
+            variant='contained'
+            color='error'
             onClick={() => {
               onDeleteRow(), confirm.onFalse();
             }}

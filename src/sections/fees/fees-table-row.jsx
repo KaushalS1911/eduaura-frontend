@@ -110,7 +110,6 @@ export default function FeesTableRow({
   };
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data, 'data');
     try {
       const statusValue = data.status.value;
       await axios.put(

@@ -78,17 +78,18 @@ const useStyles = () =>
           width: '15%',
         },
       }),
-    []
+    [],
   );
 
 const StudentOverviewPDF = ({
-  studentData,
-  installmentsData,
-  currentStudentExams,
-  attendanceCounts,
-  configs,
-}) => {
+                              studentData,
+                              installmentsData,
+                              currentStudentExams,
+                              attendanceCounts,
+                              configs,
+                            }) => {
   const styles = useStyles();
+  console.log(studentData?.profile_pic);
 
   const StudentDetails = (
     <>
@@ -106,30 +107,30 @@ const StudentOverviewPDF = ({
           <View>
             <View>
               {studentData?.profile_pic
-                ? (console.log('bapu done che '),
-                  (
-                    <Image
-                      source={studentData?.profile_pic}
-                      style={{
-                        width: 120,
-                        height: 140,
-                        objectFit: 'cover',
-                        borderRadius: '5px',
-                      }}
-                    />
-                  ))
-                : (console.log('bapu done nathi che '),
-                  (
-                    <Image
-                      source={user}
-                      style={{
-                        width: 120,
-                        height: 140,
-                        objectFit: 'cover',
-                        borderRadius: '5px',
-                      }}
-                    />
-                  ))}
+                ?
+                (
+                  <Image
+                    source={studentData?.profile_pic}
+                    style={{
+                      width: 120,
+                      height: 140,
+                      objectFit: 'cover',
+                      borderRadius: '5px',
+                    }}
+                  />
+                )
+                :
+                (
+                  <Image
+                    source={user}
+                    style={{
+                      width: 120,
+                      height: 140,
+                      objectFit: 'cover',
+                      borderRadius: '5px',
+                    }}
+                  />
+                )}
             </View>
           </View>
           <View>
@@ -204,14 +205,14 @@ const StudentOverviewPDF = ({
                 style={{ fontSize: '10px', fontWeight: '400', margin: '0px 4px', width: '125px' }}
               >
                 {studentData?.address_detail?.address_1 +
-                  ' ' +
-                  studentData?.address_detail?.address_2 +
-                  ' ' +
-                  studentData?.address_detail?.city +
-                  ' ' +
-                  studentData?.address_detail?.state +
-                  ' ' +
-                  studentData?.address_detail?.country}
+                ' ' +
+                studentData?.address_detail?.address_2 +
+                ' ' +
+                studentData?.address_detail?.city +
+                ' ' +
+                studentData?.address_detail?.state +
+                ' ' +
+                studentData?.address_detail?.country}
               </Text>
             </View>
           </View>
@@ -617,7 +618,7 @@ const StudentOverviewPDF = ({
 
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
+      <Page size='A4' style={styles.page}>
         <View style={{ padding: '10px', backgroundColor: '#F6F6F6' }}>
           <View
             style={{
@@ -627,9 +628,9 @@ const StudentOverviewPDF = ({
             }}
           >
             <View>
-              {configs?.company_details?.logo_url ? (
+              {configs?.company_details?.logo ? (
                 <Image
-                  source={configs?.company_details?.logo_url}
+                  source={configs?.company_details?.logo}
                   style={{
                     width: 60,
                     height: 60,
@@ -702,7 +703,7 @@ StudentOverviewPDF.propTypes = {
         relation: PropTypes.string,
         contact: PropTypes.string,
         address: PropTypes.string,
-      })
+      }),
     ),
   }).isRequired,
   installmentsData: PropTypes.array,

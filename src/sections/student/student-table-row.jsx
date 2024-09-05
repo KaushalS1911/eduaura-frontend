@@ -38,7 +38,7 @@ export default function StudentTableRow({ row, selected, onEditRow, onSelectRow,
   return (
     <>
       <TableRow hover selected={selected}>
-        <TableCell padding="checkbox">
+        <TableCell padding='checkbox'>
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell>
 
@@ -67,7 +67,7 @@ export default function StudentTableRow({ row, selected, onEditRow, onSelectRow,
 
         <TableCell>
           <Label
-            variant="soft"
+            variant='soft'
             color={
               (row.status === 'completed' && 'success') ||
               (row.status === 'running' && 'warning') ||
@@ -80,9 +80,9 @@ export default function StudentTableRow({ row, selected, onEditRow, onSelectRow,
           </Label>
         </TableCell>
 
-        <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
+        <TableCell align='right' sx={{ px: 1, whiteSpace: 'nowrap' }}>
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
-            <Iconify icon="eva:more-vertical-fill" />
+            <Iconify icon='eva:more-vertical-fill' />
           </IconButton>
         </TableCell>
       </TableRow>
@@ -92,7 +92,7 @@ export default function StudentTableRow({ row, selected, onEditRow, onSelectRow,
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
-        arrow="right-top"
+        arrow='right-top'
         sx={{ width: 140 }}
       >
         <MenuItem
@@ -101,7 +101,7 @@ export default function StudentTableRow({ row, selected, onEditRow, onSelectRow,
             popover.onClose();
           }}
         >
-          <Iconify icon="solar:pen-bold" />
+          <Iconify icon='solar:pen-bold' />
           Edit
         </MenuItem>
         <MenuItem
@@ -110,7 +110,7 @@ export default function StudentTableRow({ row, selected, onEditRow, onSelectRow,
             popover.onClose();
           }}
         >
-          <Iconify icon="raphael:view" />
+          <Iconify icon='raphael:view' />
           View Detail
         </MenuItem>
       </CustomPopover>
@@ -118,10 +118,10 @@ export default function StudentTableRow({ row, selected, onEditRow, onSelectRow,
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
-        content="Are you sure want to delete?"
+        title='Delete'
+        content='Are you sure want to delete?'
         action={
-          <Button variant="contained" color="error" onClick={onDeleteRow}>
+          <Button variant='contained' color='error' onClick={onDeleteRow}>
             Delete
           </Button>
         }

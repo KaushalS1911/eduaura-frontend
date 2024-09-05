@@ -13,10 +13,12 @@ import Iconify from 'src/components/iconify';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 import { Box } from '@mui/system';
+import Label from '../../components/label';
 
 // ----------------------------------------------------------------------
 
-export default function DashboardUpcomingDemo({ title, subheader, list, ...other }) {
+export default function DashboardUpcomingInquiry({ title, subheader, list, ...other }) {
+  console.log(list);
   const router = useRouter();
   return (
     <Card {...other}>
@@ -25,7 +27,7 @@ export default function DashboardUpcomingDemo({ title, subheader, list, ...other
         subheader={subheader}
         action={
           <Button
-            onClick={() => router.push(paths.dashboard.demo.root)}
+            onClick={() => router.push(paths.dashboard.inquiry.root)}
             size='small'
             color='inherit'
             endIcon={<Iconify icon='eva:arrow-ios-forward-fill' width={18} sx={{ ml: -0.5 }} />}
@@ -38,17 +40,26 @@ export default function DashboardUpcomingDemo({ title, subheader, list, ...other
       <Stack spacing={3} sx={{ p: 3 }}>
         {list.map((contact) => (
           <Stack direction='row' alignItems='center' key={contact.id}>
-            <Avatar src={contact?.inquiry_id?.firstName} sx={{ width: 48, height: 48, mr: 2 }}>
-              {contact?.inquiry_id?.firstName?.charAt(0).toUpperCase()}
+            <Avatar src={contact?.firstName} sx={{ width: 48, height: 48, mr: 2 }}>
+              {contact?.firstName?.charAt(0).toUpperCase()}
             </Avatar>
-
             <ListItemText
-              primary={`${contact?.inquiry_id?.firstName} ${contact?.inquiry_id?.lastName}`}
-              secondary={`${contact.technology}`}
+              primary={`${contact?.firstName} ${contact?.lastName}`}
+              secondary={contact?.remark}
             />
-
-            <Box sx={{ fontSize: '15px' }}>{contact?.inquiry_id?.contact}</Box>
-
+            <Box sx={{ fontSize: '15px',margin:"0px 10px" }}>
+              <Label
+                variant='soft'
+                color={
+                  (contact.status === 'Active' && 'success') ||
+                  (contact.status === 'In Active' && 'error') ||
+                  'default'
+                }
+              >
+                {contact.status}
+              </Label>
+            </Box>
+            <Box sx={{ fontSize: '15px' }}>{contact?.contact}</Box>
           </Stack>
         ))}
       </Stack>
@@ -56,7 +67,7 @@ export default function DashboardUpcomingDemo({ title, subheader, list, ...other
   );
 }
 
-DashboardUpcomingDemo.propTypes = {
+DashboardUpcomingInquiry.propTypes = {
   list: PropTypes.array,
   subheader: PropTypes.string,
   title: PropTypes.string,

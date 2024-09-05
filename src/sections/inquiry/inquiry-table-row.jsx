@@ -19,16 +19,17 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import DemoNewEditForm from './Demo-new-edit-form';
 import moment from 'moment';
+import Label from '../../components/label';
 
 export default function InquiryTableRow({
-  row,
-  index,
-  selected,
-  onEditRow,
-  onSelectRow,
-  onDeleteRow,
-}) {
-  const { firstName, lastName, email, contact, dob } = row;
+                                          row,
+                                          index,
+                                          selected,
+                                          onEditRow,
+                                          onSelectRow,
+                                          onDeleteRow,
+                                        }) {
+  const { firstName, lastName, email, contact, dob, status } = row;
 
   const confirm = useBoolean();
   const popover = usePopover();
@@ -52,16 +53,28 @@ export default function InquiryTableRow({
 
         <TableCell>{moment(dob).format('DD/MM/YYYY')}</TableCell>
         <TableCell>
-          <Tooltip title="Add a new Demo" placement="top" arrow>
-            <Button variant="outlined" onClick={quickEdit.onTrue}>
+          <Tooltip title='Add a new Demo' placement='top' arrow>
+            <Button variant='outlined' onClick={quickEdit.onTrue}>
               + Demo
             </Button>
           </Tooltip>
         </TableCell>
+        <TableCell>
+          <Label
+            variant='soft'
+            color={
+              (status === 'Active' && 'success') ||
+              (status === 'In Active' && 'error') ||
+              'default'
+            }
+          >
+            {status}
+          </Label>
+        </TableCell>
 
-        <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
+        <TableCell align='center' sx={{ px: 1, whiteSpace: 'nowrap' }}>
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
-            <Iconify icon="eva:more-vertical-fill" />
+            <Iconify icon='eva:more-vertical-fill' />
           </IconButton>
         </TableCell>
       </TableRow>
@@ -69,7 +82,7 @@ export default function InquiryTableRow({
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
-        arrow="right-top"
+        arrow='right-top'
         sx={{ width: 140 }}
       >
         <MenuItem
@@ -79,7 +92,7 @@ export default function InquiryTableRow({
           }}
           sx={{ color: 'error.main' }}
         >
-          <Iconify icon="solar:trash-bin-trash-bold" />
+          <Iconify icon='solar:trash-bin-trash-bold' />
           Delete
         </MenuItem>
 
@@ -89,7 +102,7 @@ export default function InquiryTableRow({
             popover.onClose();
           }}
         >
-          <Iconify icon="solar:eye-bold" />
+          <Iconify icon='solar:eye-bold' />
           Edit
         </MenuItem>
       </CustomPopover>
@@ -99,10 +112,10 @@ export default function InquiryTableRow({
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete Inquiry"
-        content="Are you sure you want to delete selected inquiry?"
+        title='Delete Inquiry'
+        content='Are you sure you want to delete selected inquiry?'
         action={
-          <Button variant="contained" color="error" onClick={onDeleteRow}>
+          <Button variant='contained' color='error' onClick={onDeleteRow}>
             Delete
           </Button>
         }

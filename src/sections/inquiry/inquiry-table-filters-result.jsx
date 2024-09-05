@@ -8,29 +8,28 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 
 import Iconify from 'src/components/iconify';
-import { shortDateLabel } from '../../components/custom-date-range-picker';
+import { shortDateLabel } from 'src/components/custom-date-range-picker';
 
 // ----------------------------------------------------------------------
 
-export default function EmployeeTableFiltersResult({ filters, onFilters, onResetFilters, results, ...other }) {
+export default function InquiryTableFiltersResult({ filters, onFilters, onResetFilters, results, ...other }) {
   const shortLabel = shortDateLabel(filters.startDate, filters.endDate);
 
   const handleRemoveKeyword = useCallback(() => {
     onFilters('name', '');
   }, [onFilters]);
 
+  const handleRemoveService = useCallback(
+    (inputValue) => {
+      const newValue = filters.service.filter((item) => item !== inputValue);
+      onFilters('service', newValue);
+    },
+    [filters.service, onFilters],
+  );
+
   const handleRemoveStatus = useCallback(() => {
     onFilters('status', 'all');
   }, [onFilters]);
-
-  const handleRemoveRole = useCallback(
-    (inputValue) => {
-      const newValue = filters.role.filter((item) => item !== inputValue);
-
-      onFilters('role', newValue);
-    },
-    [filters.role, onFilters],
-  );
 
   const handleRemoveDate = useCallback(() => {
     onFilters('startDate', null);
@@ -45,18 +44,22 @@ export default function EmployeeTableFiltersResult({ filters, onFilters, onReset
           results found
         </Box>
       </Box>
-
       <Stack flexGrow={1} spacing={1} direction='row' flexWrap='wrap' alignItems='center'>
+        {!!filters.service && (
+          <Block label='Service:'>
+            {filters.service.map((item) => (
+              <Chip
+                key={item}
+                label={item}
+                size='small'
+                onDelete={() => handleRemoveService(item)}
+              />
+            ))}
+          </Block>
+        )}
         {filters.status !== 'all' && (
           <Block label='Status:'>
             <Chip size='small' label={filters.status} onDelete={handleRemoveStatus} />
-          </Block>
-        )}
-        {!!filters.role.length && (
-          <Block label='Role:'>
-            {filters.role.map((item) => (
-              <Chip key={item} label={item} size='small' onDelete={() => handleRemoveRole(item)} />
-            ))}
           </Block>
         )}
         {filters.startDate && filters.endDate && (
@@ -81,7 +84,7 @@ export default function EmployeeTableFiltersResult({ filters, onFilters, onReset
   );
 }
 
-EmployeeTableFiltersResult.propTypes = {
+InquiryTableFiltersResult.propTypes = {
   filters: PropTypes.object,
   onFilters: PropTypes.func,
   onResetFilters: PropTypes.func,

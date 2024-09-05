@@ -15,51 +15,59 @@ import Userrolecreatepage from './user-role-create-view';
 import ExpensesCreatePage from './expenses-create-view';
 import Developercreatepage from './developer-role-create-view';
 import MyProfile from './my-profile-create-view';
+import PermissionView from './permission-view';
 
 const TABS = [
   {
     value: 'My Profile',
     label: 'My Profile',
-    icon: <Iconify icon="carbon:user-profile" width={24} />,
-  },  {
+    icon: <Iconify icon='carbon:user-profile' width={24} />,
+  },
+  {
     value: 'Company Profile',
     label: 'Company Profile',
-    icon: <Iconify icon="mdi:company" width={24} />,
+    icon: <Iconify icon='mdi:company' width={24} />,
+  },
+  // {
+  //   value: 'Permission',
+  //   label: 'Permission',
+  //   icon: <Iconify icon='mdi:eye-lock' width={24} />,
+  // },
+  {
+    value: 'Courses',
+    label: 'Courses',
+    icon: <Iconify icon='hugeicons:course' width={24} />,
   },
   {
     value: 'User Role',
     label: 'User Role',
-    icon: <Iconify icon="fa6-solid:user-gear" width={24} />,
+    icon: <Iconify icon='fa6-solid:user-gear' width={24} />,
   },
   {
     value: 'Employee Role',
     label: 'Employee Role',
-    icon: <Iconify icon="clarity:employee-solid" width={24} />,
-  },
-  {
-    value: 'Expeneses',
-    label: 'Expeneses',
-    icon: <Iconify icon="mingcute:wallet-fill" width={24} />,
-  },
-  {
-    value: 'Courses',
-    label: 'Courses',
-    icon: <Iconify icon="hugeicons:course" width={24} />,
-  },
-  {
-    value: 'Lab',
-    label: 'Lab',
-    icon: <Iconify icon="mdi:google-classroom" width={24} />,
+    icon: <Iconify icon='clarity:employee-solid' width={24} />,
   },
   {
     value: 'Developer Option',
     label: 'Developer Option',
-    icon: <Iconify icon="material-symbols:developer-mode-tv-outline-rounded" width={24} />,
+    icon: <Iconify icon='material-symbols:developer-mode-tv-outline-rounded' width={24} />,
   },
+  {
+    value: 'Expeneses',
+    label: 'Expeneses',
+    icon: <Iconify icon='mingcute:wallet-fill' width={24} />,
+  },
+  {
+    value: 'Lab',
+    label: 'Lab',
+    icon: <Iconify icon='mdi:google-classroom' width={24} />,
+  },
+
   {
     value: 'Application Banner',
     label: 'Application Banner',
-    icon: <Iconify icon="mdi:application-edit" width={24} />,
+    icon: <Iconify icon='mdi:application-edit' width={24} />,
   },
 ];
 
@@ -76,7 +84,7 @@ export default function SettingsPage() {
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="Settings"
+          heading='Settings'
           links={[{ name: 'Dashboard', href: paths.dashboard.root }, { name: 'Settings' }]}
           sx={{
             mb: { xs: 3, md: 5 },
@@ -104,6 +112,7 @@ export default function SettingsPage() {
         {currentTab === 'Employee Role' && <EmployeeCreatePage />}
         {currentTab === 'Developer Option' && <Developercreatepage />}
         {currentTab === 'Application Banner' && <AppbanerCreate />}
+        {currentTab === 'Permission' && <PermissionView />}
       </Container>
     </>
   );

@@ -10,12 +10,12 @@ import { LoadingScreen } from 'src/components/loading-screen';
 // SETTING PROFILE
 import UserProfile from 'src/pages/dashboard/profile/profile';
 import { SettingsPage } from 'src/sections/settings/view';
-import { ComplainListView } from '../../sections/overview/complain/view/index.js';
 import UserEditProfile from 'src/pages/dashboard/profile/edit.jsx';
 import UserProfileView from 'src/sections/user/view/user-profile-view.jsx';
 import InviteUserView from '../../layouts/common/Invite-user';
 import AuthClassicLayout from '../../layouts/auth/classic';
 import RegisterView from '../../pages/dashboard/batches/view';
+import { ComplainListView } from '../../sections/complain/view';
 
 // BATCH
 const BatchListPage = lazy(() => import('src/pages/dashboard/batches/list'));

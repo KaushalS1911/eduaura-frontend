@@ -19,12 +19,15 @@ import {
 import { useGetConfigs } from 'src/api/config';
 import { useGetVisitsOverview } from '../../../api/visit_overview';
 import { useGetInquiryOverview } from '../../../api/inquiry_overview';
+import { useGetInquiry } from '../../../api/inquiry';
+import DashboardUpcomingInquiry from '../dashboard-upcoming-inquiry';
 
 export default function DashboardView() {
   const theme = useTheme();
   const { user } = useAuthContext();
   const [seriesData, setSeriesData] = useState('Month');
   const [demo, setDemo] = useState([]);
+  const [inquiryList, setInquiryList] = useState([]);
   const [attendence, setAttendence] = useState({});
   const [course, setCourse] = useState({});
   const [dashboardData, setDashboardData] = useState([]);
@@ -35,11 +38,16 @@ export default function DashboardView() {
   const { attendance } = useGetAttendance();
   const { configs } = useGetConfigs();
   const { visit } = useGetVisitsOverview();
-  const { inquiry } = useGetInquiryOverview();
+  const { inquiryOverview } = useGetInquiryOverview();
+  const { inquiry } = useGetInquiry();
+  console.log(inquiry);
 
   useEffect(() => {
     if (demos) {
       setDemo(demos);
+    }
+    if (inquiry) {
+      setInquiryList(inquiry);
     }
     if (dashboard) {
       setDashboardData(dashboard);
@@ -56,12 +64,10 @@ export default function DashboardView() {
   }, [demos, dashboard, courses, attendance, configs]);
 
   const output = [];
-
   for (const [key, value] of Object.entries(course)) {
     output.push({ label: key, value: value });
   }
   const settings = useSettingsContext();
-
   const currentYear = new Date().getFullYear();
 
   const categories =
@@ -121,7 +127,7 @@ export default function DashboardView() {
                     data: [
                       {
                         name: 'Inquiry',
-                        data: inquiry.weekWiseInquiries,
+                        data: inquiryOverview.weekWiseInquiries,
                       },
                       {
                         name: 'Visits',
@@ -134,7 +140,7 @@ export default function DashboardView() {
                     data: [
                       {
                         name: 'Inquiry',
-                        data: inquiry.monthWiseInquiries,
+                        data: inquiryOverview.monthWiseInquiries,
                       },
                       {
                         name: 'Visits',
@@ -147,7 +153,7 @@ export default function DashboardView() {
                     data: [
                       {
                         name: 'Inquiry',
-                        data: inquiry.yearWiseInquiries,
+                        data: inquiryOverview.yearWiseInquiries,
                       },
                       {
                         name: 'Visits',
@@ -178,15 +184,6 @@ export default function DashboardView() {
             />
           </Stack>
         </Grid>
-        <Grid xs={12} md={4}>
-          <Stack spacing={3}>
-            <DashboardUpcomingDemo
-              title='Upcoming Demos'
-              subheader={`You have ${demo.length} demos`}
-              list={demo.slice(-5)}
-            />
-          </Stack>
-        </Grid>
         <Grid xs={12} md={8}>
           <Stack spacing={3}>
             <DashboardCourseChart
@@ -208,6 +205,25 @@ export default function DashboardView() {
             />
           </Stack>
         </Grid>
+        <Grid xs={12} md={4}>
+          <Stack spacing={3}>
+            <DashboardUpcomingDemo
+              title='Upcoming Demos'
+              subheader={`You have ${demo.length} demos`}
+              list={demo.slice(-5)}
+            />
+          </Stack>
+        </Grid>
+        <Grid xs={12} md={4}>
+          <Stack spacing={3}>
+            <DashboardUpcomingInquiry
+              title='Upcoming Inquiry'
+              subheader={`You have ${inquiryList.length} Inquiry`}
+              list={inquiryList.slice(-5)}
+            />
+          </Stack>
+        </Grid>
+
       </Grid>
     </Container>
   );

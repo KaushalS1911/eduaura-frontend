@@ -11,14 +11,14 @@ export function useGetInquiryOverview() {
     console.error('Error fetching data:', error);
   }
   const memoizedValue = useMemo(() => {
-    const inquiry = data || [];
+    const inquiryOverview = data || [];
     const isLoading = !data && !error;
     return {
-      inquiry,
+      inquiryOverview,
       inquiryLoading: isLoading,
       inquiryError: error,
       inquiryValidating: isValidating,
-      inquiryEmpty: !isLoading && inquiry.length === 0,
+      inquiryEmpty: !isLoading && inquiryOverview.length === 0,
       mutate,
     };
   }, [data, error, isValidating, mutate]);

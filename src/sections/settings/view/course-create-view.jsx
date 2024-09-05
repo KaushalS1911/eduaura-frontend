@@ -22,6 +22,8 @@ export default function CourseCreatePage() {
   const [inputVal, setInputVal] = useState('');
   const [subCategoryVal, setSubCategoryVal] = useState('');
   const [subCategories, setSubCategories] = useState([]);
+  const [editingCourse, setEditingCourse] = useState(null);
+  const [editingSubCategory, setEditingSubCategory] = useState(null); // State for editing subcategory
   const { enqueueSnackbar } = useSnackbar();
 
   const handleAddCourse = () => {
@@ -29,18 +31,42 @@ export default function CourseCreatePage() {
       enqueueSnackbar('Please add at least one subcategory before submitting.', { variant: 'warning' });
       return;
     }
+
     const newCourse = { name: inputVal, subcategories: subCategories };
-    const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/configs/${configs?._id}`;
-    const payload = { ...configs, courses: [...configs.courses, newCourse] };
-    axios
-      .put(URL, payload)
-      .then(() => {
-        setInputVal('');
-        setSubCategories([]);
-        enqueueSnackbar('Course added successfully', { variant: 'success' });
-        mutate();
-      })
-      .catch((err) => console.log(err));
+
+    if (editingCourse) {
+      // Handle Update Course
+      const updatedCourses = configs?.courses.map((course) =>
+        course.name === editingCourse.name ? newCourse : course,
+      );
+      const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/configs/${configs?._id}`;
+      const payload = { ...configs, courses: updatedCourses };
+
+      axios
+        .put(URL, payload)
+        .then(() => {
+          setInputVal('');
+          setSubCategories([]);
+          setEditingCourse(null);
+          enqueueSnackbar('Course updated successfully', { variant: 'success' });
+          mutate();
+        })
+        .catch((err) => console.log(err));
+    } else {
+      // Handle Add New Course
+      const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/configs/${configs?._id}`;
+      const payload = { ...configs, courses: [...configs.courses, newCourse] };
+
+      axios
+        .put(URL, payload)
+        .then(() => {
+          setInputVal('');
+          setSubCategories([]);
+          enqueueSnackbar('Course added successfully', { variant: 'success' });
+          mutate();
+        })
+        .catch((err) => console.log(err));
+    }
   };
 
   const handleDeleteCourse = (course) => {
@@ -57,15 +83,45 @@ export default function CourseCreatePage() {
   };
 
   const handleAddSubCategory = () => {
-    setSubCategories([...subCategories, subCategoryVal]);
+    if (!inputVal.trim()) {
+      enqueueSnackbar('Please enter a course name before adding a subcategory.', { variant: 'warning' });
+      return;
+    }
+
+    if (!subCategoryVal.trim()) {
+      enqueueSnackbar('Please enter a subcategory before adding.', { variant: 'warning' });
+      return;
+    }
+
+    if (editingSubCategory !== null) {
+      const updatedSubCategories = subCategories.map((sub, index) =>
+        index === editingSubCategory ? subCategoryVal : sub,
+      );
+      setSubCategories(updatedSubCategories);
+      setEditingSubCategory(null);
+    } else {
+      setSubCategories([...subCategories, subCategoryVal]);
+    }
     setSubCategoryVal('');
+  };
+
+
+  const handleEditSubCategory = (index) => {
+    setEditingSubCategory(index);
+    setSubCategoryVal(subCategories[index]);
+  };
+
+  const handleEditCourse = (course) => {
+    setEditingCourse(course);
+    setInputVal(course.name);
+    setSubCategories(course.subcategories);
   };
 
   return (
     <Box sx={{ width: '100%', maxWidth: '100%', padding: '10px' }}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <CardHeader title='Add Our Courses' />
+          <CardHeader title={editingCourse ? 'Edit Course' : 'Add Our Courses'} />
         </Grid>
         <Grid item md={4} xs={12}>
           <Box sx={{ width: '100%', maxWidth: '600px', marginBottom: '10px', padding: '10px' }}>
@@ -82,17 +138,17 @@ export default function CourseCreatePage() {
                 fullWidth
                 variant='outlined'
                 onChange={(e) => setSubCategoryVal(e.target.value)}
-                label='Subcategory'
+                label={editingSubCategory !== null ? 'Edit Subcategory' : 'Subcategory'}
                 value={subCategoryVal}
                 sx={{ fontSize: '16px', mt: 2 }}
               />
               <Box display={'flex'} justifyContent={'space-between'}>
                 <Button variant='contained' onClick={handleAddSubCategory} sx={{ mt: 2 }}>
-                  Add Subcategory
+                  {editingSubCategory !== null ? 'Update Subcategory' : 'Add Subcategory'}
                 </Button>
                 <Box>
                   <Button variant='contained' onClick={handleAddCourse} sx={{ mt: 2 }}>
-                    Add Course
+                    {editingCourse ? 'Update Course' : 'Add Course'}
                   </Button>
                 </Box>
               </Box>
@@ -103,7 +159,15 @@ export default function CourseCreatePage() {
                       Subcategory
                     </Typography>
                     {subCategories.map((sub, index) => (
-                      <Typography key={index}>
+                      <Typography
+                        key={index}
+                        onClick={() => handleEditSubCategory(index)}
+                        sx={{
+                          fontSize: '16px',
+                          cursor: 'pointer',
+                          '&:hover': { textDecoration: 'underline' },
+                        }}
+                      >
                         {index + 1}. {sub}
                       </Typography>
                     ))}
@@ -140,23 +204,32 @@ export default function CourseCreatePage() {
                     }}
                     key={index}
                   >
-                    <Grid item>
-                      <Typography mt={1} mb={2} sx={{ fontSize: '16px', fontWeight: '900' }}>
-                        {course?.name}
-                      </Typography>
+                    <Grid item sx={{ width: '100%' }}>
+                      <Box  display={'flex'} alignItems={'center'}
+                           justifyContent={'space-between'}>
+                        <Typography mt={1} mb={2} sx={{ fontSize: '16px', fontWeight: '900' }}>
+                          {course?.name}
+                        </Typography>
+                        <Grid item display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
+                          <IconButton
+                            sx={{ mr: 1 }}
+                            onClick={() => handleEditCourse(course)}
+                          >
+                            <Iconify icon='solar:pen-bold' />
+                          </IconButton>
+                          <IconButton
+                            sx={{ color: 'error.main' }}
+                            onClick={() => handleDeleteCourse(course)}
+                          >
+                            <Iconify icon='solar:trash-bin-trash-bold' />
+                          </IconButton>
+                        </Grid>
+                      </Box>
                       {course?.subcategories?.map((sub, idx) => (
                         <Typography key={idx} sx={{ fontSize: '16px' }}>
                           - {sub}
                         </Typography>
                       ))}
-                    </Grid>
-                    <Grid item>
-                      <IconButton
-                        sx={{ color: 'error.main' }}
-                        onClick={() => handleDeleteCourse(course)}
-                      >
-                        <Iconify icon='solar:trash-bin-trash-bold' />
-                      </IconButton>
                     </Grid>
                   </Grid>
                 ))}

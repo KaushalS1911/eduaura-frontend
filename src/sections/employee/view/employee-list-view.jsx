@@ -39,6 +39,7 @@ import EmployeeTableToolbar from '../employee-table-toolbar';
 import EmployeeTableFiltersResult from '../employee-table-filters-result';
 import { useGetEmployees } from '../../../api/employee';
 import { LoadingScreen } from '../../../components/loading-screen';
+import { isAfter, isBetween } from '../../../utils/format-time';
 
 // ----------------------------------------------------------------------
 
@@ -56,6 +57,8 @@ const defaultFilters = {
   name: '',
   role: [],
   status: 'all',
+  startDate: null,
+  endDate: null,
 };
 
 // ----------------------------------------------------------------------
@@ -68,7 +71,7 @@ export default function EmployeeListView() {
   const router = useRouter();
   const confirm = useBoolean();
   const [tableData, setTableData] = useState([]);
-  const { employees,employeesLoading ,mutate } = useGetEmployees();
+  const { employees, employeesLoading, mutate } = useGetEmployees();
   const [filters, setFilters] = useState(defaultFilters);
   useEffect(() => {
     if (employees) {
@@ -93,14 +96,13 @@ export default function EmployeeListView() {
         [name]: value,
       }));
     },
-    [table]
+    [table],
   );
 
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
   }, []);
 
-  // Single Delete
   const handleDeleteRow = useCallback(
     async (_id) => {
       try {
@@ -118,21 +120,19 @@ export default function EmployeeListView() {
         enqueueSnackbar('Failed to delete Employee', { variant: 'error' });
       }
     },
-    [enqueueSnackbar, mutate, confirm, user?.company_id]
+    [enqueueSnackbar, mutate, confirm, user?.company_id],
   );
 
-  // Multiple Delete
   const handleDeleteRows = useCallback(async () => {
     try {
       const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/delete/all-employee`;
-
       const selectedIdsArray = [...table.selected];
-      const response = await axios.delete(URL, { data: { ids: selectedIdsArray }, }) ;
+      const response = await axios.delete(URL, { data: { ids: selectedIdsArray } });
       enqueueSnackbar(response.data.data.message, { variant: 'success' });
-            setTableData((prevData) => prevData.filter((row) => !selectedIdsArray.includes(row.id)));
-            table.onUpdatePageDeleteRow(selectedIdsArray.length);
-            confirm.onFalse();
-            mutate();
+      setTableData((prevData) => prevData.filter((row) => !selectedIdsArray.includes(row.id)));
+      table.onUpdatePageDeleteRow(selectedIdsArray.length);
+      confirm.onFalse();
+      mutate();
       // await Promise.all(
       //   sortedSelectedIds.map(async (selectedId) => {
       //     const response = ;
@@ -157,14 +157,16 @@ export default function EmployeeListView() {
     (id) => {
       router.push(paths.dashboard.employee.edit(id));
     },
-    [router]
+    [router],
   );
+
+  const dateError = isAfter(filters.startDate, filters.endDate);
 
   return (
     <>
-      {employeesLoading ? <LoadingScreen /> :       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+      {employeesLoading ? <LoadingScreen /> : <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="Employee"
+          heading='Employee'
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
             { name: 'Employee', href: paths.dashboard.employee.list },
@@ -173,18 +175,17 @@ export default function EmployeeListView() {
             <Button
               component={RouterLink}
               href={paths.dashboard.employee.new}
-              variant="contained"
-              startIcon={<Iconify icon="mingcute:add-line" />}
+              variant='contained'
+              startIcon={<Iconify icon='mingcute:add-line' />}
             >
               New Employee
             </Button>
           }
           sx={{ mb: { xs: 3, md: 5 } }}
         />
-
         <Card>
-          <EmployeeTableToolbar filters={filters} onFilters={handleFilters} roleOptions={_roles} />
-
+          <EmployeeTableToolbar filters={filters} onFilters={handleFilters} roleOptions={_roles}
+                                dateError={dateError} />
           {canReset && (
             <EmployeeTableFiltersResult
               filters={filters}
@@ -194,7 +195,6 @@ export default function EmployeeListView() {
               sx={{ p: 2.5, pt: 0 }}
             />
           )}
-
           <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
             <TableSelectedAction
               dense={table.dense}
@@ -203,18 +203,17 @@ export default function EmployeeListView() {
               onSelectAllRows={(checked) =>
                 table.onSelectAllRows(
                   checked,
-                  dataFiltered.map((row) => row._id)
+                  dataFiltered.map((row) => row._id),
                 )
               }
               action={
-                <Tooltip title="Delete">
-                  <IconButton color="primary" onClick={confirm.onTrue}>
-                    <Iconify icon="solar:trash-bin-trash-bold" />
+                <Tooltip title='Delete'>
+                  <IconButton color='primary' onClick={confirm.onTrue}>
+                    <Iconify icon='solar:trash-bin-trash-bold' />
                   </IconButton>
                 </Tooltip>
               }
             />
-
             <Scrollbar>
               <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
                 <TableHeadCustom
@@ -227,7 +226,7 @@ export default function EmployeeListView() {
                   onSelectAllRows={(checked) =>
                     table.onSelectAllRows(
                       checked,
-                      dataFiltered.map((row) => row._id)
+                      dataFiltered.map((row) => row._id),
                     )
                   }
                 />
@@ -235,7 +234,7 @@ export default function EmployeeListView() {
                   {dataFiltered
                     .slice(
                       table.page * table.rowsPerPage,
-                      table.page * table.rowsPerPage + table.rowsPerPage
+                      table.page * table.rowsPerPage + table.rowsPerPage,
                     )
                     .map((row, index) => (
                       <EmployeeTableRow
@@ -248,18 +247,15 @@ export default function EmployeeListView() {
                         onEditRow={() => handleEditRow(row._id)}
                       />
                     ))}
-
                   <TableEmptyRows
                     height={denseHeight}
                     emptyRows={emptyRows(table.page, table.rowsPerPage, dataFiltered.length)}
                   />
-
                   <TableNoData notFound={notFound} />
                 </TableBody>
               </Table>
             </Scrollbar>
           </TableContainer>
-
           <TablePaginationCustom
             count={dataFiltered.length}
             page={table.page}
@@ -272,11 +268,10 @@ export default function EmployeeListView() {
         </Card>
       </Container>
       }
-
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete Employee"
+        title='Delete Employee'
         content={
           <>
             Are you sure want to delete <strong> {table.selected.length} </strong> employee?
@@ -284,8 +279,8 @@ export default function EmployeeListView() {
         }
         action={
           <Button
-            variant="contained"
-            color="error"
+            variant='contained'
+            color='error'
             onClick={() => {
               handleDeleteRows();
               confirm.onFalse();
@@ -301,8 +296,8 @@ export default function EmployeeListView() {
 
 // ----------------------------------------------------------------------
 
-function applyFilter({ inputData, comparator, filters }) {
-  const { name, status, role } = filters;
+function applyFilter({ inputData, comparator, filters, dateError }) {
+  const { name, status, role, startDate, endDate } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
@@ -318,7 +313,8 @@ function applyFilter({ inputData, comparator, filters }) {
     inputData = inputData.filter(
       (user) =>
         user.firstName.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        user.email.toLowerCase().indexOf(name.toLowerCase()) !== -1
+        user.contact.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
+        user.email.toLowerCase().indexOf(name.toLowerCase()) !== -1,
     );
   }
 
@@ -328,6 +324,12 @@ function applyFilter({ inputData, comparator, filters }) {
 
   if (role.length) {
     inputData = inputData.filter((user) => role.includes(user.role));
+  }
+
+  if (!dateError) {
+    if (startDate && endDate) {
+      inputData = inputData.filter((order) => isBetween(order.joining_date, startDate, endDate));
+    }
   }
 
   return inputData;

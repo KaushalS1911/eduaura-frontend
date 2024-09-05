@@ -1,7 +1,6 @@
 import isEqual from 'lodash/isEqual';
 import { useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
-
 import {
   Card,
   Table,
@@ -12,14 +11,12 @@ import {
   IconButton,
   TableContainer,
 } from '@mui/material';
-
 import { paths } from 'src/routes/paths';
 import { useAuthContext } from 'src/auth/hooks';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { _expenses } from 'src/_mock';
-
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useSnackbar } from 'src/components/snackbar';
@@ -40,23 +37,26 @@ import VisitTableRow from '../visit-table-row';
 import VisitTableToolbar from '../visit-table-toolbar';
 import VisitTableFiltersResult from '../visit-table-filters-result';
 import { useGetVisits } from 'src/api/visit';
+import { isAfter, isBetween } from '../../../utils/format-time';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'srNo', label: '#', align: "center" },
+  { id: 'srNo', label: '#', align: 'center' },
   { id: 'name', label: 'Name' },
-  { id: 'contact', label: 'Contact'},
+  { id: 'contact', label: 'Contact' },
   { id: 'reference', label: 'Reference' },
   { id: 'notes', label: 'Notes' },
   { id: 'address', label: 'Address' },
-  { id: '', align: "center" },
+  { id: '', align: 'center' },
 ];
 
 const defaultFilters = {
   name: '',
   role: [],
   status: 'all',
+  startDate: null,
+  endDate: null,
 };
 
 // ----------------------------------------------------------------------
@@ -83,11 +83,10 @@ export default function VisitListView() {
       try {
         const response = await axios.delete(
           `https://admin-panel-dmawv.ondigitalocean.app/api/v2/visit`,
-          { data: { ids: id } }
+          { data: { ids: id } },
         );
         if (response.status === 200) {
           enqueueSnackbar('deleted successfully', { variant: 'success' });
-
           confirm.onFalse();
           mutate();
         } else {
@@ -98,7 +97,7 @@ export default function VisitListView() {
         enqueueSnackbar('Failed to delete visit', { variant: 'error' });
       }
     },
-    [enqueueSnackbar, mutate, table, tableData]
+    [enqueueSnackbar, mutate, table, tableData],
   );
 
   const handleDeleteRows = useCallback(async () => {
@@ -106,7 +105,7 @@ export default function VisitListView() {
       const selectedIdsArray = [...table.selected];
       const response = await axios.delete(
         `https://admin-panel-dmawv.ondigitalocean.app/api/v2/visit`,
-        { data: { ids: selectedIdsArray } }
+        { data: { ids: selectedIdsArray } },
       );
       if (response.status === 200) {
         enqueueSnackbar('deleted successfully', { variant: 'success' });
@@ -131,13 +130,11 @@ export default function VisitListView() {
 
   const dataInPage = dataFiltered.slice(
     table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
+    table.page * table.rowsPerPage + table.rowsPerPage,
   );
 
   const denseHeight = table.dense ? 56 : 76;
-
   const canReset = !isEqual(defaultFilters, filters);
-
   const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
 
   const handleFilters = useCallback(
@@ -148,7 +145,7 @@ export default function VisitListView() {
         [name]: value,
       }));
     },
-    [table]
+    [table],
   );
 
   const handleResetFilters = useCallback(() => {
@@ -159,28 +156,30 @@ export default function VisitListView() {
     (id) => {
       router.push(paths.dashboard.visit.edit(id));
     },
-    [router]
+    [router],
   );
 
   const handleFilterStatus = useCallback(
     (event, newValue) => {
       handleFilters('status', newValue);
     },
-    [handleFilters]
+    [handleFilters],
   );
 
   const handleViewRow = useCallback(
     (id) => {
       router.push(paths.dashboard.visit.edit(id));
     },
-    [router]
+    [router],
   );
+
+  const dateError = isAfter(filters.startDate, filters.endDate);
 
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="Visits"
+          heading='Visits'
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
             { name: 'Visit', href: paths.dashboard.visit.root },
@@ -190,8 +189,8 @@ export default function VisitListView() {
             <Button
               component={RouterLink}
               href={paths.dashboard.visit.new}
-              variant="contained"
-              startIcon={<Iconify icon="mingcute:add-line" />}
+              variant='contained'
+              startIcon={<Iconify icon='mingcute:add-line' />}
             >
               New Visit
             </Button>
@@ -200,10 +199,9 @@ export default function VisitListView() {
             mb: { xs: 3, md: 5 },
           }}
         />
-
         <Card>
-          <VisitTableToolbar filters={filters} onFilters={handleFilters} roleOptions={_expenses} />
-
+          <VisitTableToolbar filters={filters} onFilters={handleFilters} roleOptions={_expenses}
+                             dateError={dateError} />
           {canReset && (
             <VisitTableFiltersResult
               filters={filters}
@@ -213,7 +211,6 @@ export default function VisitListView() {
               sx={{ p: 2.5, pt: 0 }}
             />
           )}
-
           <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
             <TableSelectedAction
               dense={table.dense}
@@ -226,14 +223,13 @@ export default function VisitListView() {
               //   )
               // }
               action={
-                <Tooltip title="Delete">
-                  <IconButton color="primary" onClick={confirm.onTrue}>
-                    <Iconify icon="solar:trash-bin-trash-bold" />
+                <Tooltip title='Delete'>
+                  <IconButton color='primary' onClick={confirm.onTrue}>
+                    <Iconify icon='solar:trash-bin-trash-bold' />
                   </IconButton>
                 </Tooltip>
               }
             />
-
             <Scrollbar>
               <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
                 <TableHeadCustom
@@ -250,12 +246,11 @@ export default function VisitListView() {
                   //   )
                   // }
                 />
-
                 <TableBody>
                   {dataFiltered
                     .slice(
                       table.page * table.rowsPerPage,
-                      table.page * table.rowsPerPage + table.rowsPerPage
+                      table.page * table.rowsPerPage + table.rowsPerPage,
                     )
                     .map((row, index) => (
                       <VisitTableRow
@@ -269,18 +264,15 @@ export default function VisitListView() {
                         onViewRow={() => handleViewRow(row._id)}
                       />
                     ))}
-
                   <TableEmptyRows
                     height={denseHeight}
                     emptyRows={emptyRows(table.page, table.rowsPerPage, dataFiltered.length)}
                   />
-
                   <TableNoData notFound={notFound} />
                 </TableBody>
               </Table>
             </Scrollbar>
           </TableContainer>
-
           <TablePaginationCustom
             count={dataFiltered.length}
             page={table.page}
@@ -292,11 +284,10 @@ export default function VisitListView() {
           />
         </Card>
       </Container>
-
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
+        title='Delete'
         content={
           <>
             Are you sure want to delete <strong> {table.selected.length} </strong> items?
@@ -304,8 +295,8 @@ export default function VisitListView() {
         }
         action={
           <Button
-            variant="contained"
-            color="error"
+            variant='contained'
+            color='error'
             onClick={() => {
               handleDeleteRows();
               confirm.onFalse();
@@ -321,17 +312,15 @@ export default function VisitListView() {
 
 // ----------------------------------------------------------------------
 
-function applyFilter({ inputData, comparator, filters }) {
-  const { name, status, role } = filters;
+function applyFilter({ inputData, comparator, dateError, filters }) {
+  const { startDate, name, status, role, endDate } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
-
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
     return a[1] - b[1];
   });
-
   inputData = stabilizedThis.map((el) => el[0]);
 
   if (name) {
@@ -339,17 +328,19 @@ function applyFilter({ inputData, comparator, filters }) {
       (user) =>
         user.firstName.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
         user.lastName.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        user.reference.toLowerCase().indexOf(name.toLowerCase()) !== -1
+        user.reference.toLowerCase().indexOf(name.toLowerCase()) !== -1,
     );
   }
-
   if (status !== 'all') {
     inputData = inputData.filter((user) => user.status === status);
   }
-
   if (role.length) {
     inputData = inputData.filter((user) => role.includes(user.type));
   }
-
+  if (!dateError) {
+    if (startDate && endDate) {
+      inputData = inputData.filter((order) => isBetween(order.createdAt, startDate, endDate));
+    }
+  }
   return inputData;
 }
