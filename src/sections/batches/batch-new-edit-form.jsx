@@ -144,7 +144,10 @@ export default function BatchNewEditForm({ batchId }) {
               label='Technology'
               placeholder='Choose a technology'
               fullWidth
-              options={configs?.courses?.flatMap(course => course.subcategories)}
+              options={configs?.courses?.flatMap(course => [
+                { label: course.name, value: course.name },
+                ...course.subcategories.flatMap(sub => ({ label: sub, value: sub })),
+              ])}
               isOptionEqualToValue={(option, value) => option === value}
             />
             <RHFTextField name='batch_name' label='Batch Name' />

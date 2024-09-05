@@ -16,6 +16,7 @@ import Iconify from 'src/components/iconify';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { formHelperTextClasses } from '@mui/material/FormHelperText';
 import { MobileDatePicker } from '@mui/x-date-pickers';
+import { useGetConfigs } from '../../api/config';
 
 // ----------------------------------------------------------------------
 
@@ -25,6 +26,7 @@ export default function EmployeeTableToolbar({
                                                dateError,
                                                roleOptions,
                                              }) {
+  const { configs } = useGetConfigs();
   const popover = usePopover();
 
   const handleFilterName = useCallback(
@@ -38,6 +40,15 @@ export default function EmployeeTableToolbar({
     (event) => {
       onFilters(
         'role',
+        typeof event.target.value === 'string' ? event.target.value.split(',') : event.target.value,
+      );
+    },
+    [onFilters],
+  );
+  const handleFilterTechnology = useCallback(
+    (event) => {
+      onFilters(
+        'technology',
         typeof event.target.value === 'string' ? event.target.value.split(',') : event.target.value,
       );
     },
@@ -95,6 +106,34 @@ export default function EmployeeTableToolbar({
             {roleOptions.map((option) => (
               <MenuItem key={option} value={option}>
                 <Checkbox disableRipple size='small' checked={filters.role.includes(option)} />
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl
+          sx={{
+            flexShrink: 0,
+            width: { xs: 1, md: 200 },
+          }}
+        >
+          <InputLabel>Technology</InputLabel>
+
+          <Select
+            multiple
+            value={filters.technology}
+            onChange={handleFilterTechnology}
+            input={<OutlinedInput label='Technology' />}
+            renderValue={(selected) => selected.map((value) => value).join(', ')}
+            MenuProps={{
+              PaperProps: {
+                sx: { maxHeight: 240 },
+              },
+            }}
+          >
+            {configs.developer_type.map((option) => (
+              <MenuItem key={option} value={option}>
+                <Checkbox disableRipple size='small' checked={filters.technology.includes(option)} />
                 {option}
               </MenuItem>
             ))}

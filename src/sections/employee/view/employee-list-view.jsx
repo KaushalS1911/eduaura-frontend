@@ -56,6 +56,7 @@ const TABLE_HEAD = [
 const defaultFilters = {
   name: '',
   role: [],
+  technology: [],
   status: 'all',
   startDate: null,
   endDate: null,
@@ -297,7 +298,7 @@ export default function EmployeeListView() {
 // ----------------------------------------------------------------------
 
 function applyFilter({ inputData, comparator, filters, dateError }) {
-  const { name, status, role, startDate, endDate } = filters;
+  const { name, status, role, startDate, endDate, technology } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
@@ -324,6 +325,10 @@ function applyFilter({ inputData, comparator, filters, dateError }) {
 
   if (role.length) {
     inputData = inputData.filter((user) => role.includes(user.role));
+  }
+
+  if (technology.length) {
+    inputData = inputData.filter((user) => technology.includes(user.technology));
   }
 
   if (!dateError) {
