@@ -376,6 +376,7 @@ export default function StudentListView() {
                     ))}
                   </Select>
                 </FormControl>
+                <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
                 <Button
                   sx={{ marginRight: '20px' }}
                   variant='contained'
@@ -390,7 +391,6 @@ export default function StudentListView() {
                     onChange={handleFileChange}
                   />
                 </Button>
-                <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
                   <PDFDownloadLink
                     document={
                       <GenerateOverviewPDF
