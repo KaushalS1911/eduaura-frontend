@@ -81,7 +81,7 @@ export default function EmployeeNewEditForm({ employee }) {
       zipcode: employee?.address_detail?.zipcode || '',
       avatar_url: employee?.avatar_url || null,
     }),
-    [employee]
+    [employee],
   );
 
   const methods = useForm({
@@ -107,7 +107,7 @@ export default function EmployeeNewEditForm({ employee }) {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
-        }
+        },
       );
       return response.data;
     } catch (error) {
@@ -131,29 +131,20 @@ export default function EmployeeNewEditForm({ employee }) {
   };
 
   const onSubmit = handleSubmit(async (data) => {
-    const addemployee = {
-      firstName: data.firstName,
-      lastName: data.lastName,
-      contact: data.contact,
-      dob: data.dob,
-      email: data.email,
-      gender: data.gender,
-      role: data.role,
-      qualification: data.qualification,
-      technology: data.technology,
-      experience: Number(data.experience),
-      joining_date: data.joining_date,
-      address_1: data.address_1,
-      address_2: data.address_2,
-      country: data.country,
-      state: data.state,
-      city: data.city,
-      zipcode: data.zipcode,
-    };
-
     const formData = new FormData();
-    Object.keys(addemployee).forEach((key) => {
-      formData.append(key, addemployee[key]);
+
+    Object.keys(data).forEach((key) => {
+      if (key !== 'avatar_url') {
+        if (key === 'address_1' || key === 'address_2' || key === 'country' || key === 'state' || key === 'city' || key === 'zipcode') {
+          if (employee) {
+            formData.append(`address_detail[${key}]`, data[key]);
+          } else {
+            formData.append(key, data[key]);
+          }
+        } else {
+          formData.append(key, data[key]);
+        }
+      }
     });
 
     if (profilePic) {
@@ -190,7 +181,7 @@ export default function EmployeeNewEditForm({ employee }) {
         setValue('avatar_url', newFile, { shouldValidate: true });
       }
     },
-    [setValue]
+    [setValue],
   );
 
   const handleUppercase = (field) => (e) => {
@@ -201,54 +192,54 @@ export default function EmployeeNewEditForm({ employee }) {
   const renderProperties = (
     <>
       <Grid item md={4} xs={12}>
-        <Typography variant="h6" sx={{ mb: 0.5 }}>
+        <Typography variant='h6' sx={{ mb: 0.5 }}>
           Personal Details
         </Typography>
-        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+        <Typography variant='body2' sx={{ color: 'text.secondary' }}>
           Basic info, profile pic, role, qualification...
         </Typography>
 
         <Card sx={{ pt: 5, px: 3, mt: 5 }}>
           <Box sx={{ mb: 5 }}>
-            <RHFUploadAvatar name="avatar_url" onDrop={handleDrop} />
+            <RHFUploadAvatar name='avatar_url' onDrop={handleDrop} />
           </Box>
         </Card>
       </Grid>
 
       <Grid item xs={12} md={8}>
         <Card>
-          {!mdUp && <CardHeader title="Personal Details" />}
+          {!mdUp && <CardHeader title='Personal Details' />}
 
           <Stack spacing={3} sx={{ p: 3 }}>
             <Box
               columnGap={2}
               rowGap={3}
-              display="grid"
+              display='grid'
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
                 md: 'repeat(2, 1fr)',
               }}
             >
               <RHFTextField
-                name="firstName"
-                label="First Name"
+                name='firstName'
+                label='First Name'
                 onChange={handleUppercase('firstName')}
               />
 
               <RHFTextField
-                name="lastName"
-                label="Last Name"
+                name='lastName'
+                label='Last Name'
                 onChange={handleUppercase('lastName')}
               />
 
-              <RHFTextField name="email" label="Email Address" />
+              <RHFTextField name='email' label='Email Address' />
 
-              <RHFTextField name="contact" label="Phone Number" />
+              <RHFTextField name='contact' label='Phone Number' />
               <RHFAutocomplete
-                name="gender"
-                type="gender"
-                label="Gender"
-                placeholder="Choose a gender"
+                name='gender'
+                type='gender'
+                label='Gender'
+                placeholder='Choose a gender'
                 fullWidth
                 options={EMPLOYEE_GENDER.map((option) => option)}
                 getOptionLabel={(option) => option}
@@ -256,13 +247,13 @@ export default function EmployeeNewEditForm({ employee }) {
 
               <Stack spacing={1.5}>
                 <Controller
-                  name="dob"
+                  name='dob'
                   control={control}
                   render={({ field, fieldState: { error } }) => (
                     <DatePicker
                       {...field}
-                      label="Date of Birth"
-                      format="dd/MM/yyyy"
+                      label='Date of Birth'
+                      format='dd/MM/yyyy'
                       slotProps={{
                         textField: {
                           fullWidth: true,
@@ -277,10 +268,10 @@ export default function EmployeeNewEditForm({ employee }) {
 
               {configs?.emp_type && (
                 <RHFAutocomplete
-                  name="role"
-                  type="role"
-                  label="Role"
-                  placeholder="Choose a role"
+                  name='role'
+                  type='role'
+                  label='Role'
+                  placeholder='Choose a role'
                   fullWidth
                   options={configs?.emp_type.map((option) => option)}
                   getOptionLabel={(option) => option}
@@ -288,21 +279,21 @@ export default function EmployeeNewEditForm({ employee }) {
               )}
 
               <RHFTextField
-                name="experience"
-                label="Experience"
-                placeholder="0"
-                type="number"
+                name='experience'
+                label='Experience'
+                placeholder='0'
+                type='number'
                 InputLabelProps={{ shrink: true }}
               />
 
-              <RHFTextField name="qualification" label="Qualification" />
+              <RHFTextField name='qualification' label='Qualification' />
 
               {configs?.developer_type && (
                 <RHFAutocomplete
-                  name="technology"
-                  type="technology"
-                  label="Technology"
-                  placeholder="Choose a Technology"
+                  name='technology'
+                  type='technology'
+                  label='Technology'
+                  placeholder='Choose a Technology'
                   fullWidth
                   options={configs?.developer_type?.map((option) => option)}
                   getOptionLabel={(option) => option}
@@ -311,13 +302,13 @@ export default function EmployeeNewEditForm({ employee }) {
 
               <Stack spacing={1.5}>
                 <Controller
-                  name="joining_date"
+                  name='joining_date'
                   control={control}
                   render={({ field, fieldState: { error } }) => (
                     <DatePicker
                       {...field}
-                      label="Joining Date"
-                      format="dd/MM/yyyy"
+                      label='Joining Date'
+                      format='dd/MM/yyyy'
                       slotProps={{
                         textField: {
                           fullWidth: true,
@@ -340,10 +331,10 @@ export default function EmployeeNewEditForm({ employee }) {
     <>
       {mdUp && (
         <Grid item md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
+          <Typography variant='h6' sx={{ mb: 0.5 }}>
             Address Details
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
             Address info, country, state, city...
           </Typography>
         </Grid>
@@ -351,24 +342,24 @@ export default function EmployeeNewEditForm({ employee }) {
 
       <Grid item xs={12} md={8}>
         <Card>
-          {!mdUp && <CardHeader title="Address Details" />}
+          {!mdUp && <CardHeader title='Address Details' />}
 
           <Stack spacing={3} sx={{ p: 3 }}>
-            <RHFTextField name="address_1" label="Address line 1" />
+            <RHFTextField name='address_1' label='Address line 1' />
 
-            <RHFTextField name="address_2" label="Address line 2" />
+            <RHFTextField name='address_2' label='Address line 2' />
 
             <Box
               columnGap={2}
               rowGap={3}
-              display="grid"
+              display='grid'
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
                 md: 'repeat(2, 1fr)',
               }}
             >
               <Controller
-                name="country"
+                name='country'
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <Autocomplete
@@ -378,8 +369,8 @@ export default function EmployeeNewEditForm({ employee }) {
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Country"
-                        variant="outlined"
+                        label='Country'
+                        variant='outlined'
                         error={!!error}
                         helperText={error?.message}
                       />
@@ -388,7 +379,7 @@ export default function EmployeeNewEditForm({ employee }) {
                 )}
               />
               <Controller
-                name="state"
+                name='state'
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <Autocomplete
@@ -396,16 +387,16 @@ export default function EmployeeNewEditForm({ employee }) {
                     options={
                       watch('country')
                         ? countrystatecity
-                            .find((country) => country.name === watch('country'))
-                            ?.states.map((state) => state.name) || []
+                        .find((country) => country.name === watch('country'))
+                        ?.states.map((state) => state.name) || []
                         : []
                     }
                     onChange={(event, value) => field.onChange(value)}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="State"
-                        variant="outlined"
+                        label='State'
+                        variant='outlined'
                         error={!!error}
                         helperText={error?.message}
                       />
@@ -415,7 +406,7 @@ export default function EmployeeNewEditForm({ employee }) {
               />
 
               <Controller
-                name="city"
+                name='city'
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <Autocomplete
@@ -423,17 +414,17 @@ export default function EmployeeNewEditForm({ employee }) {
                     options={
                       watch('state')
                         ? countrystatecity
-                            .find((country) => country.name === watch('country'))
-                            ?.states.find((state) => state.name === watch('state'))
-                            ?.cities.map((city) => city.name) || []
+                        .find((country) => country.name === watch('country'))
+                        ?.states.find((state) => state.name === watch('state'))
+                        ?.cities.map((city) => city.name) || []
                         : []
                     }
                     onChange={(event, value) => field.onChange(value)}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="City"
-                        variant="outlined"
+                        label='City'
+                        variant='outlined'
                         error={!!error}
                         helperText={error?.message}
                       />
@@ -441,7 +432,7 @@ export default function EmployeeNewEditForm({ employee }) {
                   />
                 )}
               />
-              <RHFTextField name="zipcode" label="Zip code" />
+              <RHFTextField name='zipcode' label='Zip code' />
             </Box>
           </Stack>
         </Card>
@@ -453,7 +444,7 @@ export default function EmployeeNewEditForm({ employee }) {
     <>
       {mdUp && <Grid item md={4} />}
       <Grid item xs={12} md={8} sx={{ display: 'flex', justifyContent: 'end' }}>
-        <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
+        <LoadingButton type='submit' variant='contained' size='large' loading={isSubmitting}>
           {!employee?._id ? 'Add Employee' : 'Save Changes'}
         </LoadingButton>
       </Grid>

@@ -15,11 +15,12 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Checkbox from '@mui/material/Checkbox';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import { formHelperTextClasses } from '@mui/material/FormHelperText';
+import { useGetConfigs } from '../../api/config';
 
 // ----------------------------------------------------------------------
 
 export default function StudentTableToolbar({ filters, onFilters, dateError, batch }) {
-  console.log(batch);
+  const { configs } = useGetConfigs();
   const popover = usePopover();
   const handleFilterName = useCallback(
     (event) => {
@@ -32,6 +33,15 @@ export default function StudentTableToolbar({ filters, onFilters, dateError, bat
     (event) => {
       onFilters(
         'gender',
+        typeof event.target.value === 'string' ? event.target.value.split(',') : event.target.value,
+      );
+    },
+    [onFilters],
+  );
+  const handleFilterCourse = useCallback(
+    (event) => {
+      onFilters(
+        'course',
         typeof event.target.value === 'string' ? event.target.value.split(',') : event.target.value,
       );
     },
@@ -98,6 +108,33 @@ export default function StudentTableToolbar({ filters, onFilters, dateError, bat
               <MenuItem key={option} value={option}>
                 <Checkbox disableRipple size='small' checked={filters.gender.includes(option)} />
                 {option}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl
+          sx={{
+            flexShrink: 0,
+            width: { xs: 1, md: 200 },
+          }}
+        >
+          <InputLabel>Course</InputLabel>
+          <Select
+            multiple
+            value={filters.course}
+            onChange={handleFilterCourse}
+            input={<OutlinedInput label='Course' />}
+            renderValue={(selected) => selected.map((value) => value).join(', ')}
+            MenuProps={{
+              PaperProps: {
+                sx: { maxHeight: 240 },
+              },
+            }}
+          >
+            {configs?.courses?.map((option) => (
+              <MenuItem key={option?.name} value={option?.name}>
+                <Checkbox disableRipple size='small' checked={filters.course.includes(option?.name)} />
+                {option?.name}
               </MenuItem>
             ))}
           </Select>

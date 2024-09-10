@@ -109,14 +109,15 @@ export default function DemoNewEditForm({ open, onClose, currentId }) {
   };
 
   const uniqueSubcategories =
-    configs?.courses
-      ?.flatMap((course) => course.subcategories)
-      ?.filter((value, index, self) => self.indexOf(value) === index) || [];
+    configs?.courses?.flatMap(course => [
+      { label: course.name, value: course.name },
+      ...course.subcategories.flatMap(sub => ({ label: sub, value: sub })),
+    ]);
 
   return (
     <Dialog
       fullWidth
-      maxWidth="sm"
+      maxWidth='sm'
       open={open}
       onClose={onClose}
       PaperProps={{
@@ -132,20 +133,20 @@ export default function DemoNewEditForm({ open, onClose, currentId }) {
                 sx={{ py: '15px' }}
                 columnGap={2}
                 rowGap={3}
-                display="grid"
+                display='grid'
                 gridTemplateColumns={{
                   xs: 'repeat(1, 1fr)',
                   md: 'repeat(1, 1fr)',
                 }}
               >
                 <Controller
-                  name="faculty_name"
+                  name='faculty_name'
                   control={control}
                   render={({ field, fieldState: { error } }) => (
                     <RHFAutocomplete
                       {...field}
-                      label="Faculty Name"
-                      placeholder="Faculty Name"
+                      label='Faculty Name'
+                      placeholder='Faculty Name'
                       options={facultyOptions}
                       getOptionLabel={(option) => option.label}
                       onChange={(event, value) => {
@@ -155,8 +156,8 @@ export default function DemoNewEditForm({ open, onClose, currentId }) {
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Faculty Name"
-                          placeholder="Faculty Name"
+                          label='Faculty Name'
+                          placeholder='Faculty Name'
                           fullWidth
                           error={!!error}
                           helperText={error ? error.message : null}
@@ -167,7 +168,7 @@ export default function DemoNewEditForm({ open, onClose, currentId }) {
                 />
 
                 <Controller
-                  name="date"
+                  name='date'
                   control={control}
                   defaultValue={null}
                   render={({ field: { onChange, value }, fieldState: { error } }) => (
@@ -192,22 +193,22 @@ export default function DemoNewEditForm({ open, onClose, currentId }) {
                 />
                 {configs?.developer_type && (
                   <RHFAutocomplete
-                    name="technology"
-                    type="technology"
-                    label="Technology"
-                    placeholder="Choose a Technology"
+                    name='technology'
+                    type='technology'
+                    label='Technology'
+                    placeholder='Choose a Technology'
                     fullWidth
                     options={uniqueSubcategories}
                   />
                 )}
                 <Controller
-                  name="detail"
+                  name='detail'
                   control={control}
                   render={({ field, fieldState: { error } }) => (
                     <TextField
                       {...field}
-                      label="Detail"
-                      placeholder="Detail"
+                      label='Detail'
+                      placeholder='Detail'
                       error={!!error}
                       helperText={error ? error.message : null}
                       fullWidth
@@ -216,7 +217,7 @@ export default function DemoNewEditForm({ open, onClose, currentId }) {
                 />
               </Box>
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: '20px' }}>
-                <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+                <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
                   Add Demo
                 </LoadingButton>
               </Box>

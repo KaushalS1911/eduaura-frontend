@@ -45,6 +45,7 @@ import TaskTableRow from '../task-table-row';
 import TaskTableToolbar from '../task-table-toolbar';
 import TaskTableFiltersResult from '../task-table-filters-result';
 import { useGetTasks } from 'src/api/task';
+import { isAfter, isBetween } from '../../../utils/format-time';
 
 // ----------------------------------------------------------------------
 
@@ -62,6 +63,8 @@ const defaultFilters = {
   name: '',
   role: [],
   status: 'all',
+  startDate: null,
+  endDate: null,
 };
 
 // ----------------------------------------------------------------------
@@ -88,7 +91,7 @@ export default function TaskListView() {
       try {
         const response = await axios.delete(
           `https://admin-panel-dmawv.ondigitalocean.app/api/company/task`,
-          { data: { ids: id } }
+          { data: { ids: id } },
         );
         if (response.status === 200) {
           enqueueSnackbar('deleted successfully', { variant: 'success' });
@@ -103,7 +106,7 @@ export default function TaskListView() {
         enqueueSnackbar('Failed to delete task', { variant: 'error' });
       }
     },
-    [enqueueSnackbar, mutate, table, tableData]
+    [enqueueSnackbar, mutate, table, tableData],
   );
 
   const handleDeleteRows = useCallback(async () => {
@@ -111,7 +114,7 @@ export default function TaskListView() {
       const selectedIdsArray = [...table.selected];
       const response = await axios.delete(
         `https://admin-panel-dmawv.ondigitalocean.app/api/company/task`,
-        { data: { ids: selectedIdsArray } }
+        { data: { ids: selectedIdsArray } },
       );
       if (response.status === 200) {
         enqueueSnackbar('deleted successfully', { variant: 'success' });
@@ -136,7 +139,7 @@ export default function TaskListView() {
 
   const dataInPage = dataFiltered.slice(
     table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
+    table.page * table.rowsPerPage + table.rowsPerPage,
   );
 
   const denseHeight = table.dense ? 56 : 76;
@@ -153,7 +156,7 @@ export default function TaskListView() {
         [name]: value,
       }));
     },
-    [table]
+    [table],
   );
 
   const handleResetFilters = useCallback(() => {
@@ -164,28 +167,30 @@ export default function TaskListView() {
     (id) => {
       router.push(paths.dashboard.task.edit(id));
     },
-    [router]
+    [router],
   );
 
   const handleFilterStatus = useCallback(
     (event, newValue) => {
       handleFilters('status', newValue);
     },
-    [handleFilters]
+    [handleFilters],
   );
 
   const handleViewRow = useCallback(
     (id) => {
       router.push(paths.dashboard.task.edit(id));
     },
-    [router]
+    [router],
   );
+
+  const dateError = isAfter(filters.startDate, filters.endDate);
 
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="Task"
+          heading='Task'
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
             { name: 'Task', href: paths.dashboard.task.root },
@@ -194,8 +199,8 @@ export default function TaskListView() {
             <Button
               component={RouterLink}
               href={paths.dashboard.task.new}
-              variant="contained"
-              startIcon={<Iconify icon="mingcute:add-line" />}
+              variant='contained'
+              startIcon={<Iconify icon='mingcute:add-line' />}
             >
               New Task
             </Button>
@@ -206,7 +211,7 @@ export default function TaskListView() {
         />
 
         <Card>
-          <TaskTableToolbar filters={filters} onFilters={handleFilters} roleOptions={_expenses} />
+          <TaskTableToolbar filters={filters} onFilters={handleFilters} roleOptions={_expenses} dateError={dateError} />
 
           {canReset && (
             <TaskTableFiltersResult
@@ -226,13 +231,13 @@ export default function TaskListView() {
               onSelectAllRows={(checked) =>
                 table.onSelectAllRows(
                   checked,
-                  dataFiltered.map((row) => row._id)
+                  dataFiltered.map((row) => row._id),
                 )
               }
               action={
-                <Tooltip title="Delete">
-                  <IconButton color="primary" onClick={confirm.onTrue}>
-                    <Iconify icon="solar:trash-bin-trash-bold" />
+                <Tooltip title='Delete'>
+                  <IconButton color='primary' onClick={confirm.onTrue}>
+                    <Iconify icon='solar:trash-bin-trash-bold' />
                   </IconButton>
                 </Tooltip>
               }
@@ -259,7 +264,7 @@ export default function TaskListView() {
                   {dataFiltered
                     .slice(
                       table.page * table.rowsPerPage,
-                      table.page * table.rowsPerPage + table.rowsPerPage
+                      table.page * table.rowsPerPage + table.rowsPerPage,
                     )
                     .map((row, index) => (
                       <TaskTableRow
@@ -300,7 +305,7 @@ export default function TaskListView() {
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
+        title='Delete'
         content={
           <>
             Are you sure want to delete <strong> {table.selected.length} </strong> items?
@@ -308,8 +313,8 @@ export default function TaskListView() {
         }
         action={
           <Button
-            variant="contained"
-            color="error"
+            variant='contained'
+            color='error'
             onClick={() => {
               handleDeleteRows();
               confirm.onFalse();
@@ -325,8 +330,8 @@ export default function TaskListView() {
 
 // ----------------------------------------------------------------------
 
-function applyFilter({ inputData, comparator, filters }) {
-  const { name, status, role } = filters;
+function applyFilter({ inputData, comparator, filters, dateError }) {
+  const { name, status, role, startDate, endDate } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
@@ -342,7 +347,7 @@ function applyFilter({ inputData, comparator, filters }) {
     inputData = inputData.filter(
       (user) =>
         user.title.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        user.desc.toLowerCase().indexOf(name.toLowerCase()) !== -1
+        user.desc.toLowerCase().indexOf(name.toLowerCase()) !== -1,
     );
   }
 
@@ -352,6 +357,12 @@ function applyFilter({ inputData, comparator, filters }) {
 
   if (role.length) {
     inputData = inputData.filter((user) => role.includes(user.type));
+  }
+
+  if (!dateError) {
+    if (startDate && endDate) {
+      inputData = inputData.filter((order) => isBetween(order.createdAt, startDate, endDate));
+    }
   }
 
   return inputData;

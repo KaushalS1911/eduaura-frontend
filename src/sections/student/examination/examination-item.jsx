@@ -27,7 +27,7 @@ export default function ExaminationItem({ exam, onView, onEdit, onDelete }) {
   const popover = usePopover();
 
   const { examTitle, examDate, totalMarks, obtained_marks } = exam;
-const image = ExamImage(examTitle)
+  const image = ExamImage(examTitle);
   return (
     <>
       <Card>
@@ -35,13 +35,13 @@ const image = ExamImage(examTitle)
           <Iconify icon="eva:more-vertical-fill" />
         </IconButton> */}
         <Box sx={{ position: 'absolute', top: 20, right: 20 }}>
-          <Box sx={{ display: 'flex' , justifyContent: "space-between",alignItems: "center"}}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography sx={{ fontSize: '13px', color: 'text.disabled' }}>
               Total Marks :{' '}
             </Typography>
             <Typography sx={{ fontSize: '13px', ml: '5px' }}>{totalMarks}</Typography>
           </Box>
-          <Box sx={{ display: 'flex', justifyContent: "space-between",alignItems: "center" }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography sx={{ fontSize: '13px', color: 'text.disabled' }}>
               Obtain Marks :{' '}
             </Typography>
@@ -50,16 +50,22 @@ const image = ExamImage(examTitle)
         </Box>
 
         <Stack sx={{ p: 3, pb: 2 }}>
+
           <Avatar
-            src={image?.image}
-            alt="image"
-            variant="rounded"
-            sx={{ width: 48, height: 48, mb: 2 }}
-          />
+            src={examTitle}
+            alt={examTitle}
+            sx={{
+              width: 48, height: 48,
+              margin: '0px 5px',
+              border: (theme) => `solid 2px ${theme.palette.background.default}`,
+            }}
+          >
+            {examTitle.charAt(0).toUpperCase()}
+          </Avatar>
 
           <ListItemText
-            sx={{ mb: 1 }}
-            primary={<Link color="inherit">{examTitle}</Link>}
+            sx={{ mb: 1, mt: 3 }}
+            primary={<Link color='inherit'>{examTitle}</Link>}
             secondary={`Posted date: ${fDate(examDate)}`}
             primaryTypographyProps={{
               typography: 'subtitle1',

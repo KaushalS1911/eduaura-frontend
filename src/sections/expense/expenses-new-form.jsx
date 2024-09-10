@@ -20,6 +20,7 @@ import { paths } from 'src/routes/paths';
 import moment from 'moment';
 import { useAuthContext } from 'src/auth/hooks';
 import { useGetConfigs } from '../../api/config';
+import { date } from 'yup';
 
 const types = [
   'Rent',
@@ -49,7 +50,7 @@ const ExpenseNewForm = () => {
     defaultValues: {
       type: '',
       desc: '',
-      date: null,
+      date: new Date(),
       amount: '',
     },
   });
@@ -90,10 +91,10 @@ const ExpenseNewForm = () => {
     <>
       {mdUp && (
         <Grid md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
+          <Typography variant='h6' sx={{ mb: 0.5 }}>
             Details
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
             Type, short description, Amount...
           </Typography>
         </Grid>
@@ -101,19 +102,19 @@ const ExpenseNewForm = () => {
 
       <Grid xs={12} md={8}>
         <Card>
-          {!mdUp && <CardHeader title="Details" />}
+          {!mdUp && <CardHeader title='Details' />}
 
           <Stack spacing={3} sx={{ p: 3 }}>
             <RHFAutocomplete
-              name="type"
-              label="Type"
-              placeholder="Choose a Type"
+              name='type'
+              label='Type'
+              placeholder='Choose a Type'
               fullWidth
               options={configs?.expenses}
               getOptionLabel={(option) => option}
             />
-            <RHFTextField name="desc" label="Description" multiline rows={3} />
-            <RHFTextField name="amount" label="Amount" />
+            <RHFTextField name='desc' label='Description' multiline rows={3} />
+            <RHFTextField name='amount' label='Amount' />
             {/* <Stack spacing={1.5}>
               <Controller
                 name="date"
@@ -141,7 +142,7 @@ const ExpenseNewForm = () => {
             </Stack> */}
             <Stack spacing={1.5}>
               <Controller
-                name="date"
+                name='date'
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <DatePicker
@@ -151,7 +152,7 @@ const ExpenseNewForm = () => {
                       setValue('date', newDate);
                       field.onChange(newDate);
                     }}
-                    format="dd/MM/yyyy"
+                    format='dd/MM/yyyy'
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -167,7 +168,7 @@ const ExpenseNewForm = () => {
           </Stack>
         </Card>
         <Stack sx={{ my: '30px', alignItems: 'flex-end' }}>
-          <Button type="submit" variant="contained">
+          <Button type='submit' variant='contained'>
             Submit
           </Button>
         </Stack>

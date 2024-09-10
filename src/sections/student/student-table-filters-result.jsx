@@ -8,18 +8,13 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 
 import Iconify from 'src/components/iconify';
+import { shortDateLabel } from '../../components/custom-date-range-picker';
 
 // ----------------------------------------------------------------------
 
-export default function StudentTableFiltersResult({
-                                                    filters,
-                                                    onFilters,
-                                                    //
-                                                    onResetFilters,
-                                                    //
-                                                    results,
-                                                    ...other
-                                                  }) {
+export default function StudentTableFiltersResult({ filters, onFilters, onResetFilters, results, ...other }) {
+  const shortLabel = shortDateLabel(filters.startDate, filters.endDate);
+
   const handleRemoveKeyword = useCallback(() => {
     onFilters('name', '');
   }, [onFilters]);
@@ -37,6 +32,20 @@ export default function StudentTableFiltersResult({
     [filters.gender, onFilters],
   );
 
+  const handleRemoveCourse = useCallback(
+    (inputValue) => {
+      const newValue = filters.course.filter((item) => item !== inputValue);
+
+      onFilters('course', newValue);
+    },
+    [filters.course, onFilters],
+  );
+
+  const handleRemoveDate = useCallback(() => {
+    onFilters('startDate', null);
+    onFilters('endDate', null);
+  }, [onFilters]);
+
   return (
     <Stack spacing={1.5} {...other}>
       <Box sx={{ typography: 'body2' }}>
@@ -45,20 +54,29 @@ export default function StudentTableFiltersResult({
           results found
         </Box>
       </Box>
-
       <Stack flexGrow={1} spacing={1} direction='row' flexWrap='wrap' alignItems='center'>
         {filters.status !== 'all' && (
           <Block label='Status:'>
             <Chip size='small' label={filters.status} onDelete={handleRemoveStatus} />
           </Block>
         )}
-
-
         {!!filters.gender.length && (
           <Block label='Gender:'>
             {filters.gender.map((item) => (
               <Chip key={item} label={item} size='small' onDelete={() => handleRemoveGender(item)} />
             ))}
+          </Block>
+        )}
+        {!!filters.course.length && (
+          <Block label='Course:'>
+            {filters.course.map((item) => (
+              <Chip key={item} label={item} size='small' onDelete={() => handleRemoveCourse(item)} />
+            ))}
+          </Block>
+        )}
+        {filters.startDate && filters.endDate && (
+          <Block label='Date:'>
+            <Chip size='small' label={shortLabel} onDelete={handleRemoveDate} />
           </Block>
         )}
         {!!filters.name && (
@@ -107,7 +125,6 @@ function Block({ label, children, sx, ...other }) {
       <Box component='span' sx={{ typography: 'subtitle2' }}>
         {label}
       </Box>
-
       <Stack spacing={1} direction='row' flexWrap='wrap'>
         {children}
       </Stack>

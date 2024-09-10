@@ -47,25 +47,19 @@ const defaultFilters = {
 
 export default function CalendarView() {
   const theme = useTheme();
-
   const settings = useSettingsContext();
-
   const smUp = useResponsive('up', 'sm');
-
   const { user } = useAuthContext();
-
   const openFilters = useBoolean();
-
   const [filters, setFilters] = useState(defaultFilters);
-
   const { events, eventsLoading } = useGetEvents();
-
   const { calendar, mutate } = useGetCalendar();
   const { data } = calendar;
 
   const leaveTypeColors = {
     holiday: '#006099',
     'student leave': '#6B728E',
+    'employee leave': '#FF7F7F',
     notice: '#836FFF',
   };
 
@@ -101,7 +95,6 @@ export default function CalendarView() {
   });
 
   const dateError = isAfter(filters.startDate, filters.endDate);
-
   const {
     calendarRef,
     view,
@@ -146,6 +139,7 @@ export default function CalendarView() {
     filters,
     dateError,
   });
+
   const renderEventContent = (eventInfo) => {
     return (
       <Box
@@ -181,25 +175,23 @@ export default function CalendarView() {
     <>
       <Container maxWidth={settings.themeStretch ? false : 'xl'}>
         <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
+          direction='row'
+          alignItems='center'
+          justifyContent='space-between'
           sx={{
             mb: { xs: 3, md: 5 },
           }}
         >
-          <Typography variant="h4">Calendar</Typography>
+          <Typography variant='h4'>Calendar</Typography>
           <Button
-            variant="contained"
-            startIcon={<Iconify icon="mingcute:add-line" />}
+            variant='contained'
+            startIcon={<Iconify icon='mingcute:add-line' />}
             onClick={onOpenForm}
           >
             New Event
           </Button>
         </Stack>
-
         {canReset && renderResults}
-
         <Card>
           <StyledCalendar>
             <CalendarToolbar
@@ -224,7 +216,7 @@ export default function CalendarView() {
               initialDate={date}
               initialView={view}
               dayMaxEventRows={3}
-              eventDisplay="block"
+              eventDisplay='block'
               events={dataFiltered}
               eventContent={renderEventContent}
               headerToolbar={false}
@@ -250,7 +242,7 @@ export default function CalendarView() {
       </Container>
       <Dialog
         fullWidth
-        maxWidth="xs"
+        maxWidth='xs'
         open={openForm}
         onClose={onCloseForm}
         transitionDuration={{
@@ -261,7 +253,6 @@ export default function CalendarView() {
         <DialogTitle sx={{ minHeight: 76 }}>
           {openForm && <> {currentEvent.event !== '' ? 'Edit Event' : 'Add Event'}</>}
         </DialogTitle>
-
         <CalendarForm
           currentEvent={currentEvent}
           colorOptions={CALENDAR_COLOR_OPTIONS}
@@ -269,7 +260,6 @@ export default function CalendarView() {
           mutate={mutate}
         />
       </Dialog>
-
       <CalendarFilters
         open={openFilters.value}
         onClose={openFilters.onFalse}
@@ -293,7 +283,6 @@ function applyFilter({ inputData, filters, dateError }) {
   const stabilizedThis = inputData?.map((el, index) => [el, index]);
 
   inputData = stabilizedThis?.map((el) => el[0]);
-
   // if (colors.length) {
   //   inputData = inputData.filter((event) => colors.includes(event.color));
   // }

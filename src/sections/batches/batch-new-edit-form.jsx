@@ -41,7 +41,7 @@ export default function BatchNewEditForm({ batchId }) {
   }, [students, faculty]);
 
   const NewBlogSchema = Yup.object().shape({
-    technology: Yup.string().required('Technology is required'),
+    technology: Yup.object().required('Technology is required'),
     batch_time: Yup.string().required('Time is required'),
     batch_name: Yup.string().required('Batch Name is required'),
     batch_members: Yup.array().required('Batch Member is required'),
@@ -93,6 +93,7 @@ export default function BatchNewEditForm({ batchId }) {
     try {
       const formattedData = {
         ...data,
+        technology: data.technology.value,
         batch_members: data.batch_members?.map((member) => member._id),
         faculty: data?.faculty?._id,
       };
@@ -144,7 +145,10 @@ export default function BatchNewEditForm({ batchId }) {
               label='Technology'
               placeholder='Choose a technology'
               fullWidth
-              options={configs?.courses?.flatMap(course => course.subcategories)}
+              options={configs?.courses?.flatMap(course => [
+                { label: course.name, value: course.name },
+                ...course.subcategories.flatMap(sub => ({ label: sub, value: sub })),
+              ])}
               isOptionEqualToValue={(option, value) => option === value}
             />
             <RHFTextField name='batch_name' label='Batch Name' />

@@ -13,6 +13,8 @@ import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Checkbox from '@mui/material/Checkbox';
+import { MobileDatePicker } from '@mui/x-date-pickers';
+import { formHelperTextClasses } from '@mui/material/FormHelperText';
 
 // ----------------------------------------------------------------------
 
@@ -20,6 +22,7 @@ export default function ExpenseTableToolbar({
                                               filters,
                                               onFilters,
                                               roleOptions,
+                                              dateError,
                                             }) {
   const popover = usePopover();
 
@@ -40,6 +43,20 @@ export default function ExpenseTableToolbar({
     [onFilters],
   );
 
+  const handleFilterStartDate = useCallback(
+    (newValue) => {
+      onFilters('startDate', newValue);
+    },
+    [onFilters],
+  );
+
+  const handleFilterEndDate = useCallback(
+    (newValue) => {
+      onFilters('endDate', newValue);
+    },
+    [onFilters],
+  );
+
   return (
     <>
       <Stack
@@ -55,21 +72,53 @@ export default function ExpenseTableToolbar({
         }}
       >
 
-        <Stack direction="row" alignItems="center" spacing={2} flexGrow={1} sx={{ width: 1 }}>
+        <Stack direction='row' alignItems='center' spacing={2} flexGrow={1} sx={{ width: 1 }}>
           <TextField
             fullWidth
             value={filters.name}
             onChange={handleFilterName}
-            placeholder="Search..."
+            placeholder='Search...'
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">
-                  <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
+                <InputAdornment position='start'>
+                  <Iconify icon='eva:search-fill' sx={{ color: 'text.disabled' }} />
                 </InputAdornment>
               ),
             }}
           />
         </Stack>
+        <MobileDatePicker
+          label='Start date'
+          value={filters.startDate}
+          onChange={handleFilterStartDate}
+          slotProps={{
+            textField: {
+              fullWidth: true,
+            },
+          }}
+          sx={{
+            maxWidth: { md: 200 },
+          }}
+        />
+        <MobileDatePicker
+          label='End date'
+          value={filters.endDate}
+          onChange={handleFilterEndDate}
+          slotProps={{
+            textField: {
+              fullWidth: true,
+              error: dateError,
+              helperText: dateError && 'End date must be later than start date',
+            },
+          }}
+          sx={{
+            maxWidth: { md: 200 },
+            [`& .${formHelperTextClasses.root}`]: {
+              position: { md: 'absolute' },
+              bottom: { md: -40 },
+            },
+          }}
+        />
         <FormControl
           sx={{
             flexShrink: 0,
@@ -81,7 +130,7 @@ export default function ExpenseTableToolbar({
             multiple
             value={filters.role}
             onChange={handleFilterRole}
-            input={<OutlinedInput label="Expense Type" />}
+            input={<OutlinedInput label='Expense Type' />}
             renderValue={(selected) => selected.map((value) => value).join(', ')}
             MenuProps={{
               PaperProps: {
@@ -91,7 +140,7 @@ export default function ExpenseTableToolbar({
           >
             {roleOptions.map((option) => (
               <MenuItem key={option} value={option}>
-                <Checkbox disableRipple size="small" checked={filters.role.includes(option)} />
+                <Checkbox disableRipple size='small' checked={filters.role.includes(option)} />
                 {option}
               </MenuItem>
             ))}
@@ -102,7 +151,7 @@ export default function ExpenseTableToolbar({
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
-        arrow="right-top"
+        arrow='right-top'
         sx={{ width: 140 }}
       >
         <MenuItem
@@ -110,7 +159,7 @@ export default function ExpenseTableToolbar({
             popover.onClose();
           }}
         >
-          <Iconify icon="solar:printer-minimalistic-bold" />
+          <Iconify icon='solar:printer-minimalistic-bold' />
           Print
         </MenuItem>
 
@@ -119,7 +168,7 @@ export default function ExpenseTableToolbar({
             popover.onClose();
           }}
         >
-          <Iconify icon="solar:import-bold" />
+          <Iconify icon='solar:import-bold' />
           Import
         </MenuItem>
 
@@ -128,7 +177,7 @@ export default function ExpenseTableToolbar({
             popover.onClose();
           }}
         >
-          <Iconify icon="solar:export-bold" />
+          <Iconify icon='solar:export-bold' />
           Export
         </MenuItem>
       </CustomPopover>

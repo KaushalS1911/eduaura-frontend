@@ -68,8 +68,11 @@ export default function InquiryNewEditForm({ inquiryId }) {
       other_reference_by: '',
       interested_in: [],
       suggested_by: '',
+      remark: '',
+      status: '',
     },
   });
+
 
   const {
     reset,
@@ -116,7 +119,10 @@ export default function InquiryNewEditForm({ inquiryId }) {
             other_reference_by: data.reference_by,
             interested_in: data.interested_in,
             suggested_by: data.suggested_by,
+            remark: data.remark || '',
+            status: data.status || '',
           });
+
           if (condition == 'Other') {
             setRadio(true);
           }
@@ -169,6 +175,8 @@ export default function InquiryNewEditForm({ inquiryId }) {
       reference_by: data.reference_by === 'Other' ? data.other_reference_by : data.reference_by,
       interested_in: data.interested_in,
       suggested_by: data.suggested_by,
+      remark: data.remark,
+      status: data.status,
     };
     try {
       let response;
@@ -339,30 +347,30 @@ export default function InquiryNewEditForm({ inquiryId }) {
     <>
       {mdUp && (
         <Grid item md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
+          <Typography variant='h6' sx={{ mb: 0.5 }}>
             Father Details
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
             Father info, Contact, Occupation...
           </Typography>
         </Grid>
       )}
       <Grid item xs={12} md={8}>
         <Card>
-          {!mdUp && <CardHeader title="Father Details" />}
+          {!mdUp && <CardHeader title='Father Details' />}
           <Stack spacing={3} sx={{ p: 3 }}>
             <Box
               columnGap={2}
               rowGap={3}
-              display="grid"
+              display='grid'
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
                 md: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField name="fatherName" label="Father Name" />
-              <RHFTextField name="father_contact" label="Father Phone Number" />
-              <RHFTextField name="father_occupation" label="Father Occupation" />
+              <RHFTextField name='fatherName' label='Father Name' />
+              <RHFTextField name='father_contact' label='Father Phone Number' />
+              <RHFTextField name='father_occupation' label='Father Occupation' />
             </Box>
           </Stack>
         </Card>
@@ -374,22 +382,22 @@ export default function InquiryNewEditForm({ inquiryId }) {
     <>
       {mdUp && (
         <Grid item md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
+          <Typography variant='h6' sx={{ mb: 0.5 }}>
             Other Details
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
             How did you come, Suggested By, Interested in...
           </Typography>
         </Grid>
       )}
       <Grid item xs={12} md={8}>
         <Card>
-          {!mdUp && <CardHeader title="Other Details" />}
+          {!mdUp && <CardHeader title='Other Details' />}
           <Stack spacing={3} sx={{ p: 3 }}>
             <Box
               columnGap={2}
               rowGap={3}
-              display="grid"
+              display='grid'
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
                 md: 'repeat(2, 1fr)',
@@ -426,6 +434,21 @@ export default function InquiryNewEditForm({ inquiryId }) {
                     label: course.name,
                     value: course.name,
                   }))}
+                />
+              </Stack>
+              <Stack spacing={1}>
+                <Typography variant='subtitle2'>Remark</Typography>
+                <RHFTextField name='remark' label='Remark' />
+              </Stack>
+              <Stack spacing={1}>
+                <Typography variant='subtitle2'>Status</Typography>
+                <RHFRadioGroup
+                  row
+                  name='status'
+                  options={[
+                    { label: 'Active', value: 'Active' },
+                    { label: 'In Active', value: 'In Active' },
+                  ]}
                 />
               </Stack>
             </Box>

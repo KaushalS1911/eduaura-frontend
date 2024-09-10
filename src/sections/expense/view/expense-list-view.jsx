@@ -45,6 +45,7 @@ import { useGetExpense } from 'src/api/expense';
 import ExpenseTableRow from '../expenses-table-row';
 import ExpenseTableToolbar from '../expenses-table-toolbar';
 import ExpenseTableFiltersResult from '../expenses-table-filters-result';
+import { isAfter, isBetween } from '../../../utils/format-time';
 
 // ----------------------------------------------------------------------
 
@@ -61,6 +62,8 @@ const defaultFilters = {
   name: '',
   role: [],
   status: 'all',
+  startDate: null,
+  endDate: null,
 };
 
 // ----------------------------------------------------------------------
@@ -87,7 +90,7 @@ export default function ExpenseListView() {
       try {
         const response = await axios.delete(
           `https://admin-panel-dmawv.ondigitalocean.app/api/company/${user?.company_id}/delete/all-expense`,
-          { data: { ids: id } }
+          { data: { ids: id } },
         );
         if (response.status === 200) {
           enqueueSnackbar('deleted successfully', { variant: 'success' });
@@ -102,7 +105,7 @@ export default function ExpenseListView() {
         enqueueSnackbar('Failed to delete expense', { variant: 'error' });
       }
     },
-    [enqueueSnackbar, mutate, table, tableData]
+    [enqueueSnackbar, mutate, table, tableData],
   );
 
   const handleDeleteRows = useCallback(async () => {
@@ -110,7 +113,7 @@ export default function ExpenseListView() {
       const selectedIdsArray = [...table.selected];
       const response = await axios.delete(
         `https://admin-panel-dmawv.ondigitalocean.app/api/company/${user?.company_id}/delete/all-expense`,
-        { data: { ids: selectedIdsArray } }
+        { data: { ids: selectedIdsArray } },
       );
       if (response.status === 200) {
         enqueueSnackbar('deleted successfully', { variant: 'success' });
@@ -135,7 +138,7 @@ export default function ExpenseListView() {
 
   const dataInPage = dataFiltered.slice(
     table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
+    table.page * table.rowsPerPage + table.rowsPerPage,
   );
 
   const denseHeight = table.dense ? 56 : 76;
@@ -152,7 +155,7 @@ export default function ExpenseListView() {
         [name]: value,
       }));
     },
-    [table]
+    [table],
   );
 
   const handleResetFilters = useCallback(() => {
@@ -163,28 +166,30 @@ export default function ExpenseListView() {
     (id) => {
       router.push(paths.dashboard.expenses.edit(id));
     },
-    [router]
+    [router],
   );
 
   const handleFilterStatus = useCallback(
     (event, newValue) => {
       handleFilters('status', newValue);
     },
-    [handleFilters]
+    [handleFilters],
   );
 
   const handleViewRow = useCallback(
     (id) => {
       router.push(paths.dashboard.expenses.edit(id));
     },
-    [router]
+    [router],
   );
+
+  const dateError = isAfter(filters.startDate, filters.endDate);
 
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="Expense"
+          heading='Expense'
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
             { name: 'Expense', href: paths.dashboard.expenses.root },
@@ -193,8 +198,8 @@ export default function ExpenseListView() {
             <Button
               component={RouterLink}
               href={paths.dashboard.expenses.new}
-              variant="contained"
-              startIcon={<Iconify icon="mingcute:add-line" />}
+              variant='contained'
+              startIcon={<Iconify icon='mingcute:add-line' />}
             >
               New Expense
             </Button>
@@ -209,6 +214,7 @@ export default function ExpenseListView() {
             filters={filters}
             onFilters={handleFilters}
             roleOptions={_expenses}
+            dateError={dateError}
           />
 
           {canReset && (
@@ -229,13 +235,13 @@ export default function ExpenseListView() {
               onSelectAllRows={(checked) =>
                 table.onSelectAllRows(
                   checked,
-                  dataFiltered.map((row) => row._id)
+                  dataFiltered.map((row) => row._id),
                 )
               }
               action={
-                <Tooltip title="Delete">
-                  <IconButton color="primary" onClick={confirm.onTrue}>
-                    <Iconify icon="solar:trash-bin-trash-bold" />
+                <Tooltip title='Delete'>
+                  <IconButton color='primary' onClick={confirm.onTrue}>
+                    <Iconify icon='solar:trash-bin-trash-bold' />
                   </IconButton>
                 </Tooltip>
               }
@@ -262,7 +268,7 @@ export default function ExpenseListView() {
                   {dataFiltered
                     .slice(
                       table.page * table.rowsPerPage,
-                      table.page * table.rowsPerPage + table.rowsPerPage
+                      table.page * table.rowsPerPage + table.rowsPerPage,
                     )
                     .map((row, index) => (
                       <ExpenseTableRow
@@ -303,7 +309,7 @@ export default function ExpenseListView() {
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
+        title='Delete'
         content={
           <>
             Are you sure want to delete <strong> {table.selected.length} </strong> items?
@@ -311,8 +317,8 @@ export default function ExpenseListView() {
         }
         action={
           <Button
-            variant="contained"
-            color="error"
+            variant='contained'
+            color='error'
             onClick={() => {
               handleDeleteRows();
               confirm.onFalse();
@@ -328,8 +334,8 @@ export default function ExpenseListView() {
 
 // ----------------------------------------------------------------------
 
-function applyFilter({ inputData, comparator, filters }) {
-  const { name, status, role } = filters;
+function applyFilter({ inputData, comparator, filters, dateError }) {
+  const { name, status, role, startDate, endDate } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
@@ -345,12 +351,18 @@ function applyFilter({ inputData, comparator, filters }) {
     inputData = inputData.filter(
       (user) =>
         user.type.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        user.desc.toLowerCase().indexOf(name.toLowerCase()) !== -1
+        user.desc.toLowerCase().indexOf(name.toLowerCase()) !== -1,
     );
   }
 
   if (status !== 'all') {
     inputData = inputData.filter((user) => user.status === status);
+  }
+
+  if (!dateError) {
+    if (startDate && endDate) {
+      inputData = inputData.filter((order) => isBetween(order.date, startDate, endDate));
+    }
   }
 
   if (role.length) {

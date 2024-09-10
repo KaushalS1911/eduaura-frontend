@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import Stack from '@mui/material/Stack';
 import Select from '@mui/material/Select';
@@ -20,7 +20,8 @@ import { MobileDatePicker } from '@mui/x-date-pickers';
 
 export default function AttendanceTableToolbar({ filters, onFilters, dateError, serviceOptions }) {
   const popover = usePopover();
-
+  const [day, setDay] = useState('Today');
+  const days = ['Today', 'Last 7 Day', 'Last Week', 'Last 15 Day', 'Last Month', 'Last Year'];
   const handleFilterName = useCallback(
     (event) => {
       onFilters('name', event.target.value);
@@ -37,7 +38,45 @@ export default function AttendanceTableToolbar({ filters, onFilters, dateError, 
   //   },
   //   [onFilters]
   // );
+  const dayManage = (day) => {
+    const currentDate = new Date();
+    const sevenDaysAgo = new Date(new Date().setDate(new Date().getDate() - 6));
+    const fifteenDaysAgo = new Date(new Date().setDate(new Date().getDate() - 14));
+    const monthDaysAgo = new Date(new Date().setDate(new Date().getDate() - 30));
+    const yearsDaysAgo = new Date(new Date(new Date().setDate(new Date().getDate() - 360)));
 
+    if (day === 'Today') {
+      onFilters('startDay', currentDate);
+      onFilters('endDay', currentDate);
+    }
+    if (day === 'Last 7 Day') {
+      onFilters('startDay', sevenDaysAgo);
+      onFilters('endDay', currentDate);
+
+    }
+    if (day === 'Last Week') {
+      onFilters('startDay', sevenDaysAgo);
+      onFilters('endDay', currentDate);
+    }
+    if (day === 'Last 15 Day') {
+      onFilters('startDay', fifteenDaysAgo);
+      onFilters('endDay', currentDate);
+    }
+    if (day === 'Last Month') {
+      onFilters('startDay', monthDaysAgo);
+      onFilters('endDay', currentDate);
+    }
+    if (day === 'Last Year') {
+      onFilters('startDay', yearsDaysAgo);
+      onFilters('endDay', currentDate);
+    }
+  };
+  useEffect(() => {
+    if (day !== '') {
+      dayManage(day);
+    }
+
+  },[day])
   const handleFilterStartDate = useCallback(
     (newValue) => {
       onFilters('startDate', newValue);
@@ -51,7 +90,14 @@ export default function AttendanceTableToolbar({ filters, onFilters, dateError, 
     },
     [onFilters]
   );
+  const handleFilterDays = useCallback(
+    (event) => {
 
+
+      setDay(event.target.value);
+    },
+    [onFilters],
+  );
   return (
     <>
       <Stack
@@ -113,6 +159,7 @@ export default function AttendanceTableToolbar({ filters, onFilters, dateError, 
           {/* <IconButton onClick={popover.onOpen}> */}
           {/*   <Iconify icon="eva:more-vertical-fill" /> */}
           {/* </IconButton> */}
+
         </Stack>
 
         <MobileDatePicker
@@ -144,6 +191,37 @@ export default function AttendanceTableToolbar({ filters, onFilters, dateError, 
             },
           }}
         />
+        <FormControl
+          sx={{
+            flexShrink: 0,
+            width: { xs: 1, md: 200 },
+          }}
+        >
+          <InputLabel>Filter By Day</InputLabel>
+
+          <Select
+            value={day}
+            onChange={handleFilterDays}
+            input={<OutlinedInput label="Filter by Day"/>}
+            MenuProps={{
+              PaperProps: {
+                sx: { maxHeight: 240 },
+              },
+            }}
+            // renderValue={(selected) => selected.join(', ')}
+          >
+            {days.map((option) => (
+              <MenuItem key={option} value={option}>
+                {/*<Checkbox*/}
+                {/*  disableRipple*/}
+                {/*  size="small"*/}
+                {/*  checked={branch.includes(option)}*/}
+                {/*/>*/}
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </Stack>
 
       <CustomPopover

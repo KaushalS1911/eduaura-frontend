@@ -61,8 +61,7 @@ export function useNavData() {
 
   const navigationData = useMemo(
     () => [
-      // OVERVIEW
-      // ----------------------------------------------------------------------
+
       {
         subheader: t('overview'),
         items: [
@@ -71,76 +70,67 @@ export function useNavData() {
             path: paths.dashboard.root,
             icon: ICONS.dashboard,
           },
-          // ACCOUNT
-          user?.role === 'Admin' && {
+          {
             title: t('account'),
             path: paths.dashboard.account.root,
             icon: ICONS.user,
           },
-        ].filter(Boolean),
+        ]
       },
 
-      // MANAGEMENT
-      // ----------------------------------------------------------------------
+
       {
         subheader: t('management'),
         items: [
-          // VISIT
           {
             title: t('visit'),
             path: paths.dashboard.visit.list,
             icon: ICONS.visit,
           },
-          // INQUIRY
           {
             title: t('inquiry'),
             path: paths.dashboard.inquiry.list,
             icon: ICONS.inquiry,
           },
-          // DEMO
           {
             title: t('Demo'),
             path: paths.dashboard.demo.root,
             icon: ICONS.demo,
           },
-          // STUDENT
           user?.role !== 'student' && {
             title: t('student'),
             path: paths.dashboard.student.list,
             icon: ICONS.student,
           },
-
-          // EMPLOYEE
           {
             title: t('employee'),
             path: paths.dashboard.employee.list,
             icon: ICONS.employee,
           },
-          // BATCH
           {
             title: t('batches'),
             path: paths.dashboard.batches.root,
             icon: ICONS.batches,
           },
-        ].filter(Boolean), // Filter out any falsy values
+        ],
       },
       {
         subheader: t('academic'),
         items: [
 
-          // ATTENDANCE
+
           {
             title: t('attendance'),
             path: paths.dashboard.attendance.root,
             icon: ICONS.attandance,
           },
-          // EXAM
+
           {
             title: t('exam'),
             path: paths.dashboard.examination.list,
             icon: ICONS.exam,
           },
-          // SEMINAR
+
           {
             title: t('seminar'),
             path: paths.dashboard.seminar.list,
@@ -152,13 +142,11 @@ export function useNavData() {
         subheader: t('finance'),
         items: [
 
-          // FEES
           {
             title: t('fees'),
             path: paths.dashboard.general.fees,
             icon: ICONS.invoice,
           },
-          // EXPENSES
           {
             title: t('expenses'),
             path: paths.dashboard.expenses.list,
@@ -170,13 +158,11 @@ export function useNavData() {
         subheader: t('productivity'),
         items: [
 
-          // CALENDAR
           {
             title: t('calendar'),
             path: paths.dashboard.calendar,
             icon: ICONS.calendar,
           },
-          // TASK
           {
             title: t('task'),
             path: paths.dashboard.task.list,
@@ -187,18 +173,26 @@ export function useNavData() {
       {
         subheader: t('support'),
         items: [
-          // COMPLAIN
           {
-            title: t('Complaints'),
+            title: t('complaints'),
             path: paths.dashboard.complain.root,
             icon: ICONS.file,
           },
-
         ],
       },
+      // {
+      //   subheader: t('config'),
+      //   items: [
+      //     {
+      //       title: t('setting'),
+      //       path: paths.dashboard.setting,
+      //       icon: ICONS.setting,
+      //     },
+      //   ]
+      // }
 
     ],
-    [t, user?.role], // Include user.role as a dependency
+    [t, user?.role],
     )
   ;
   const adminNavData = useMemo(
@@ -221,17 +215,102 @@ export function useNavData() {
     );
   const employeeData = useMemo(() =>[
     {
+      subheader: t('overview'),
+      items: [
+        {
+          title: t('dashboard'),
+          path: paths.dashboard.root,
+          icon: ICONS.dashboard,
+        },
+        // {
+        //   title: t('account'),
+        //   path: paths.dashboard.account.root,
+        //   icon: ICONS.user,
+        // },
+      ]
+    },
+
+
+    {
+      subheader: t('management'),
+      items: [
+        // {
+        //   title: t('visit'),
+        //   path: paths.dashboard.visit.list,
+        //   icon: ICONS.visit,
+        // },
+        // {
+        //   title: t('inquiry'),
+        //   path: paths.dashboard.inquiry.list,
+        //   icon: ICONS.inquiry,
+        // },
+        // {
+        //   title: t('demo'),
+        //   path: paths.dashboard.demo.root,
+        //   icon: ICONS.demo,
+        // },
+        user?.role !== 'student' && {
+          title: t('student'),
+          path: paths.dashboard.student.list,
+          icon: ICONS.student,
+        },
+        // {
+        //   title: t('employee'),
+        //   path: paths.dashboard.employee.list,
+        //   icon: ICONS.employee,
+        // },
+        {
+          title: t('batches'),
+          path: paths.dashboard.batches.root,
+          icon: ICONS.batches,
+        },
+      ],
+    }, {
       subheader: t('academic'),
       items: [
 
-        // ATTENDANCE
+
         {
           title: t('attendance'),
           path: paths.dashboard.attendance.root,
           icon: ICONS.attandance,
         },
-      ]
-    }
+
+        {
+          title: t('exam'),
+          path: paths.dashboard.examination.list,
+          icon: ICONS.exam,
+        },
+
+        // {
+        //   title: t('seminar'),
+        //   path: paths.dashboard.seminar.list,
+        //   icon: ICONS.seminar,
+        // },
+      ],
+    },{
+      subheader: t('productivity'),
+      items: [
+
+        {
+          title: t('calendar'),
+          path: paths.dashboard.calendar,
+          icon: ICONS.calendar,
+        },
+        // {
+        //   title: t('task'),
+        //   path: paths.dashboard.task.list,
+        //   icon: ICONS.task,
+        // },
+      ],
+    },
   ])
-  return user?.role === "Admin" ? adminNavData : user?.role === "Employee" ? employeeData : navigationData;
+
+  // const a = navigationData?.map((data) => {
+  //   console.log(data,"raam");
+  //
+  //
+  //   data?.items?.filter((item) => ["visit"].includes(item?.title))
+  // })
+  return user?.role === "Admin" ? adminNavData : employeeData;
 }

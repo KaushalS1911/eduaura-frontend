@@ -38,7 +38,7 @@ const BatchNewForm = () => {
   }, [students, faculty]);
 
   const NewBlogSchema = Yup.object().shape({
-    technology: Yup.string().required('Technology is required'),
+    technology: Yup.object().required('Technology is required'),
     batch_time: Yup.string().required('Time is required'),
     batch_name: Yup.string().required('Batch Name is required'),
     faculty: Yup.object().shape({
@@ -48,7 +48,7 @@ const BatchNewForm = () => {
       .of(
         Yup.object().shape({
           _id: Yup.string().required('Batch Member is required'),
-        })
+        }),
       )
       .required('At least one Batch Member is required')
       .min(1, 'At least one Batch Member is required'),
@@ -77,6 +77,7 @@ const BatchNewForm = () => {
       const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/batch`;
       await axios.post(URL, {
         ...data,
+        technology: data.technology.value,
         batch_members: batchMemberIds,
         faculty: data?.faculty?._id,
       });
@@ -91,10 +92,10 @@ const BatchNewForm = () => {
     <>
       {mdUp && (
         <Grid md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
+          <Typography variant='h6' sx={{ mb: 0.5 }}>
             Details
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
             Technology, Time...
           </Typography>
         </Grid>
@@ -102,26 +103,29 @@ const BatchNewForm = () => {
 
       <Grid xs={12} md={8}>
         <Card>
-          {!mdUp && <CardHeader title="Details" />}
+          {!mdUp && <CardHeader title='Details' />}
           <Stack spacing={3} sx={{ p: 3 }}>
             <RHFAutocomplete
-              name="technology"
-              type="technology"
-              label="Technology"
-              placeholder="Choose a technology"
+              name='technology'
+              type='technology'
+              label='Technology'
+              placeholder='Choose a technology'
               fullWidth
-              options={configs?.courses?.flatMap(course => course.subcategories)}
+              options={configs?.courses?.flatMap(course => [
+                { label: course.name, value: course.name },
+                ...course.subcategories.flatMap(sub => ({ label: sub, value: sub })),
+              ])}
               isOptionEqualToValue={(option, value) => option === value}
             />
-            <RHFTextField name="batch_name" label="Batch Name" />
+            <RHFTextField name='batch_name' label='Batch Name' />
             <Controller
-              name="batch_time"
+              name='batch_time'
               control={control}
               render={({ field }) => (
                 <>
                   <MobileTimePicker
-                    orientation="portrait"
-                    label="Batch Time"
+                    orientation='portrait'
+                    label='Batch Time'
                     value={field.value}
                     onChange={(newValue) => field.onChange(newValue)}
                     slotProps={{
@@ -138,21 +142,21 @@ const BatchNewForm = () => {
             />
 
             <RHFAutocomplete
-              name="faculty"
-              type="faculty"
-              label="Facult Name"
-              placeholder="Choose a faculty"
+              name='faculty'
+              type='faculty'
+              label='Facult Name'
+              placeholder='Choose a faculty'
               fullWidth
               options={facultyName.map((option) => option)}
               getOptionLabel={(option) => `${option?.firstName} ${option?.lastName}`}
             />
             <RHFAutocomplete1
               name={'batch_members'}
-              labelName="Batch Members"
+              labelName='Batch Members'
               control={control}
               studentName={studentName}
               renderError={({ message }) => (
-                <Typography variant="body2" color="error">
+                <Typography variant='body2' color='error'>
                   {message}
                 </Typography>
               )}
@@ -160,7 +164,7 @@ const BatchNewForm = () => {
           </Stack>
         </Card>
         <Stack sx={{ my: '30px', alignItems: 'flex-end' }}>
-          <Button type="submit" variant="contained">
+          <Button type='submit' variant='contained'>
             Submit
           </Button>
         </Stack>

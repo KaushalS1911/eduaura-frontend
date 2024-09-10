@@ -72,7 +72,7 @@ export default function Labcreatepage() {
                   fullWidth
                   variant="outlined"
                   onChange={(e) => setInputVal(e.target.value)}
-                  label="Role"
+                  label="Lab"
                   value={inputVal}
                   sx={{
                     fontSize: '16px',

@@ -81,28 +81,17 @@ const useStyles = () =>
           width: '15%',
         },
       }),
-    []
+    [],
   );
 
 const FeesInvoicePDF = ({ currentStatus, invoice, invoiceDetails, config }) => {
   const styles = useStyles();
 
-  useEffect(() => {
-    const fetchConfigs = async () => {
-      const response = await useGetConfigs();
-      setConfigs(response.configs);
-    };
-
-    fetchConfigs();
-  }, []);
-
-  const [company, setCompany] = useState({});
-
-  const logo1 = company?.company_details?.logo ? `${company?.company_details?.logo}` : defaultLogo;
+  const logo1 = config.configs.company_details.logo ? `${config.configs.company_details.logo}` : defaultLogo;
 
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
+      <Page size='A4' style={styles.page}>
         <View style={[styles.gridContainer, styles.mb40]}>
           <Image
             source={logo1}
@@ -125,12 +114,12 @@ const FeesInvoicePDF = ({ currentStatus, invoice, invoiceDetails, config }) => {
               <Text style={styles.body2}>{config?.configs?.company_details?.name}</Text>
               <Text style={styles.body2}>
                 {config?.configs?.company_details?.address_1 +
-                  ' ' +
-                  config?.configs?.company_details?.city +
-                  ' ' +
-                  config?.configs?.company_details?.state +
-                  ' ' +
-                  config?.configs?.company_details?.country}
+                ' ' +
+                config?.configs?.company_details?.city +
+                ' ' +
+                config?.configs?.company_details?.state +
+                ' ' +
+                config?.configs?.company_details?.country}
               </Text>
               <Text style={styles.body2}>{config?.configs?.company_details?.contact}</Text>
             </View>

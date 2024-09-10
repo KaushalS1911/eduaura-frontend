@@ -1,7 +1,7 @@
 import Container from '@mui/material/Container';
 
 import { useSettingsContext } from 'src/components/settings';
-import ComplainListing from 'src/sections/overview/complain/complain-listing';
+import ComplainListing from '../../../sections/complain/complain-listing';
 
 
 // ----------------------------------------------------------------------

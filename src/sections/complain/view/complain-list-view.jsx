@@ -1,6 +1,5 @@
 import sumBy from 'lodash/sumBy';
 import { useState, useCallback } from 'react';
-
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
@@ -9,12 +8,9 @@ import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import { alpha, useTheme } from '@mui/material/styles';
 import TableContainer from '@mui/material/TableContainer';
-
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
-
 import { useBoolean } from 'src/hooks/use-boolean';
-
 import Label from 'src/components/label';
 import Scrollbar from 'src/components/scrollbar';
 import { useSnackbar } from 'src/components/snackbar';
@@ -29,11 +25,11 @@ import {
   TableHeadCustom,
   TablePaginationCustom,
 } from 'src/components/table';
-
 import { useGetComplaints } from 'src/api/complain';
 import ComplainTableRow from '../complain-table-row';
 import ComplainTableToolbar from '../complain-table-toolbar';
 import ComplainTableFiltersResult from '../complain-table-filters-result';
+import { isAfter, isBetween } from '../../../utils/format-time';
 
 // ----------------------------------------------------------------------
 
@@ -43,6 +39,7 @@ const TABLE_HEAD = [
   { id: 'date', label: 'Date' },
   { id: 'title', label: 'Title' },
   { id: 'status', label: 'Status' },
+  { id: '', label: '' },
 ];
 
 const defaultFilters = {
@@ -57,19 +54,12 @@ const defaultFilters = {
 
 export default function ComplainListView() {
   const { enqueueSnackbar } = useSnackbar();
-
   const theme = useTheme();
-
-  const { complaints } = useGetComplaints();
-
+  const { complaints, mutate } = useGetComplaints();
   const settings = useSettingsContext();
-
   const router = useRouter();
-
   const table = useTable({ defaultOrderBy: 'createDate' });
-
   const confirm = useBoolean();
-
   const [tableData, setTableData] = useState(complaints);
   const [filters, setFilters] = useState(defaultFilters);
 
@@ -81,29 +71,26 @@ export default function ComplainListView() {
 
   const dataInPage = dataFiltered.slice(
     table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
+    table.page * table.rowsPerPage + table.rowsPerPage,
   );
 
   const denseHeight = table.dense ? 56 : 56 + 20;
-
-  const canReset = !!filters.name || !!filters.service.length || filters.status !== 'all';
-
+  const canReset = !!filters.name || !!filters.service.length || filters.status !== 'all' ||  filters.startDate && filters.endDate;
   const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
-
   const getInvoiceLength = (status) => tableData.filter((item) => item.status === status).length;
 
   const getTotalAmount = (status) =>
     sumBy(
       tableData.filter((item) => item.status === status),
-      'totalAmount'
+      'totalAmount',
     );
 
   const getPercentByStatus = (status) => (getInvoiceLength(status) / tableData.length) * 100;
-
   const STATUS_OPTIONS = [
     { value: 'all', label: 'All' },
     { value: 'completed', label: 'Completed' },
     { value: 'pending', label: 'Pending' },
+    { value: 'cancel', label: 'Cancel' },
   ];
 
   const handleFilters = useCallback(
@@ -114,7 +101,7 @@ export default function ComplainListView() {
         [name]: value,
       }));
     },
-    [table]
+    [table],
   );
 
   const handleResetFilters = useCallback(() => {
@@ -124,23 +111,17 @@ export default function ComplainListView() {
   const handleDeleteRow = useCallback(
     (id) => {
       const deleteRow = tableData.filter((row) => row.id !== id);
-
       enqueueSnackbar('Delete success!');
-
       setTableData(deleteRow);
-
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
-    [dataInPage.length, enqueueSnackbar, table, tableData]
+    [dataInPage.length, enqueueSnackbar, table, tableData],
   );
 
   const handleDeleteRows = useCallback(() => {
     const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
-
     enqueueSnackbar('Delete success!');
-
     setTableData(deleteRows);
-
     table.onUpdatePageDeleteRows({
       totalRowsInPage: dataInPage.length,
       totalRowsFiltered: dataFiltered.length,
@@ -151,27 +132,29 @@ export default function ComplainListView() {
     (id) => {
       router.push(paths.dashboard.invoice.edit(id));
     },
-    [router]
+    [router],
   );
 
   const handleViewRow = useCallback(
     (id) => {
       router.push(paths.dashboard.invoice.details(id));
     },
-    [router]
+    [router],
   );
 
   const handleFilterStatus = useCallback(
     (event, newValue) => {
       handleFilters('status', newValue);
     },
-    [handleFilters]
+    [handleFilters],
   );
+  const dateError = isAfter(filters.startDate, filters.endDate);
+
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="Complain"
+          heading='Complain'
           links={[
             {
               name: 'Dashboard',
@@ -199,7 +182,7 @@ export default function ComplainListView() {
             {STATUS_OPTIONS.map((tab) => (
               <Tab
                 key={tab.value}
-                iconPosition="end"
+                iconPosition='end'
                 value={tab.value}
                 label={tab.label}
                 icon={
@@ -210,10 +193,11 @@ export default function ComplainListView() {
                     color={
                       (tab.value === 'completed' && 'success') ||
                       (tab.value === 'pending' && 'warning') ||
+                      (tab.value === 'cancel' && 'error') ||
                       'default'
                     }
                   >
-                    {['completed', 'pending'].includes(tab.value)
+                    {['completed', 'pending', 'cancel'].includes(tab.value)
                       ? complaints.filter((user) => user.status === tab.value).length
                       : complaints.length}
                   </Label>
@@ -222,7 +206,8 @@ export default function ComplainListView() {
             ))}
           </Tabs>
 
-          <ComplainTableToolbar filters={filters} onFilters={handleFilters} />
+          <ComplainTableToolbar filters={filters} onFilters={handleFilters}
+                                dateError={dateError} />
 
           {canReset && (
             <ComplainTableFiltersResult
@@ -250,13 +235,14 @@ export default function ComplainListView() {
                   {dataFiltered
                     ?.slice(
                       table.page * table.rowsPerPage,
-                      table.page * table.rowsPerPage + table.rowsPerPage
+                      table.page * table.rowsPerPage + table.rowsPerPage,
                     )
                     .map((row, index) => (
                       <ComplainTableRow
                         index={index}
                         key={index}
                         row={row}
+                        mutate={mutate}
                         selected={table.selected.includes(row.id)}
                         onSelectRow={() => table.onSelectRow(row.id)}
                         onViewRow={() => handleViewRow(row.id)}
@@ -293,8 +279,8 @@ export default function ComplainListView() {
 
 // ----------------------------------------------------------------------
 
-function applyFilter({ inputData, comparator, filters }) {
-  const { name, status } = filters;
+function applyFilter({ inputData, comparator, filters, dateError }) {
+  const { name, status, endDate, startDate } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
@@ -310,7 +296,7 @@ function applyFilter({ inputData, comparator, filters }) {
     inputData = inputData.filter(
       (item) =>
         item.student.lastName.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        item.student.firstName.toLowerCase().indexOf(name.toLowerCase()) !== -1
+        item.student.firstName.toLowerCase().indexOf(name.toLowerCase()) !== -1,
     );
   }
 
@@ -318,5 +304,10 @@ function applyFilter({ inputData, comparator, filters }) {
     inputData = inputData.filter((item) => item.status === status);
   }
 
+  if (!dateError) {
+    if (startDate && endDate) {
+      inputData = inputData.filter((order) => isBetween(order.date, startDate, endDate));
+    }
+  }
   return inputData;
 }
