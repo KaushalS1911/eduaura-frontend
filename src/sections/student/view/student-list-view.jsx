@@ -1,5 +1,6 @@
+import React, { useState, useCallback, useRef } from 'react';
 import isEqual from 'lodash/isEqual';
-import { useState, useCallback } from 'react';
+import * as xlsx from 'xlsx';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
@@ -42,6 +43,8 @@ import { LoadingScreen } from '../../../components/loading-screen';
 import { isAfter, isBetween } from '../../../utils/format-time';
 import { useAuthContext } from '../../../auth/hooks';
 import { useGetBatches } from '../../../api/batch';
+import { Box } from '@mui/material';
+import Swal from 'sweetalert2';
 
 // ----------------------------------------------------------------------
 
@@ -75,6 +78,7 @@ const defaultFilters = {
 export default function StudentListView() {
   const { enqueueSnackbar } = useSnackbar();
   const table = useTable();
+  const fileInputRef = useRef(null);
   const settings = useSettingsContext();
   const router = useRouter();
   const confirm = useBoolean();
@@ -181,7 +185,56 @@ export default function StudentListView() {
     },
     [handleFilters],
   );
+  const handleButtonClick = () => {
+    fileInputRef.current.click();
+  };
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append('student-file', file);
+      axios.post(`https://admin-panel-dmawv.ondigitalocean.app/api/v2/${user?.company_id}/student/bulk-import`, formData)
+        .then((res) => {
+          const { successCount, failureCount } = res.data.data;
+          let alertText = '';
+          let alertTitle = '';
+          let alertIcon = '';
 
+          if (failureCount == 0) {
+            alertText = `${successCount} students added successfully.`;
+            alertTitle = 'Success!';
+            alertIcon = 'success';
+          }
+          if(successCount !== 0 && failureCount !== 0) {
+            alertText = `${successCount} students added successfully. ${failureCount} failed.`;
+            alertTitle = 'Warning!';
+            alertIcon = 'warning';
+          }
+          if (successCount == 0) {
+            alertText = `Errors occurred. ${failureCount} failed.`;
+            alertTitle = 'Failed!';
+            alertIcon = 'error';
+          }
+
+          Swal.fire({
+            title: alertTitle,
+            text: alertText,
+            icon: alertIcon,
+            didOpen: () => document.querySelector('.swal2-container').style.zIndex = '9999'
+          });
+        })
+        .catch(() => {
+          Swal.fire({
+            title: 'Failed!',
+            text: 'Bulk import failed.',
+            icon: 'error',
+            didOpen: () => document.querySelector('.swal2-container').style.zIndex = '9999'
+          });
+        });
+
+      fileInputRef.current.value = '';
+    }
+  };
   const dateError = isAfter(filters.startDate, filters.endDate);
 
   return (
@@ -194,14 +247,31 @@ export default function StudentListView() {
             { name: 'Student', href: paths.dashboard.student.list },
           ]}
           action={
-            <Button
-              component={RouterLink}
-              href={paths.dashboard.student.new}
-              variant='contained'
-              startIcon={<Iconify icon='mingcute:add-line' />}
-            >
-              New Student
-            </Button>
+            <Box>
+              <Button
+                sx={{ marginRight: '20px' }}
+                variant='contained'
+                startIcon={<Iconify icon='mingcute:add-line' />}
+                onClick={handleButtonClick}
+              >
+                Add Bulk Student
+                <input
+                  type='file'
+                  ref={fileInputRef}
+                  style={{ display: 'none' }}
+                  onChange={handleFileChange}
+                />
+              </Button>
+
+              <Button
+                component={RouterLink}
+                href={paths.dashboard.student.new}
+                variant='contained'
+                startIcon={<Iconify icon='mingcute:add-line' />}
+              >
+                New Student
+              </Button>
+            </Box>
           }
           sx={{
             mb: { xs: 3, md: 5 },
