@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
@@ -34,6 +34,11 @@ import InquiryTableRow from '../inquiry-table-row';
 import InquiryTableToolbar from '../inquiry-table-toolbar';
 import { isAfter, isBetween } from '../../../utils/format-time';
 import InquiryTableFiltersResult from '../inquiry-table-filters-result';
+import Tabs from '@mui/material/Tabs';
+import { alpha } from '@mui/material/styles';
+import Tab from '@mui/material/Tab';
+import Label from '../../../components/label';
+import { USER_STATUS_OPTIONS } from '../../../_mock';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -145,13 +150,24 @@ export default function InquiryListView() {
     },
     [router],
   );
-
+  const handleFilterStatus = useCallback(
+    (event, newValue) => {
+      handleFilters('status', newValue);
+    },
+    [handleFilters],
+  );
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
   }, []);
 
   const dateError = isAfter(filters.startDate, filters.endDate);
-
+  const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, {
+    value: 'In Active',
+    label: 'In Active',
+  }, {
+    value: 'Active',
+    label: 'Active',
+  }];
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -176,6 +192,39 @@ export default function InquiryListView() {
           }}
         />
         <Card>
+          <Tabs
+            value={filters.status}
+            onChange={handleFilterStatus}
+            sx={{
+              px: 2.5,
+              boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
+            }}
+          >
+            {STATUS_OPTIONS.map((tab) => (
+              <Tab
+                key={tab.value}
+                iconPosition='end'
+                value={tab.value}
+                label={tab.label}
+                icon={
+                  <Label
+                    variant={
+                      ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'
+                    }
+                    color={
+                      (tab.value === 'Active' && 'success') ||
+                      (tab.value === 'In Active' && 'error') ||
+                      'default'
+                    }
+                  >
+                    {['In Active', 'Active'].includes(tab.value)
+                      ? inquiry.filter((user) => user.status === tab.value).length
+                      : inquiry.length}
+                  </Label>
+                }
+              />
+            ))}
+          </Tabs>
           <InquiryTableToolbar filters={filters} onFilters={handleFilters} dateError={dateError} />
           {canReset && (
             <InquiryTableFiltersResult

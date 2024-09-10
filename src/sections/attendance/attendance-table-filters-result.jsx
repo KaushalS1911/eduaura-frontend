@@ -21,12 +21,16 @@ export default function AttendanceTableFiltersResult({
   results,
   ...other
 }) {
+  const shortDayLabel = shortDateLabel(filters.startDay, filters.endDay);
   const shortLabel = shortDateLabel(filters.startDate, filters.endDate);
 
   const handleRemoveKeyword = useCallback(() => {
     onFilters('name', '');
   }, [onFilters]);
-
+  const handleRemoveDay = useCallback(() => {
+    onFilters('startDay', null);
+    onFilters('endDay', null);
+  }, [onFilters]);
   const handleRemoveService = useCallback(
     (inputValue) => {
       const newValue = filters.service.filter((item) => item !== inputValue);
@@ -67,7 +71,11 @@ export default function AttendanceTableFiltersResult({
             ))}
           </Block>
         )}
-
+        {filters.startDay && filters.endDay && (
+          <Block label="Day:">
+            <Chip size="small" label={shortDayLabel} onDelete={handleRemoveDay} />
+          </Block>
+        )}
         {filters.status !== 'all' && (
           <Block label="Status:">
             <Chip size="small" label={filters.status} onDelete={handleRemoveStatus} />
