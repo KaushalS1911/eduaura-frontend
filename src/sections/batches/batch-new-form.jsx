@@ -112,7 +112,7 @@ const BatchNewForm = () => {
               fullWidth
               options={configs?.courses?.flatMap(course => [
                 { label: course.name, value: course.name },
-                ...course.subcategories.flatMap(sub => ({ label: sub, value: sub })),
+                ...course.subcategories.flatMap(sub => ( sub ))
               ])}
               isOptionEqualToValue={(option, value) => option === value}
             />
