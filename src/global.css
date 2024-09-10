@@ -33,3 +33,9 @@
 .hide{
   opacity: 0;
 }
+div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm){
+  background-color: black !important;
+  border-radius: 8px !important;
+  padding: 10px 28px !important;
+  /*font-size: 0.9rem !important;*/
+}

@@ -45,6 +45,7 @@ const TABLE_HEAD = [
   { id: 'contact', label: 'Contact' },
   { id: 'course', label: 'Course' },
   { id: 'joining_date', label: 'Joining Date' },
+  // { id: 'status', label: 'Status' },
   { id: 'installments', label: 'Installments', align: 'center' },
 ];
 const defaultFilters = {

@@ -43,6 +43,7 @@ import { LoadingScreen } from '../../../components/loading-screen';
 import { fDate, isAfter, isBetween } from '../../../utils/format-time';
 import { useAuthContext } from '../../../auth/hooks';
 import { useGetBatches } from '../../../api/batch';
+import Swal from 'sweetalert2';
 import { Box, Stack } from '@mui/material';
 import GenerateOverviewPDF from '../../generate-pdf/generate-overview-pdf';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -89,6 +90,7 @@ export default function StudentListView() {
   const { configs } = useGetConfigs();
   const { enqueueSnackbar } = useSnackbar();
   const table = useTable();
+  const fileInputRef = useRef(null);
   const settings = useSettingsContext();
   const router = useRouter();
   const confirm = useBoolean();
@@ -148,6 +150,7 @@ export default function StudentListView() {
         console.error('Failed to delete Employee', error);
         enqueueSnackbar('Failed to delete Employee', { variant: 'error' });
       }
+
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
     [dataInPage.length, enqueueSnackbar, table, tableData],
@@ -196,7 +199,56 @@ export default function StudentListView() {
     },
     [handleFilters],
   );
+  const handleButtonClick = () => {
+    fileInputRef.current.click();
+  };
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append('student-file', file);
+      axios.post(`https://admin-panel-dmawv.ondigitalocean.app/api/v2/${user?.company_id}/student/bulk-import`, formData)
+        .then((res) => {
+          const { successCount, failureCount } = res.data.data;
+          let alertText = '';
+          let alertTitle = '';
+          let alertIcon = '';
 
+          if (failureCount == 0) {
+            alertText = `${successCount} students added successfully.`;
+            alertTitle = 'Success!';
+            alertIcon = 'success';
+          }
+          if (successCount !== 0 && failureCount !== 0) {
+            alertText = `${successCount} students added successfully. ${failureCount} failed.`;
+            alertTitle = 'Warning!';
+            alertIcon = 'warning';
+          }
+          if (successCount == 0) {
+            alertText = `Errors occurred. ${failureCount} failed.`;
+            alertTitle = 'Failed!';
+            alertIcon = 'error';
+          }
+
+          Swal.fire({
+            title: alertTitle,
+            text: alertText,
+            icon: alertIcon,
+            didOpen: () => document.querySelector('.swal2-container').style.zIndex = '9999',
+          });
+        })
+        .catch(() => {
+          Swal.fire({
+            title: 'Failed!',
+            text: 'Bulk import failed.',
+            icon: 'error',
+            didOpen: () => document.querySelector('.swal2-container').style.zIndex = '9999',
+          });
+        });
+
+      fileInputRef.current.value = '';
+    }
+  };
   const dateError = isAfter(filters.startDate, filters.endDate);
 
   const fieldMapping = {
@@ -284,7 +336,7 @@ export default function StudentListView() {
       ) : (
         <Container maxWidth={settings.themeStretch ? false : 'lg'}>
           <CustomBreadcrumbs
-            heading='Students'
+            heading='List'
             links={[
               { name: 'Dashboard', href: paths.dashboard.root },
               { name: 'Student', href: paths.dashboard.student.list },
@@ -324,6 +376,20 @@ export default function StudentListView() {
                   </Select>
                 </FormControl>
                 <Button
+                  sx={{ marginRight: '20px' }}
+                  variant='contained'
+                  startIcon={<Iconify icon='mingcute:add-line' />}
+                  onClick={handleButtonClick}
+                >
+                  Add Bulk Student
+                  <input
+                    type='file'
+                    ref={fileInputRef}
+                    style={{ display: 'none' }}
+                    onChange={handleFileChange}
+                  />
+                </Button>
+                <Button
                   sx={{ margin: '0px 5px' }}
                   component={RouterLink}
                   href={paths.dashboard.student.new}
@@ -347,283 +413,285 @@ export default function StudentListView() {
                 boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
               }}
             >
-           {STATUS_OPTIONS.map((tab) => (
-             <Tab
-               key={tab.value}
-               iconPosition='end'
-               value={tab.value}
-               label={tab.label}
-               icon={
-                 <>
-                   <Label
-                     style={{margin:"5px"}}
-                     variant={
-                       ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'
-                     }
-                     color={
-                       (tab.value === 'completed' && 'success') ||
-                       (tab.value === 'running' && 'warning') ||
-                       (tab.value === 'leaved' && 'error') ||
-                       (tab.value === 'training' && 'info') ||
-                       'default'
-                     }
-                   >
-                     {['running', 'leaved', 'completed', 'training'].includes(tab.value)
-                       ? students.filter((user) => user.status === tab.value).length
-                       : students.length}
-                   </Label>
-                 </>
-               }
-             />
-           ))}
-            <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'} width={"100%"}>
-               <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'}> <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
-                 <PDFDownloadLink
-                   document={
-                     <GenerateOverviewPDF
-                       allData={dataFiltered}
-                       heading={[{ hed: 'ER No', Size: '80px' },
-                         { hed: 'Name', Size: '240px' },
-                         {
-                           hed: 'Email',
-                           Size: '340px',
-                         },
-                         {
-                           hed: 'Gender',
-                           Size: '120px',
-                         },
-                         {
-                           hed: 'DOB',
-                           Size: '160px',
-                         },
-                         {
-                           hed: 'Student No.'
-                           , Size: '180px',
-                         },
-                         {
-                           hed: 'Father No.',
-                           Size: '180px',
-                         },
-                         {
-                           hed: 'Education',
-                           Size: '120px',
-                         },
-                         {
-                           hed: 'Collage-School',
-                           Size: '180px',
-                         },
-                         {
-                           hed: 'Course',
-                           Size: '200px',
-                         },
-                         {
-                           hed: 'Joining Date',
-                           Size: '170px',
-                         },
-                         ...(field.length ? [{ hed: 'Address', Size: '100%' }, {
-                           hed: 'Discount',
-                           Size: '160px',
-                         }, { hed: 'Status', Size: '180px' }] : []),
-                         {
-                           hed: 'Total Amount',
-                           Size: '150px',
-                         },
-                         {
-                           hed: 'Amount paid',
-                           Size: '150px',
-                         }].filter((item) => (field.includes(item.hed) || !field.length))}
-                       orientation={'landscape'}
-                       configs={configs}
-                       SubHeading={'Students'}
-                       fieldMapping={field.length ? extractedData : fieldMapping}
-                     />
-                   }
-                   fileName={'student'}
-                   style={{ textDecoration: 'none' }}
-                 >
-                   {({ loading }) => (
-                     <Tooltip title='Export to PDF'>
-                       {loading ? (
-                         <CircularProgress size={24}  />
-                       ) : (
-                         <Iconify
-                           icon='eva:cloud-download-fill'
-                           onClick={() => setField([])}
-                           sx={{ width: 30, height: 30, color: '#637381', mt: 1 }}
-                         />
-                       )}
+              {STATUS_OPTIONS.map((tab) => (
+                <Tab
+                  key={tab.value}
+                  iconPosition='end'
+                  value={tab.value}
+                  label={tab.label}
+                  icon={
+                    <>
+                      <Label
+                        style={{ margin: '5px' }}
+                        variant={
+                          ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'
+                        }
+                        color={
+                          (tab.value === 'completed' && 'success') ||
+                          (tab.value === 'running' && 'warning') ||
+                          (tab.value === 'leaved' && 'error') ||
+                          (tab.value === 'training' && 'info') ||
+                          'default'
+                        }
+                      >
+                        {['running', 'leaved', 'completed', 'training'].includes(tab.value)
+                          ? students.filter((user) => user.status === tab.value).length
+                          : students.length}
+                      </Label>
+                    </>
+                  }
+                />
+              ))}
+              <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'} width={'100%'}>
+                <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'}> <Stack direction='row'
+                                                                                                spacing={1} flexGrow={1}
+                                                                                                mx={1}>
+                  <PDFDownloadLink
+                    document={
+                      <GenerateOverviewPDF
+                        allData={dataFiltered}
+                        heading={[{ hed: 'ER No', Size: '80px' },
+                          { hed: 'Name', Size: '240px' },
+                          {
+                            hed: 'Email',
+                            Size: '340px',
+                          },
+                          {
+                            hed: 'Gender',
+                            Size: '120px',
+                          },
+                          {
+                            hed: 'DOB',
+                            Size: '160px',
+                          },
+                          {
+                            hed: 'Student No.'
+                            , Size: '180px',
+                          },
+                          {
+                            hed: 'Father No.',
+                            Size: '180px',
+                          },
+                          {
+                            hed: 'Education',
+                            Size: '120px',
+                          },
+                          {
+                            hed: 'Collage-School',
+                            Size: '180px',
+                          },
+                          {
+                            hed: 'Course',
+                            Size: '200px',
+                          },
+                          {
+                            hed: 'Joining Date',
+                            Size: '170px',
+                          },
+                          ...(field.length ? [{ hed: 'Address', Size: '100%' }, {
+                            hed: 'Discount',
+                            Size: '160px',
+                          }, { hed: 'Status', Size: '180px' }] : []),
+                          {
+                            hed: 'Total Amount',
+                            Size: '150px',
+                          },
+                          {
+                            hed: 'Amount paid',
+                            Size: '150px',
+                          }].filter((item) => (field.includes(item.hed) || !field.length))}
+                        orientation={'landscape'}
+                        configs={configs}
+                        SubHeading={'Students'}
+                        fieldMapping={field.length ? extractedData : fieldMapping}
+                      />
+                    }
+                    fileName={'student'}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    {({ loading }) => (
+                      <Tooltip title='Export to PDF'>
+                        {loading ? (
+                          <CircularProgress size={24} />
+                        ) : (
+                          <Iconify
+                            icon='eva:cloud-download-fill'
+                            onClick={() => setField([])}
+                            sx={{ width: 30, height: 30, color: '#637381', mt: 1 }}
+                          />
+                        )}
 
-                     </Tooltip>
-                   )}
-                 </PDFDownloadLink>
-               </Stack>
-                 <Tooltip title='Export to Excel'>
-                   <Iconify icon='icon-park-outline:excel' width={24} height={24} color={'#637381'} />
-                 </Tooltip>
-               </Box>
-              </Box>
-            </Tabs>
-            <StudentTableToolbar
-              filters={filters}
-              onFilters={handleFilters}
-              dateError={dateError}
-              roleOptions={_roles}
-              students={students}
-              batch={batch}
-            />
-            {canReset && (
-              <StudentTableFiltersResult
-                filters={filters}
-                onFilters={handleFilters}
-                onResetFilters={handleResetFilters}
-                results={dataFiltered.length}
-                sx={{ p: 2.5, pt: 0 }}
-              />
-            )}
-            <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-              <TableSelectedAction
-                dense={table.dense}
-                numSelected={table.selected.length}
-                rowCount={dataFiltered.length}
-                onSelectAllRows={(checked) =>
-                  table.onSelectAllRows(
-                    checked,
-                    dataFiltered.map((row) => row._id),
-                  )
-                }
-                action={
-                  <Tooltip title='Delete'>
-                    <IconButton color='primary' onClick={confirm.onTrue}>
-                      <Iconify icon='solar:trash-bin-trash-bold' />
-                    </IconButton>
+                      </Tooltip>
+                    )}
+                  </PDFDownloadLink>
+                </Stack>
+                  <Tooltip title='Export to Excel'>
+                    <Iconify icon='icon-park-outline:excel' width={24} height={24} color={'#637381'} />
                   </Tooltip>
-                }
-              />
-              <Scrollbar>
-                <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: '100%' }}>
-                  <TableHeadCustom
-                    order={table.order}
-                    orderBy={table.orderBy}
-                    headLabel={TABLE_HEAD}
-                    rowCount={dataFiltered.length}
+                </Box>
+              </Box>
+                </Tabs>
+                <StudentTableToolbar
+                  filters={filters}
+                  onFilters={handleFilters}
+                  dateError={dateError}
+                  roleOptions={_roles}
+                  students={students}
+                  batch={batch}
+                />
+                {canReset && (
+                  <StudentTableFiltersResult
+                    filters={filters}
+                    onFilters={handleFilters}
+                    onResetFilters={handleResetFilters}
+                    results={dataFiltered.length}
+                    sx={{ p: 2.5, pt: 0 }}
+                  />
+                )}
+                <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+                  <TableSelectedAction
+                    dense={table.dense}
                     numSelected={table.selected.length}
-                    onSort={table.onSort}
+                    rowCount={dataFiltered.length}
                     onSelectAllRows={(checked) =>
                       table.onSelectAllRows(
                         checked,
                         dataFiltered.map((row) => row._id),
                       )
                     }
+                    action={
+                      <Tooltip title='Delete'>
+                        <IconButton color='primary' onClick={confirm.onTrue}>
+                          <Iconify icon='solar:trash-bin-trash-bold' />
+                        </IconButton>
+                      </Tooltip>
+                    }
                   />
-                  <TableBody>
-                    {dataFiltered
-                      .slice(
-                        table.page * table.rowsPerPage,
-                        table.page * table.rowsPerPage + table.rowsPerPage,
-                      )
-                      .map((row) => (
-                        <StudentTableRow
-                          key={row._id}
-                          row={row}
-                          selected={table.selected.includes(row._id)}
-                          onSelectRow={() => table.onSelectRow(row._id)}
-                          onDeleteRow={() => handleDeleteRows(row._id)}
-                          onEditRow={() => handleEditRow(row._id)}
-                          onGuardianRow={() => handleGuardianEditRow(row._id)}
+                  <Scrollbar>
+                    <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: '100%' }}>
+                      <TableHeadCustom
+                        order={table.order}
+                        orderBy={table.orderBy}
+                        headLabel={TABLE_HEAD}
+                        rowCount={dataFiltered.length}
+                        numSelected={table.selected.length}
+                        onSort={table.onSort}
+                        onSelectAllRows={(checked) =>
+                          table.onSelectAllRows(
+                            checked,
+                            dataFiltered.map((row) => row._id),
+                          )
+                        }
+                      />
+                      <TableBody>
+                        {dataFiltered
+                          .slice(
+                            table.page * table.rowsPerPage,
+                            table.page * table.rowsPerPage + table.rowsPerPage,
+                          )
+                          .map((row) => (
+                            <StudentTableRow
+                              key={row._id}
+                              row={row}
+                              selected={table.selected.includes(row._id)}
+                              onSelectRow={() => table.onSelectRow(row._id)}
+                              onDeleteRow={() => handleDeleteRows(row._id)}
+                              onEditRow={() => handleEditRow(row._id)}
+                              onGuardianRow={() => handleGuardianEditRow(row._id)}
+                            />
+                          ))}
+                        <TableEmptyRows
+                          height={denseHeight}
+                          emptyRows={emptyRows(table.page, table.rowsPerPage, dataFiltered.length)}
                         />
-                      ))}
-                    <TableEmptyRows
-                      height={denseHeight}
-                      emptyRows={emptyRows(table.page, table.rowsPerPage, dataFiltered.length)}
-                    />
-                    <TableNoData notFound={notFound} />
-                  </TableBody>
-                </Table>
-              </Scrollbar>
-            </TableContainer>
-            <TablePaginationCustom
-              count={dataFiltered.length}
-              page={table.page}
-              rowsPerPage={table.rowsPerPage}
-              onPageChange={table.onChangePage}
-              onRowsPerPageChange={table.onChangeRowsPerPage}
-              dense={table.dense}
-              onChangeDense={table.onChangeDense}
-            />
-          </Card>
+                        <TableNoData notFound={notFound} />
+                      </TableBody>
+                    </Table>
+                  </Scrollbar>
+                </TableContainer>
+                <TablePaginationCustom
+                  count={dataFiltered.length}
+                  page={table.page}
+                  rowsPerPage={table.rowsPerPage}
+                  onPageChange={table.onChangePage}
+                  onRowsPerPageChange={table.onChangeRowsPerPage}
+                  dense={table.dense}
+                  onChangeDense={table.onChangeDense}
+                />
+              </Card>
         </Container>
-      )}
-      <ConfirmDialog
+        )}
+        <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
         title='Delete Student'
         content={
-          <>
-            Are you sure you want to
-            delete <strong> {table.selected.length} </strong> student{table.selected.length > 1 ? 's' : ''}?
-          </>
-        }
+        <>
+        Are you sure you want to
+        delete <strong> {table.selected.length} </strong> student{table.selected.length > 1 ? 's' : ''}?
+        </>
+      }
         action={
-          <Button
-            variant='contained'
-            color='error'
-            onClick={() => {
-              handleDeleteRows(table.selected);
-              confirm.onFalse();
-            }}
-          >
-            Delete
-          </Button>
-        }
-      />
-    </>
-  );
-};
+        <Button
+        variant='contained'
+        color='error'
+        onClick={() => {
+        handleDeleteRows(table.selected);
+        confirm.onFalse();
+      }}
+        >
+        Delete
+        </Button>
+      }
+        />
+        </>
+        );
+        };
 
-// ----------------------------------------------------------------------
+        // ----------------------------------------------------------------------
 
-function applyFilter(
-  {
-    inputData, comparator, filters, dateError,
-  }
-  ,
-) {
-  const { name, status, gender, endDate, startDate, course } = filters;
-  const stabilizedThis = inputData.map((el, index) => [el, index]);
+        function applyFilter(
+      {
+        inputData, comparator, filters, dateError,
+      }
+        ,
+        ) {
+        const {name, status, gender, endDate, startDate, course} = filters;
+        const stabilizedThis = inputData.map((el, index) => [el, index]);
 
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  inputData = stabilizedThis.map((el) => el[0]);
+        stabilizedThis.sort((a, b) => {
+        const order = comparator(a[0], b[0]);
+        if (order !== 0) return order;
+        return a[1] - b[1];
+      });
+        inputData = stabilizedThis.map((el) => el[0]);
 
-  if (name) {
-    inputData = inputData.filter(
-      (user) =>
+        if (name) {
+        inputData = inputData.filter(
+        (user) =>
         (user.firstName && (user.firstName + user.lastName).toLowerCase().includes(name.toLowerCase())) ||
         (user.enrollment_no.toString() && name.includes(user.enrollment_no.toString())) ||
         (user.contact && user.contact.toLowerCase().includes(name.toLowerCase())) ||
         (user.email && user.email.toLowerCase().includes(name.toLowerCase())),
-    );
-  }
+        );
+      }
 
-  if (gender.length) {
-    inputData = inputData.filter((user) => gender.includes(user?.gender));
-  }
+        if (gender.length) {
+        inputData = inputData.filter((user) => gender.includes(user?.gender));
+      }
 
-  if (course.length) {
-    inputData = inputData.filter((user) => course.includes(user?.course));
-  }
+        if (course.length) {
+        inputData = inputData.filter((user) => course.includes(user?.course));
+      }
 
-  if (status && status !== 'all') {
-    inputData = inputData.filter((user) => user.status === status);
-  }
+        if (status && status !== 'all') {
+        inputData = inputData.filter((user) => user.status === status);
+      }
 
-  if (!dateError) {
-    if (startDate && endDate) {
-      inputData = inputData.filter((order) => isBetween(order.joining_date, startDate, endDate));
-    }
-  }
-  return inputData;
-}
+        if (!dateError) {
+        if (startDate && endDate) {
+        inputData = inputData.filter((order) => isBetween(order.joining_date, startDate, endDate));
+      }
+      }
+        return inputData;
+      }
