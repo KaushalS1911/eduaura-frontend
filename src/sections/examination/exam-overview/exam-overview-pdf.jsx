@@ -78,25 +78,25 @@ const useStyles = () =>
           width: '15%',
         },
       }),
-    []
+    [],
   );
 
 const ExamOverviewPDF = ({
-  examData,
-  calculatePercentage,
-  calculateResult,
-  calculateGrade,
-  passFailCount,
-  gradeSummary,
-  configs,
-  rankedStudents,
-  calculateAveragePercentage,
-}) => {
+                           examData,
+                           calculatePercentage,
+                           calculateResult,
+                           calculateGrade,
+                           passFailCount,
+                           gradeSummary,
+                           configs,
+                           rankedStudents,
+                           calculateAveragePercentage,
+                         }) => {
   const styles = useStyles();
 
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
+      <Page size='A4' style={styles.page}>
         <View style={{ padding: '10px', backgroundColor: '#F6F6F6' }}>
           <View
             style={{
@@ -217,7 +217,7 @@ const ExamOverviewPDF = ({
                   <View style={{ width: '150px', textAlign: 'center' }}>
                     <Text>
                       {calculateGrade(
-                        calculatePercentage(row?.obtained_marks, examData?.total_marks)
+                        calculatePercentage(row?.obtained_marks, examData?.total_marks),
                       )}
                     </Text>
                   </View>

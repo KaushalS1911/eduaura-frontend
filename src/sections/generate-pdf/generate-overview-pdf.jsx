@@ -85,8 +85,8 @@ const useStyles = () =>
 
 const formatAddress = (address) => {
   if (!address) return '-';
-  const { address_1, address_2, city, state, country } = address;
-  return `${address_1 || ''}, ${address_2 || ''}, ${city || ''}, ${state || ''}, ${country || ''}`;
+  const { address_1, address_2, city, state, country, address_line1, address_line2 } = address;
+  return `${address_1 || address_line1 || ''}, ${address_2 || address_line2 || ''}, ${city || ''}, ${state || ''}, ${country || ''}`;
 };
 
 const getNestedValue = (obj, path) => {
@@ -114,6 +114,10 @@ const GenerateOverviewPdf = ({ orientation, heading, allData, configs, SubHeadin
         return row.fee_detail.total_amount;
       case 'Joining Date':
         return fDate(row.joining_date);
+      case 'Contact Person':
+        return row.contact_person.firstName + ' ' + row.contact_person.lastName;
+      case 'Interested In':
+        return row.interested_in.join(', ');
       case 'Father No.':
         const fatherContact = row.guardian_detail
           .find(data => data.relation_type === 'Father')?.contact;

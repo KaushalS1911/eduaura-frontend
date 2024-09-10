@@ -140,8 +140,8 @@ export default function ExamDetails({ examData }) {
           </Box>
           <Box my={3.5} display={'flex'} justifyContent={'space-between'} alignItems={'start'}>
             <Box display={'flex'} alignItems={'center'}>
-              <Typography sx={{ fontSize: '16px', fontWeight: '700' }}>Course :</Typography>
-              <Typography px={2}>Full stack</Typography>
+              {/*<Typography sx={{ fontSize: '16px', fontWeight: '700' }}>Course :</Typography>*/}
+              {/*<Typography px={2}>Full stack</Typography>*/}
             </Box>
             <Box>
               <Box display={'flex'} alignItems={'center'}>

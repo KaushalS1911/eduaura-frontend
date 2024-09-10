@@ -284,7 +284,7 @@ export default function StudentListView() {
       ) : (
         <Container maxWidth={settings.themeStretch ? false : 'lg'}>
           <CustomBreadcrumbs
-            heading='List'
+            heading='Students'
             links={[
               { name: 'Dashboard', href: paths.dashboard.root },
               { name: 'Student', href: paths.dashboard.student.list },
@@ -323,92 +323,6 @@ export default function StudentListView() {
                     ))}
                   </Select>
                 </FormControl>
-                <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
-                  <PDFDownloadLink
-                    document={
-                      <GenerateOverviewPDF
-                        allData={dataFiltered}
-                        heading={[{ hed: 'ER No', Size: '80px' },
-                          { hed: 'Name', Size: '240px' },
-                          {
-                            hed: 'Email',
-                            Size: '340px',
-                          },
-                          {
-                            hed: 'Gender',
-                            Size: '120px',
-                          },
-                          {
-                            hed: 'DOB',
-                            Size: '160px',
-                          },
-                          {
-                            hed: 'Student No.'
-                            , Size: '180px',
-                          },
-                          {
-                            hed: 'Father No.',
-                            Size: '180px',
-                          },
-                          {
-                            hed: 'Education',
-                            Size: '120px',
-                          },
-                          {
-                            hed: 'Collage-School',
-                            Size: '180px',
-                          },
-                          {
-                            hed: 'Course',
-                            Size: '200px',
-                          },
-                          {
-                            hed: 'Joining Date',
-                            Size: '170px',
-                          },
-                          ...(field.length ? [{ hed: 'Address', Size: '100%' }, {
-                            hed: 'Discount',
-                            Size: '160px',
-                          }, { hed: 'Status', Size: '180px' }] : []),
-                          {
-                            hed: 'Total Amount',
-                            Size: '150px',
-                          },
-                          {
-                            hed: 'Amount paid',
-                            Size: '150px',
-                          }].filter((item) => (field.includes(item.hed) || !field.length))}
-                        orientation={'landscape'}
-                        configs={configs}
-                        SubHeading={'All Student Listing'}
-                        fieldMapping={field.length ? extractedData : fieldMapping}
-                      />
-                    }
-                    fileName={'student'}
-                    style={{ textDecoration: 'none' }}
-                  >
-                    {({ loading }) => (
-                      <Tooltip>
-                        <Button
-                          variant='contained'
-                          onClick={() => setField([])}
-                          startIcon={loading ? <CircularProgress size={24} color='inherit' /> :
-                            <Iconify icon='eva:cloud-download-fill' />}
-                        >
-                          {loading ? 'Generating...' : 'Download PDF'}
-                        </Button>
-                      </Tooltip>
-                    )}
-                  </PDFDownloadLink>
-                </Stack>
-                <Button
-                  variant='contained'
-                  startIcon={<Iconify icon='icon-park-outline:excel' />}
-                  onClick={handleExportExcel}
-                  sx={{ margin: '0px 10px' }}
-                >
-                  Export to Excel
-                </Button>
                 <Button
                   sx={{ margin: '0px 5px' }}
                   component={RouterLink}
@@ -433,32 +347,121 @@ export default function StudentListView() {
                 boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
               }}
             >
-              {STATUS_OPTIONS.map((tab) => (
-                <Tab
-                  key={tab.value}
-                  iconPosition='end'
-                  value={tab.value}
-                  label={tab.label}
-                  icon={
-                    <Label
-                      variant={
-                        ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'
-                      }
-                      color={
-                        (tab.value === 'completed' && 'success') ||
-                        (tab.value === 'running' && 'warning') ||
-                        (tab.value === 'leaved' && 'error') ||
-                        (tab.value === 'training' && 'info') ||
-                        'default'
-                      }
-                    >
-                      {['running', 'leaved', 'completed', 'training'].includes(tab.value)
-                        ? students.filter((user) => user.status === tab.value).length
-                        : students.length}
-                    </Label>
-                  }
-                />
-              ))}
+           {STATUS_OPTIONS.map((tab) => (
+             <Tab
+               key={tab.value}
+               iconPosition='end'
+               value={tab.value}
+               label={tab.label}
+               icon={
+                 <>
+                   <Label
+                     style={{margin:"5px"}}
+                     variant={
+                       ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'
+                     }
+                     color={
+                       (tab.value === 'completed' && 'success') ||
+                       (tab.value === 'running' && 'warning') ||
+                       (tab.value === 'leaved' && 'error') ||
+                       (tab.value === 'training' && 'info') ||
+                       'default'
+                     }
+                   >
+                     {['running', 'leaved', 'completed', 'training'].includes(tab.value)
+                       ? students.filter((user) => user.status === tab.value).length
+                       : students.length}
+                   </Label>
+                 </>
+               }
+             />
+           ))}
+            <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'} width={"100%"}>
+               <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'}> <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
+                 <PDFDownloadLink
+                   document={
+                     <GenerateOverviewPDF
+                       allData={dataFiltered}
+                       heading={[{ hed: 'ER No', Size: '80px' },
+                         { hed: 'Name', Size: '240px' },
+                         {
+                           hed: 'Email',
+                           Size: '340px',
+                         },
+                         {
+                           hed: 'Gender',
+                           Size: '120px',
+                         },
+                         {
+                           hed: 'DOB',
+                           Size: '160px',
+                         },
+                         {
+                           hed: 'Student No.'
+                           , Size: '180px',
+                         },
+                         {
+                           hed: 'Father No.',
+                           Size: '180px',
+                         },
+                         {
+                           hed: 'Education',
+                           Size: '120px',
+                         },
+                         {
+                           hed: 'Collage-School',
+                           Size: '180px',
+                         },
+                         {
+                           hed: 'Course',
+                           Size: '200px',
+                         },
+                         {
+                           hed: 'Joining Date',
+                           Size: '170px',
+                         },
+                         ...(field.length ? [{ hed: 'Address', Size: '100%' }, {
+                           hed: 'Discount',
+                           Size: '160px',
+                         }, { hed: 'Status', Size: '180px' }] : []),
+                         {
+                           hed: 'Total Amount',
+                           Size: '150px',
+                         },
+                         {
+                           hed: 'Amount paid',
+                           Size: '150px',
+                         }].filter((item) => (field.includes(item.hed) || !field.length))}
+                       orientation={'landscape'}
+                       configs={configs}
+                       SubHeading={'Students'}
+                       fieldMapping={field.length ? extractedData : fieldMapping}
+                     />
+                   }
+                   fileName={'student'}
+                   style={{ textDecoration: 'none' }}
+                 >
+                   {({ loading }) => (
+                     <Tooltip title='Export to PDF'>
+                       {loading ? (
+                         <CircularProgress size={24}  />
+                       ) : (
+                         <Iconify
+                           icon='eva:cloud-download-fill'
+                           onClick={() => setField([])}
+                           sx={{ width: 30, height: 30, color: '#637381', mt: 1 }}
+                         />
+                       )}
+
+                     </Tooltip>
+                   )}
+                 </PDFDownloadLink>
+               </Stack>
+                 <Tooltip title='Export to Excel'>
+                   <Iconify icon='icon-park-outline:excel' width={24} height={24} color={'#637381'} />
+                 </Tooltip>
+               </Box>
+              </Box>
             </Tabs>
             <StudentTableToolbar
               filters={filters}

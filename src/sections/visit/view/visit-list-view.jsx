@@ -9,7 +9,7 @@ import {
   Container,
   TableBody,
   IconButton,
-  TableContainer,
+  TableContainer, Checkbox, MenuItem, OutlinedInput, Select, InputLabel, FormControl, Stack, Box,
 } from '@mui/material';
 import { paths } from 'src/routes/paths';
 import { useAuthContext } from 'src/auth/hooks';
@@ -37,7 +37,12 @@ import VisitTableRow from '../visit-table-row';
 import VisitTableToolbar from '../visit-table-toolbar';
 import VisitTableFiltersResult from '../visit-table-filters-result';
 import { useGetVisits } from 'src/api/visit';
-import { isAfter, isBetween } from '../../../utils/format-time';
+import { fDate, isAfter, isBetween } from '../../../utils/format-time';
+import * as XLSX from 'xlsx';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import GenerateOverviewPdf from '../../generate-pdf/generate-overview-pdf';
+import { useGetConfigs } from '../../../api/config';
+import CircularProgress from '@mui/material/CircularProgress';
 
 // ----------------------------------------------------------------------
 
@@ -62,6 +67,7 @@ const defaultFilters = {
 // ----------------------------------------------------------------------
 
 export default function VisitListView() {
+  const { configs } = useGetConfigs();
   const { user } = useAuthContext();
   const { enqueueSnackbar } = useSnackbar();
   const table = useTable();
@@ -69,6 +75,7 @@ export default function VisitListView() {
   const router = useRouter();
   const confirm = useBoolean();
   const { visit, mutate } = useGetVisits();
+  const [field, setField] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [filters, setFilters] = useState(defaultFilters);
 
@@ -175,6 +182,64 @@ export default function VisitListView() {
 
   const dateError = isAfter(filters.startDate, filters.endDate);
 
+  const fieldMapping = {
+    'Name': 'firstName',
+    'Contact No.': 'contact',
+    'Contact Person': 'contact_person',
+    'Reference': 'reference',
+    'Notes': 'notes',
+    'Address_': 'address',
+  };
+
+  const guardianinfo = (guardianData, row) => {
+    const fatherContact = row.guardian_detail
+      .find(data => data.relation_type === 'Father')?.contact;
+    const firstGuardianContact = row.guardian_detail[0]?.contact;
+    return fatherContact || firstGuardianContact || '-';
+  };
+
+  const handleFilterField1 = (event) => {
+    const { value } = event.target;
+    if (value.length > 7) {
+      enqueueSnackbar('You can only select up to 7 options!', { variant: 'error' });
+      return;
+    }
+    setField(value);
+  };
+
+  const extractedData = field.reduce((result, key) => ({
+    ...result,
+    [key]: fieldMapping[key].split('.').reduce((o, i) => o[i]),
+  }), {});
+
+  const VisitField = ['Name', 'Contact No.', 'Contact Person', 'Reference', 'Address_', 'Notes'];
+  const handleExportExcel = () => {
+    let data = dataFiltered.map((visit) => ({
+      Name: visit.firstName + ' ' + visit.lastName,
+      'Contact No.': visit.contact,
+      Notes: visit.notes,
+      'Contact Person': visit.contact_person.firstName + ' ' + visit.contact_person.lastName,
+      Reference: visit.reference,
+      'Address_': visit.address,
+    }));
+    if (field.length) {
+      data = data.map((item) => {
+        const filteredItem = {};
+        field.forEach((key) => {
+          if (item.hasOwnProperty(key)) {
+            filteredItem[key] = item[key];
+          }
+        });
+        return filteredItem;
+      });
+    }
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Visit');
+    XLSX.writeFile(workbook, 'VisitList.xlsx');
+    setField([]);
+  };
+
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -186,14 +251,107 @@ export default function VisitListView() {
             { name: 'List' },
           ]}
           action={
-            <Button
-              component={RouterLink}
-              href={paths.dashboard.visit.new}
-              variant='contained'
-              startIcon={<Iconify icon='mingcute:add-line' />}
-            >
-              New Visit
-            </Button>
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center', gap: 1 }}>
+              <FormControl
+                sx={{
+                  flexShrink: 0,
+                  width: { xs: '100%', md: 200 },
+                  margin: '0px 10px',
+                }}
+              >
+                <InputLabel>Field</InputLabel>
+                <Select
+                  multiple
+                  value={field}
+                  onChange={handleFilterField1}
+                  input={<OutlinedInput label='Field' />}
+                  renderValue={(selected) => selected.join(', ')}
+                  MenuProps={{
+                    PaperProps: {
+                      sx: { maxHeight: 240 },
+                    },
+                  }}
+                >
+                  {VisitField.map((option) => (
+                    <MenuItem key={option} value={option}>
+                      <Checkbox
+                        disableRipple
+                        size='small'
+                        checked={field?.includes(option)}
+                      />
+                      {option}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
+                <PDFDownloadLink
+                  document={
+                    <GenerateOverviewPdf
+                      allData={dataFiltered}
+                      heading={[
+                        { hed: 'Name', Size: '240px' },
+                        {
+                          hed: 'Contact No.'
+                          , Size: '180px',
+                        },
+                        {
+                          hed: 'Contact Person',
+                          Size: '180px',
+                        },
+                        {
+                          hed: 'Reference',
+                          Size: '180px',
+                        },
+                        {
+                          hed: 'Notes',
+                          Size: '200px',
+                        },
+                        {
+                          hed: 'Address_',
+                          Size: '100%',
+                        },
+                      ].filter((item) => (field.includes(item.hed) || !field.length))}
+                      orientation={'landscape'}
+                      configs={configs}
+                      SubHeading={'Visits'}
+                      fieldMapping={field.length ? extractedData : fieldMapping}
+                    />
+                  }
+                  fileName={'Visits'}
+                  style={{ textDecoration: 'none' }}
+                >
+                  {({ loading }) => (
+                    <Tooltip>
+                      <Button
+                        variant='contained'
+                        onClick={() => setField([])}
+                        startIcon={loading ? <CircularProgress size={24} color='inherit' /> :
+                          <Iconify icon='eva:cloud-download-fill' />}
+                      >
+                        {loading ? 'Generating...' : 'Download PDF'}
+                      </Button>
+                    </Tooltip>
+                  )}
+                </PDFDownloadLink>
+              </Stack>
+              <Button
+                variant='contained'
+                startIcon={<Iconify icon='icon-park-outline:excel' />}
+                onClick={handleExportExcel}
+                sx={{ margin: '0px 10px' }}
+              >
+                Export to Excel
+              </Button>
+              <Button
+                component={RouterLink}
+                href={paths.dashboard.visit.new}
+                variant='contained'
+                startIcon={<Iconify icon='mingcute:add-line' />}
+              >
+                New Visit
+              </Button>
+            </Box>
           }
           sx={{
             mb: { xs: 3, md: 5 },
@@ -312,7 +470,10 @@ export default function VisitListView() {
 
 // ----------------------------------------------------------------------
 
-function applyFilter({ inputData, comparator, dateError, filters }) {
+function applyFilter({
+                       inputData, comparator, dateError, filters,
+                     },
+) {
   const { startDate, name, status, role, endDate } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);

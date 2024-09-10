@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
@@ -32,13 +32,14 @@ import { useGetInquiry } from 'src/api/inquiry';
 import { useAuthContext } from 'src/auth/hooks';
 import InquiryTableRow from '../inquiry-table-row';
 import InquiryTableToolbar from '../inquiry-table-toolbar';
-import { isAfter, isBetween } from '../../../utils/format-time';
+import { fDate, isAfter, isBetween } from '../../../utils/format-time';
 import InquiryTableFiltersResult from '../inquiry-table-filters-result';
-import Tabs from '@mui/material/Tabs';
-import { alpha } from '@mui/material/styles';
-import Tab from '@mui/material/Tab';
-import Label from '../../../components/label';
-import { USER_STATUS_OPTIONS } from '../../../_mock';
+import { Box, Checkbox, FormControl, InputLabel, MenuItem, OutlinedInput, Select, Stack } from '@mui/material';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import GenerateOverviewPdf from '../../generate-pdf/generate-overview-pdf';
+import CircularProgress from '@mui/material/CircularProgress';
+import * as XLSX from 'xlsx';
+import { useGetConfigs } from '../../../api/config';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -62,6 +63,8 @@ const defaultFilters = {
 // ----------------------------------------------------------------------
 
 export default function InquiryListView() {
+  const { configs } = useGetConfigs();
+  const [field, setField] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const table = useTable();
   const settings = useSettingsContext();
@@ -150,24 +153,106 @@ export default function InquiryListView() {
     },
     [router],
   );
-  const handleFilterStatus = useCallback(
-    (event, newValue) => {
-      handleFilters('status', newValue);
-    },
-    [handleFilters],
-  );
+
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
   }, []);
 
   const dateError = isAfter(filters.startDate, filters.endDate);
-  const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, {
-    value: 'In Active',
-    label: 'In Active',
-  }, {
-    value: 'Active',
-    label: 'Active',
-  }];
+
+  const fieldMapping = {
+    'Name': 'firstName',
+    'Email': 'email',
+    'Contact No.': 'contact',
+    'Occupation': 'occupation',
+    'Education': 'education',
+    'dob': 'dob',
+    'Reference By': 'reference_by',
+    'Father Name': 'fatherName',
+    'Father Contact': 'father_contact',
+    'Father Occupation': 'father_occupation',
+    'Suggested By': 'suggested_by',
+    'Status': 'status',
+    'Interested In': 'interested_in',
+    'Remark': 'remark',
+    'Address': 'address',
+  };
+
+  const guardianinfo = (guardianData, row) => {
+    const fatherContact = row.guardian_detail
+      .find(data => data.relation_type === 'Father')?.contact;
+    const firstGuardianContact = row.guardian_detail[0]?.contact;
+    return fatherContact || firstGuardianContact || '-';
+  };
+
+  const handleFilterField1 = (event) => {
+    const { value } = event.target;
+    if (value.length > 7) {
+      enqueueSnackbar('You can only select up to 7 options!', { variant: 'error' });
+      return;
+    }
+    setField(value);
+  };
+
+  const extractedData = field.reduce((result, key) => ({
+    ...result,
+    [key]: fieldMapping[key].split('.').reduce((o, i) => o[i]),
+  }), {});
+
+  const inquiryField = [
+    'Name',
+    'Email',
+    'Contact No.',
+    'Occupation',
+    'Education',
+    'dob',
+    'Reference By',
+    'Father Name',
+    'Father Contact',
+    'Father Occupation',
+    'Suggested By',
+    'Status',
+    'Remark',
+    'Interested In',
+    'Address',
+  ];
+
+  const handleExportExcel = () => {
+    let data = dataFiltered.map((inquiry) => ({
+      Name: inquiry.firstName + ' ' + inquiry.lastName,
+      Email: inquiry.email,
+      'Contact No.': inquiry.contact,
+      Occupation: inquiry.occupation,
+      Education: inquiry.education,
+      dob: fDate(inquiry.dob),
+      'Reference By': inquiry.reference_by,
+      'Father Name': inquiry.fatherName,
+      'Father Contact': inquiry.father_contact,
+      'Father Occupation': inquiry.father_occupation,
+      'Suggested By': inquiry.suggested_by,
+      Status: inquiry.status,
+      Remark: inquiry.remark,
+      'Interested In': inquiry.interested_in.join(', '),
+      Address: inquiry.address.address_line1 + ' ' + inquiry.address.address_line2 + ' ' + inquiry.address.city + ' ' + inquiry.address.state + ' ' + inquiry.address.country,
+    }));
+    if (field.length) {
+      data = data.map((item) => {
+        const filteredItem = {};
+        field.forEach((key) => {
+          if (item.hasOwnProperty(key)) {
+            filteredItem[key] = item[key];
+          }
+        });
+        return filteredItem;
+      });
+    }
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Inquiry');
+    XLSX.writeFile(workbook, 'InquiryList.xlsx');
+    setField([]);
+  };
+
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -178,53 +263,152 @@ export default function InquiryListView() {
             { name: 'Inquiries', href: paths.dashboard.inquiry.list },
           ]}
           action={
-            <Button
-              component={RouterLink}
-              href={paths.dashboard.inquiry.new}
-              variant='contained'
-              startIcon={<Iconify icon='mingcute:add-line' />}
-            >
-              New Inquiry
-            </Button>
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center', gap: 1 }}>
+              <FormControl
+                sx={{
+                  flexShrink: 0,
+                  width: { xs: '100%', md: 200 },
+                  margin: '0px 10px',
+                }}
+              >
+                <InputLabel>Field</InputLabel>
+                <Select
+                  multiple
+                  value={field}
+                  onChange={handleFilterField1}
+                  input={<OutlinedInput label='Field' />}
+                  renderValue={(selected) => selected.join(', ')}
+                  MenuProps={{
+                    PaperProps: {
+                      sx: { maxHeight: 240 },
+                    },
+                  }}
+                >
+                  {inquiryField.map((option) => (
+                    <MenuItem key={option} value={option}>
+                      <Checkbox
+                        disableRipple
+                        size='small'
+                        checked={field?.includes(option)}
+                      />
+                      {option}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
+                <PDFDownloadLink
+                  document={
+                    <GenerateOverviewPdf
+                      allData={dataFiltered}
+                      heading={[
+                        { hed: 'Name', Size: '240px' },
+                        {
+                          hed: 'Email',
+                          Size: '260px',
+                        },
+                        {
+                          hed: 'Contact No.',
+                          Size: '180px',
+                        },
+                        {
+                          hed: 'Occupation',
+                          Size: '180px',
+                        },
+                        {
+                          hed: 'Education',
+                          Size: '180px',
+                        },
+                        {
+                          hed: 'Reference By',
+                          Size: '180px',
+                        },
+                        {
+                          hed: 'Father Name',
+                          Size: '180px',
+                        },
+                        {
+                          hed: 'Father Contact',
+                          Size: '180px',
+                        },
+                        {
+                          hed: 'Suggested By',
+                          Size: '180px',
+                        },
+                        {
+                          hed: 'Status',
+                          Size: '180px',
+                        },
+                        {
+                          hed: 'Remark',
+                          Size: '180px',
+                        },
+                        ...(field.length ? [{ hed: 'Address', Size: '100%' }, {
+                          hed: 'Father Occupation',
+                          Size: '180px',
+                        },
+                          {
+                            hed: 'Occupation',
+                            Size: '180px',
+                          }, {
+                            hed: 'Interested In',
+                            Size: '180px',
+                          },
+                          {
+                            hed: 'dob',
+                            Size: '140px',
+                          },
+                          {
+                            hed: 'dob',
+                            Size: '140px',
+                          }] : []),
+                      ].filter((item) => (field.includes(item.hed) || !field.length))}
+                      orientation={'landscape'}
+                      configs={configs}
+                      SubHeading={'Inquiries'}
+                      fieldMapping={field.length ? extractedData : fieldMapping}
+                    />
+                  }
+                  fileName={'Inquiries'}
+                  style={{ textDecoration: 'none' }}
+                >
+                  {({ loading }) => (
+                    <Tooltip>
+                      <Button
+                        variant='contained'
+                        onClick={() => setField([])}
+                        startIcon={loading ? <CircularProgress size={24} color='inherit' /> :
+                          <Iconify icon='eva:cloud-download-fill' />}
+                      >
+                        {loading ? 'Generating...' : 'Download PDF'}
+                      </Button>
+                    </Tooltip>
+                  )}
+                </PDFDownloadLink>
+              </Stack>
+              <Button
+                variant='contained'
+                startIcon={<Iconify icon='icon-park-outline:excel' />}
+                onClick={handleExportExcel}
+                sx={{ margin: '0px 10px' }}
+              >
+                Export to Excel
+              </Button>
+              <Button
+                component={RouterLink}
+                href={paths.dashboard.inquiry.new}
+                variant='contained'
+                startIcon={<Iconify icon='mingcute:add-line' />}
+              >
+                New Inquiry
+              </Button>
+            </Box>
           }
           sx={{
             mb: { xs: 3, md: 5 },
           }}
         />
         <Card>
-          <Tabs
-            value={filters.status}
-            onChange={handleFilterStatus}
-            sx={{
-              px: 2.5,
-              boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
-            }}
-          >
-            {STATUS_OPTIONS.map((tab) => (
-              <Tab
-                key={tab.value}
-                iconPosition='end'
-                value={tab.value}
-                label={tab.label}
-                icon={
-                  <Label
-                    variant={
-                      ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'
-                    }
-                    color={
-                      (tab.value === 'Active' && 'success') ||
-                      (tab.value === 'In Active' && 'error') ||
-                      'default'
-                    }
-                  >
-                    {['In Active', 'Active'].includes(tab.value)
-                      ? inquiry.filter((user) => user.status === tab.value).length
-                      : inquiry.length}
-                  </Label>
-                }
-              />
-            ))}
-          </Tabs>
           <InquiryTableToolbar filters={filters} onFilters={handleFilters} dateError={dateError} />
           {canReset && (
             <InquiryTableFiltersResult
