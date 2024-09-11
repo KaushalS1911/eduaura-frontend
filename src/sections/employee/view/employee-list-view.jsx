@@ -228,8 +228,8 @@ export default function EmployeeListView() {
     }
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Inquiry');
-    XLSX.writeFile(workbook, 'InquiryList.xlsx');
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Employee');
+    XLSX.writeFile(workbook, 'EmployeeList.xlsx');
     setField([]);
   };
 

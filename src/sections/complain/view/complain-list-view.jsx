@@ -1,5 +1,5 @@
 import sumBy from 'lodash/sumBy';
-import { useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
@@ -29,7 +29,23 @@ import { useGetComplaints } from 'src/api/complain';
 import ComplainTableRow from '../complain-table-row';
 import ComplainTableToolbar from '../complain-table-toolbar';
 import ComplainTableFiltersResult from '../complain-table-filters-result';
-import { isAfter, isBetween } from '../../../utils/format-time';
+import { fDate, isAfter, isBetween } from '../../../utils/format-time';
+import { Box, Stack } from '@mui/material';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import GenerateOverviewPDF from '../../generate-pdf/generate-overview-pdf';
+import Tooltip from '@mui/material/Tooltip';
+import CircularProgress from '@mui/material/CircularProgress';
+import Iconify from '../../../components/iconify';
+import { useGetConfigs } from '../../../api/config';
+import * as XLSX from 'xlsx';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import MenuItem from '@mui/material/MenuItem';
+import Checkbox from '@mui/material/Checkbox';
+import Button from '@mui/material/Button';
+import { RouterLink } from '../../../routes/components';
 
 // ----------------------------------------------------------------------
 
@@ -41,7 +57,18 @@ const TABLE_HEAD = [
   { id: 'status', label: 'Status' },
   { id: '', label: '' },
 ];
-
+const complainField = [
+  'Complain By',
+  'Date',
+  'Title',
+  'Status'
+];
+const fieldMapping = {
+  'Complain By': 'student',
+  'Date': 'date',
+  'Title': 'title',
+  'Status': 'status',
+};
 const defaultFilters = {
   name: '',
   service: [],
@@ -54,12 +81,14 @@ const defaultFilters = {
 
 export default function ComplainListView() {
   const { enqueueSnackbar } = useSnackbar();
+  const { configs } = useGetConfigs();
   const theme = useTheme();
   const { complaints, mutate } = useGetComplaints();
   const settings = useSettingsContext();
   const router = useRouter();
   const table = useTable({ defaultOrderBy: 'createDate' });
   const confirm = useBoolean();
+  const [field, setField] = useState([]);
   const [tableData, setTableData] = useState(complaints);
   const [filters, setFilters] = useState(defaultFilters);
 
@@ -75,7 +104,7 @@ export default function ComplainListView() {
   );
 
   const denseHeight = table.dense ? 56 : 56 + 20;
-  const canReset = !!filters.name || !!filters.service.length || filters.status !== 'all' ||  filters.startDate && filters.endDate;
+  const canReset = !!filters.name || !!filters.service.length || filters.status !== 'all' || filters.startDate && filters.endDate;
   const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
   const getInvoiceLength = (status) => tableData.filter((item) => item.status === status).length;
 
@@ -148,7 +177,45 @@ export default function ComplainListView() {
     },
     [handleFilters],
   );
+
+  const extractedData = field.reduce((result, key) => ({
+    ...result,
+    [key]: fieldMapping[key].split('.').reduce((o, i) => o[i]),
+  }), {});
+
+  const handleFilterField1 = (event) => {
+    const { value } = event.target;
+    if (value.length > 7) {
+      enqueueSnackbar('You can only select up to 7 options!', { variant: 'error' });
+      return;
+    }
+    setField(value);
+  };
   const dateError = isAfter(filters.startDate, filters.endDate);
+  const handleExportExcel = () => {
+    let data = dataFiltered.map((comp) => ({
+      'Complain By': `${comp.student.firstName} ${comp.student.lastName}`,
+      'Date': fDate(comp.date),
+      'Title': comp.title,
+      'Status': comp.status,
+    }));
+    if (field.length) {
+      data = data.map((item) => {
+        const filteredItem = {};
+        field.forEach((key) => {
+          if (item.hasOwnProperty(key)) {
+            filteredItem[key] = item[key];
+          }
+        });
+        return filteredItem;
+      });
+    }
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Complain');
+    XLSX.writeFile(workbook, 'ComplainList.xlsx');
+    setField([]);
+  };
 
   return (
     <>
@@ -168,6 +235,42 @@ export default function ComplainListView() {
           sx={{
             mb: { xs: 3, md: 5 },
           }}
+          action={
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center', gap: 1 }}>
+              <FormControl
+                sx={{
+                  flexShrink: 0,
+                  width: { xs: '100%', md: 200 },
+                  margin: '0px 10px',
+                }}
+              >
+                <InputLabel>Field</InputLabel>
+                <Select
+                  multiple
+                  value={field}
+                  onChange={handleFilterField1}
+                  input={<OutlinedInput label='Field' />}
+                  renderValue={(selected) => selected.join(', ')}
+                  MenuProps={{
+                    PaperProps: {
+                      sx: { maxHeight: 240 },
+                    },
+                  }}
+                >
+                  {complainField.map((option) => (
+                    <MenuItem key={option} value={option}>
+                      <Checkbox
+                        disableRipple
+                        size='small'
+                        checked={field?.includes(option)}
+                      />
+                      {option}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+          }
         />
 
         <Card>
@@ -204,10 +307,63 @@ export default function ComplainListView() {
                 }
               />
             ))}
+            <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'} width={'100%'}>
+              <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
+                <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
+                  <PDFDownloadLink
+                    document={
+                      <GenerateOverviewPDF
+                        allData={dataFiltered}
+                        heading={[
+                          {
+                            hed: 'Complain By',
+                            Size: '240px'
+                          },
+                          {
+                            hed: 'Date',
+                            Size: '340px',
+                          },
+                          {
+                            hed: 'Title',
+                            Size: '120px',
+                          },
+                          {
+                            hed: 'Status',
+                            Size: '160px',
+                          }].filter((item) => (field.includes(item.hed) || !field.length))}
+                        orientation={'landscape'}
+                        configs={configs}
+                        SubHeading={'Complain'}
+                        fieldMapping={field.length ? extractedData : fieldMapping}
+                      />
+                    }
+                    fileName={'student'}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    {({ loading }) => (
+                      <Tooltip title='Export to PDF'>
+                        {loading ? (
+                          <CircularProgress size={24} />
+                        ) : (
+                          <Iconify
+                            icon='eva:cloud-download-fill'
+                            onClick={() => setField([])}
+                            sx={{ width: 30, height: 30, color: '#637381', mt: 1 }}
+                          />
+                        )}
+
+                      </Tooltip>
+                    )}
+                  </PDFDownloadLink>
+                </Stack>
+                <Tooltip title='Export to Excel'>
+                  <Iconify icon='icon-park-outline:excel' width={24} height={24} color={'#637381'} onClick={handleExportExcel} sx={{ cursor: 'pointer' }} />
+                </Tooltip>
+              </Box>
+            </Box>
           </Tabs>
 
-          <ComplainTableToolbar filters={filters} onFilters={handleFilters}
-                                dateError={dateError} />
+          <ComplainTableToolbar filters={filters} onFilters={handleFilters} dateError={dateError} />
 
           {canReset && (
             <ComplainTableFiltersResult

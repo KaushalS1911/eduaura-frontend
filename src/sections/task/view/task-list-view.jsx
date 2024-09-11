@@ -45,11 +45,12 @@ import TaskTableRow from '../task-table-row';
 import TaskTableToolbar from '../task-table-toolbar';
 import TaskTableFiltersResult from '../task-table-filters-result';
 import { useGetTasks } from 'src/api/task';
-import { isAfter, isBetween } from '../../../utils/format-time';
+import { fDate, isAfter, isBetween } from '../../../utils/format-time';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import GenerateOverviewPdf from '../../generate-pdf/generate-overview-pdf';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useGetConfigs } from '../../../api/config';
+import * as XLSX from 'xlsx';
 
 // ----------------------------------------------------------------------
 
@@ -208,6 +209,32 @@ export default function TaskListView() {
     ...result,
     [key]: fieldMapping[key].split('.').reduce((o, i) => o[i]),
   }), {});
+  const handleExportExcel = () => {
+    let data = dataFiltered.map((task) => ({
+      Title: task.title,
+      'Assigned by': `${task.assigned_by.firstName} ${task.assigned_by.lastName}`,
+      'Assigned to': `${task.assigned_to.firstName} ${task.assigned_to.lastName}`,
+      Description: task.desc,
+      Date: fDate(task.createdAt),
+      Status: task.status
+    }));
+    if (field.length) {
+      data = data.map((item) => {
+        const filteredItem = {};
+        field.forEach((key) => {
+          if (item.hasOwnProperty(key)) {
+            filteredItem[key] = item[key];
+          }
+        });
+        return filteredItem;
+      });
+    }
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Task');
+    XLSX.writeFile(workbook, 'taskList.xlsx');
+    setField([]);
+  };
   const handleFilterField1 = (event) => {
     const { value } = event.target;
     if (value.length > 7) {
@@ -287,26 +314,7 @@ export default function TaskListView() {
                         {
                           hed: 'Status',
                           Size: '180px',
-                        },
-                        ...(field.length ? [{ hed: 'Address', Size: '100%' }, {
-                          hed: 'Father Occupation',
-                          Size: '180px',
-                        },
-                          {
-                            hed: 'Occupation',
-                            Size: '180px',
-                          }, {
-                            hed: 'Interested In',
-                            Size: '180px',
-                          },
-                          {
-                            hed: 'dob',
-                            Size: '140px',
-                          },
-                          {
-                            hed: 'dob',
-                            Size: '140px',
-                          }] : []),
+                        }
                       ].filter((item) => (field.includes(item.hed) || !field.length))}
                       orientation={'landscape'}
                       configs={configs}
@@ -331,6 +339,14 @@ export default function TaskListView() {
                   )}
                 </PDFDownloadLink>
               </Stack>
+              <Button
+                variant='contained'
+                startIcon={<Iconify icon='icon-park-outline:excel' />}
+                onClick={handleExportExcel}
+                sx={{ margin: '0px 10px' }}
+              >
+                Export to Excel
+              </Button>
               <Button
                 component={RouterLink}
                 href={paths.dashboard.task.new}

@@ -109,8 +109,12 @@ const GenerateOverviewPdf = ({ orientation, heading, allData, configs, SubHeadin
         return formatAddress(row[fieldMapping['Address']]);
       case 'Name':
         return `${row.firstName} ${row.lastName}`;
+        case 'Complain By':
+        return `${row.student.firstName} ${row.student.lastName}`;
       case 'DOB':
         return fDate(row.dob);
+        case 'Date':
+        return fDate(row.date);
       case 'Assigned to':
         return formatAssign(row[fieldMapping['Assigned to']]);
         case 'Assigned by':
