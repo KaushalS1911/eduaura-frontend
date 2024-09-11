@@ -88,6 +88,11 @@ const formatAddress = (address) => {
   const { address_1, address_2, city, state, country, address_line1, address_line2 } = address;
   return `${address_1 || address_line1 || ''}, ${address_2 || address_line2 || ''}, ${city || ''}, ${state || ''}, ${country || ''}`;
 };
+const formatAssign = (assign) => {
+  if (!assign) return '-';
+  const { firstName, lastName } = assign;
+  return `${firstName || ''} ${lastName || ''}`;
+};
 
 const getNestedValue = (obj, path) => {
   if (!path || typeof path !== 'string') {
@@ -106,6 +111,10 @@ const GenerateOverviewPdf = ({ orientation, heading, allData, configs, SubHeadin
         return `${row.firstName} ${row.lastName}`;
       case 'DOB':
         return fDate(row.dob);
+      case 'Assigned to':
+        return formatAssign(row[fieldMapping['Assigned to']]);
+        case 'Assigned by':
+        return formatAssign(row[fieldMapping['Assigned by']]);
       case 'Discount':
         return row.fee_detail.discount;
       case 'Amount paid':

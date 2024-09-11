@@ -13,7 +13,7 @@ import {
   TableBody,
   IconButton,
   TableContainer,
-  alpha,
+  alpha, FormControl, InputLabel, Select, OutlinedInput, MenuItem, Checkbox, Stack, Box,
 } from '@mui/material';
 
 import { paths } from 'src/routes/paths';
@@ -46,6 +46,10 @@ import TaskTableToolbar from '../task-table-toolbar';
 import TaskTableFiltersResult from '../task-table-filters-result';
 import { useGetTasks } from 'src/api/task';
 import { isAfter, isBetween } from '../../../utils/format-time';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import GenerateOverviewPdf from '../../generate-pdf/generate-overview-pdf';
+import CircularProgress from '@mui/material/CircularProgress';
+import { useGetConfigs } from '../../../api/config';
 
 // ----------------------------------------------------------------------
 
@@ -58,7 +62,22 @@ const TABLE_HEAD = [
   { id: 'status', label: 'Status' },
   { id: '' },
 ];
-
+const taskField = [
+  'Title',
+  'Assigned by',
+  'Assigned to',
+  'Description',
+  'Date',
+  'Status',
+];
+const fieldMapping = {
+  'Title': 'title',
+  'Assigned by': 'assigned_by',
+  'Assigned to': 'assigned_to',
+  'Description': 'desc',
+  'Date': 'createdAt',
+  'Status': 'status',
+};
 const defaultFilters = {
   name: '',
   role: [],
@@ -73,6 +92,8 @@ export default function TaskListView() {
   const { user } = useAuthContext();
   const { enqueueSnackbar } = useSnackbar();
   const table = useTable();
+  const { configs } = useGetConfigs();
+  const [field, setField] = useState([]);
   const settings = useSettingsContext();
   const router = useRouter();
   const confirm = useBoolean();
@@ -183,7 +204,18 @@ export default function TaskListView() {
     },
     [router],
   );
-
+  const extractedData = field.reduce((result, key) => ({
+    ...result,
+    [key]: fieldMapping[key].split('.').reduce((o, i) => o[i]),
+  }), {});
+  const handleFilterField1 = (event) => {
+    const { value } = event.target;
+    if (value.length > 7) {
+      enqueueSnackbar('You can only select up to 7 options!', { variant: 'error' });
+      return;
+    }
+    setField(value);
+  };
   const dateError = isAfter(filters.startDate, filters.endDate);
 
   return (
@@ -196,14 +228,118 @@ export default function TaskListView() {
             { name: 'Task', href: paths.dashboard.task.root },
           ]}
           action={
-            <Button
-              component={RouterLink}
-              href={paths.dashboard.task.new}
-              variant='contained'
-              startIcon={<Iconify icon='mingcute:add-line' />}
-            >
-              New Task
-            </Button>
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center', gap: 1 }}>
+              <FormControl
+                sx={{
+                  flexShrink: 0,
+                  width: { xs: '100%', md: 200 },
+                  margin: '0px 10px',
+                }}
+              >
+                <InputLabel>Field</InputLabel>
+                <Select
+                  multiple
+                  value={field}
+                  onChange={handleFilterField1}
+                  input={<OutlinedInput label='Field' />}
+                  renderValue={(selected) => selected.join(', ')}
+                  MenuProps={{
+                    PaperProps: {
+                      sx: { maxHeight: 240 },
+                    },
+                  }}
+                >
+                  {taskField.map((option) => (
+                    <MenuItem key={option} value={option}>
+                      <Checkbox
+                        disableRipple
+                        size='small'
+                        checked={field?.includes(option)}
+                      />
+                      {option}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
+                <PDFDownloadLink
+                  document={
+                    <GenerateOverviewPdf
+                      allData={dataFiltered}
+                      heading={[
+                        { hed: 'Title', Size: '240px' },
+                        {
+                          hed: 'Assigned by',
+                          Size: '260px',
+                        },
+                        {
+                          hed: 'Assigned to',
+                          Size: '180px',
+                        },
+                        {
+                          hed: 'Description',
+                          Size: '180px',
+                        },
+                        {
+                          hed: 'Date',
+                          Size: '180px',
+                        },
+                        {
+                          hed: 'Status',
+                          Size: '180px',
+                        },
+                        ...(field.length ? [{ hed: 'Address', Size: '100%' }, {
+                          hed: 'Father Occupation',
+                          Size: '180px',
+                        },
+                          {
+                            hed: 'Occupation',
+                            Size: '180px',
+                          }, {
+                            hed: 'Interested In',
+                            Size: '180px',
+                          },
+                          {
+                            hed: 'dob',
+                            Size: '140px',
+                          },
+                          {
+                            hed: 'dob',
+                            Size: '140px',
+                          }] : []),
+                      ].filter((item) => (field.includes(item.hed) || !field.length))}
+                      orientation={'landscape'}
+                      configs={configs}
+                      SubHeading={'Task'}
+                      fieldMapping={field.length ? extractedData : fieldMapping}
+                    />
+                  }
+                  fileName={'Inquiries'}
+                  style={{ textDecoration: 'none' }}
+                >
+                  {({ loading }) => (
+                    <Tooltip>
+                      <Button
+                        variant='contained'
+                        onClick={() => setField([])}
+                        startIcon={loading ? <CircularProgress size={24} color='inherit' /> :
+                          <Iconify icon='eva:cloud-download-fill' />}
+                      >
+                        {loading ? 'Generating...' : 'Download PDF'}
+                      </Button>
+                    </Tooltip>
+                  )}
+                </PDFDownloadLink>
+              </Stack>
+              <Button
+                component={RouterLink}
+                href={paths.dashboard.task.new}
+                variant='contained'
+                startIcon={<Iconify icon='mingcute:add-line' />}
+              >
+                New Task
+              </Button>
+            </Box>
           }
           sx={{
             mb: { xs: 3, md: 5 },
