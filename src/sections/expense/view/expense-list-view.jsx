@@ -13,7 +13,7 @@ import {
   TableBody,
   IconButton,
   TableContainer,
-  alpha,
+  alpha, FormControl, InputLabel, Select, OutlinedInput, MenuItem, Checkbox, Stack, Box,
 } from '@mui/material';
 
 import { paths } from 'src/routes/paths';
@@ -45,7 +45,12 @@ import { useGetExpense } from 'src/api/expense';
 import ExpenseTableRow from '../expenses-table-row';
 import ExpenseTableToolbar from '../expenses-table-toolbar';
 import ExpenseTableFiltersResult from '../expenses-table-filters-result';
-import { isAfter, isBetween } from '../../../utils/format-time';
+import { fDate, isAfter, isBetween } from '../../../utils/format-time';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import GenerateOverviewPdf from '../../generate-pdf/generate-overview-pdf';
+import CircularProgress from '@mui/material/CircularProgress';
+import { useGetConfigs } from '../../../api/config';
+import * as XLSX from 'xlsx';
 
 // ----------------------------------------------------------------------
 
@@ -65,13 +70,26 @@ const defaultFilters = {
   startDate: null,
   endDate: null,
 };
-
+const expenseField = [
+  'Date',
+  'Expense Type',
+  'Amount',
+  'Description',
+];
+const fieldMapping = {
+  'Date': 'date',
+  'Expense Type': 'type',
+  'Amount': 'amount',
+  'Description': 'desc',
+};
 // ----------------------------------------------------------------------
 
 export default function ExpenseListView() {
   const { user } = useAuthContext();
+  const { configs } = useGetConfigs();
   const { enqueueSnackbar } = useSnackbar();
   const table = useTable();
+  const [field, setField] = useState([]);
   const settings = useSettingsContext();
   const router = useRouter();
   const confirm = useBoolean();
@@ -182,7 +200,44 @@ export default function ExpenseListView() {
     },
     [router],
   );
+  const extractedData = field.reduce((result, key) => ({
+    ...result,
+    [key]: fieldMapping[key].split('.').reduce((o, i) => o[i]),
+  }), {});
 
+  const handleExportExcel = () => {
+    let data = dataFiltered.map((exp) => ({
+      Date: fDate(exp.date),
+      'Expense Type': exp.type,
+      'Amount': exp.amount,
+      'Description': exp.desc,
+    }));
+    if (field.length) {
+      data = data.map((item) => {
+        const filteredItem = {};
+        field.forEach((key) => {
+          if (item.hasOwnProperty(key)) {
+            filteredItem[key] = item[key];
+          }
+        });
+        return filteredItem;
+      });
+    }
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Expense');
+    XLSX.writeFile(workbook, 'expenseList.xlsx');
+    setField([]);
+  };
+
+  const handleFilterField1 = (event) => {
+    const { value } = event.target;
+    if (value.length > 7) {
+      enqueueSnackbar('You can only select up to 7 options!', { variant: 'error' });
+      return;
+    }
+    setField(value);
+  };
   const dateError = isAfter(filters.startDate, filters.endDate);
 
   return (
@@ -195,6 +250,89 @@ export default function ExpenseListView() {
             { name: 'Expense', href: paths.dashboard.expenses.root },
           ]}
           action={
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center', gap: 1 }}>
+              <FormControl
+                sx={{
+                  flexShrink: 0,
+                  width: { xs: '100%', md: 200 },
+                  margin: '0px 10px',
+                }}
+              >
+                <InputLabel>Field</InputLabel>
+                <Select
+                  multiple
+                  value={field}
+                  onChange={handleFilterField1}
+                  input={<OutlinedInput label='Field' />}
+                  renderValue={(selected) => selected.join(', ')}
+                  MenuProps={{
+                    PaperProps: {
+                      sx: { maxHeight: 240 },
+                    },
+                  }}
+                >
+                  {expenseField.map((option) => (
+                    <MenuItem key={option} value={option}>
+                      <Checkbox
+                        disableRipple
+                        size='small'
+                        checked={field?.includes(option)}
+                      />
+                      {option}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
+                <PDFDownloadLink
+                  document={
+                    <GenerateOverviewPdf
+                      allData={dataFiltered}
+                      heading={[
+                        { hed: 'Date', Size: '180px' },
+                        {
+                          hed: 'Expense Type',
+                          Size: '180px',
+                        },
+                        {
+                          hed: 'Amount',
+                          Size: '180px',
+                        },
+                        {
+                          hed: 'Description',
+                          Size: '180px',
+                        }].filter((item) => (field.includes(item.hed) || !field.length))}
+                      orientation={'landscape'}
+                      configs={configs}
+                      SubHeading={'Expense'}
+                      fieldMapping={field.length ? extractedData : fieldMapping}
+                    />
+                  }
+                  fileName={'Expenses'}
+                  style={{ textDecoration: 'none' }}
+                >
+                  {({ loading }) => (
+                    <Tooltip>
+                      <Button
+                        variant='contained'
+                        onClick={() => setField([])}
+                        startIcon={loading ? <CircularProgress size={24} color='inherit' /> :
+                          <Iconify icon='eva:cloud-download-fill' />}
+                      >
+                        {loading ? 'Generating...' : 'Download PDF'}
+                      </Button>
+                    </Tooltip>
+                  )}
+                </PDFDownloadLink>
+              </Stack>
+              <Button
+                variant='contained'
+                startIcon={<Iconify icon='icon-park-outline:excel' />}
+                onClick={handleExportExcel}
+                sx={{ margin: '0px 10px' }}
+              >
+                Export to Excel
+              </Button>
             <Button
               component={RouterLink}
               href={paths.dashboard.expenses.new}
@@ -203,6 +341,7 @@ export default function ExpenseListView() {
             >
               New Expense
             </Button>
+            </Box>
           }
           sx={{
             mb: { xs: 3, md: 5 },

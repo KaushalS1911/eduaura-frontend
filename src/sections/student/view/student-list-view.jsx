@@ -526,7 +526,7 @@ export default function StudentListView() {
                   </PDFDownloadLink>
                 </Stack>
                   <Tooltip title='Export to Excel'>
-                    <Iconify icon='icon-park-outline:excel' width={24} height={24} color={'#637381'} />
+                    <Iconify icon='icon-park-outline:excel' width={24} height={24} color={'#637381'} onClick={handleExportExcel} sx={{cursor: "pointer"}}/>
                   </Tooltip>
                 </Box>
               </Box>

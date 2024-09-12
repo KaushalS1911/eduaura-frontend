@@ -8,7 +8,7 @@ import {
   Container,
   TableBody,
   IconButton,
-  TableContainer,
+  TableContainer, FormControl, InputLabel, Select, OutlinedInput, MenuItem, Checkbox, Stack,
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import { paths } from 'src/routes/paths';
@@ -39,7 +39,13 @@ import EmployeeTableToolbar from '../employee-table-toolbar';
 import EmployeeTableFiltersResult from '../employee-table-filters-result';
 import { useGetEmployees } from '../../../api/employee';
 import { LoadingScreen } from '../../../components/loading-screen';
-import { isAfter, isBetween } from '../../../utils/format-time';
+import { fDate, isAfter, isBetween } from '../../../utils/format-time';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import GenerateOverviewPdf from '../../generate-pdf/generate-overview-pdf';
+import CircularProgress from '@mui/material/CircularProgress';
+import { Box } from '@mui/system';
+import { useGetConfigs } from '../../../api/config';
+import * as XLSX from 'xlsx';
 
 // ----------------------------------------------------------------------
 
@@ -61,16 +67,43 @@ const defaultFilters = {
   startDate: null,
   endDate: null,
 };
-
+const employeeField = [
+  'Name',
+  'Email',
+  'Contact No.',
+  'Gender',
+  'Role',
+  'Experience',
+  'Qualification',
+  'Technology',
+  'Joining Date',
+  'DOB',
+  'Address',
+];
+const fieldMapping = {
+  'Name': 'firstName',
+  'Email': 'email',
+  'Contact No.': 'contact',
+  'Gender': 'gender',
+  'Role': 'role',
+  'Experience': 'experience',
+  'Qualification': 'qualification',
+  'Technology': 'technology',
+  'Joining Date': 'joining_date',
+  'DOB': 'dob',
+  'Address': 'address_detail',
+};
 // ----------------------------------------------------------------------
 
 export default function EmployeeListView() {
   const { user } = useAuthContext();
   const { enqueueSnackbar } = useSnackbar();
+  const { configs } = useGetConfigs();
   const table = useTable();
   const settings = useSettingsContext();
   const router = useRouter();
   const confirm = useBoolean();
+  const [field, setField] = useState([]);
   const [tableData, setTableData] = useState([]);
   const { employees, employeesLoading, mutate } = useGetEmployees();
   const [filters, setFilters] = useState(defaultFilters);
@@ -160,7 +193,50 @@ export default function EmployeeListView() {
     },
     [router],
   );
+  const handleFilterField1 = (event) => {
+    const { value } = event.target;
+    if (value.length > 7) {
+      enqueueSnackbar('You can only select up to 7 options!', { variant: 'error' });
+      return;
+    }
+    setField(value);
+  };
+  const handleExportExcel = () => {
+    let data = dataFiltered.map((employee) => ({
+      Name: employee.firstName + ' ' + employee.lastName,
+      Email: employee.email,
+      'Contact No.': employee.contact,
+      Gender: employee.gender,
+      Role: employee.role,
+      'Experience': employee.experience,
+      'Qualification': employee.qualification,
+      'Technology': employee.technology,
+      'Joining Date': fDate(employee.joining_date),
+      DOB: fDate(employee.dob),
+      Address: employee.address_detail.address_1 + ' ' + employee.address_detail.address_2 + ' ' + employee.address_detail.city + ' ' + employee.address_detail.state + ' ' + employee.address_detail.country,
+    }));
+    if (field.length) {
+      data = data.map((item) => {
+        const filteredItem = {};
+        field.forEach((key) => {
+          if (item.hasOwnProperty(key)) {
+            filteredItem[key] = item[key];
+          }
+        });
+        return filteredItem;
+      });
+    }
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Employee');
+    XLSX.writeFile(workbook, 'EmployeeList.xlsx');
+    setField([]);
+  };
 
+  const extractedData = field.reduce((result, key) => ({
+    ...result,
+    [key]: fieldMapping[key].split('.').reduce((o, i) => o[i]),
+  }), {});
   const dateError = isAfter(filters.startDate, filters.endDate);
 
   return (
@@ -173,14 +249,126 @@ export default function EmployeeListView() {
             { name: 'Employee', href: paths.dashboard.employee.list },
           ]}
           action={
-            <Button
-              component={RouterLink}
-              href={paths.dashboard.employee.new}
-              variant='contained'
-              startIcon={<Iconify icon='mingcute:add-line' />}
-            >
-              New Employee
-            </Button>
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center', gap: 1 }}>
+              <FormControl
+                sx={{
+                  flexShrink: 0,
+                  width: { xs: '100%', md: 200 },
+                  margin: '0px 10px',
+                }}
+              >
+                <InputLabel>Field</InputLabel>
+                <Select
+                  multiple
+                  value={field}
+                  onChange={handleFilterField1}
+                  input={<OutlinedInput label='Field' />}
+                  renderValue={(selected) => selected.join(', ')}
+                  MenuProps={{
+                    PaperProps: {
+                      sx: { maxHeight: 240 },
+                    },
+                  }}
+                >
+                  {employeeField.map((option) => (
+                    <MenuItem key={option} value={option}>
+                      <Checkbox
+                        disableRipple
+                        size='small'
+                        checked={field?.includes(option)}
+                      />
+                      {option}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
+                <PDFDownloadLink
+                  document={
+                    <GenerateOverviewPdf
+                      allData={dataFiltered}
+                      heading={[
+                        { hed: 'Name', Size: '240px' },
+                        {
+                          hed: 'Email',
+                          Size: '260px',
+                        },
+                        {
+                          hed: 'Contact No.',
+                          Size: '180px',
+                        },
+                        {
+                          hed: 'Gender',
+                          Size: '180px',
+                        },
+                        {
+                          hed: 'Role',
+                          Size: '180px',
+                        },
+                        {
+                          hed: 'Experience',
+                          Size: '180px',
+                        },
+                        {
+                          hed: 'Qualification',
+                          Size: '180px',
+                        },
+                        {
+                          hed: 'Technology',
+                          Size: '180px',
+                        },
+                        {
+                          hed: 'Joining Date',
+                          Size: '180px',
+                        },
+                        ...(field.length ? [
+                          {
+                            hed: 'DOB',
+                            Size: '140px',
+                          },
+                          { hed: 'Address', Size: '100%' },
+                          ] : []),
+                      ].filter((item) => (field.includes(item.hed) || !field.length))}
+                      orientation={'landscape'}
+                      configs={configs}
+                      SubHeading={'Employee'}
+                      fieldMapping={field.length ? extractedData : fieldMapping}
+                    />
+                  }
+                  fileName={'Inquiries'}
+                  style={{ textDecoration: 'none' }}
+                >
+                  {({ loading }) => (
+                    <Tooltip>
+                      <Button
+                        variant='contained'
+                        onClick={() => setField([])}
+                        startIcon={loading ? <CircularProgress size={24} color='inherit' /> :
+                          <Iconify icon='eva:cloud-download-fill' />}
+                      >
+                        {loading ? 'Generating...' : 'Download PDF'}
+                      </Button>
+                    </Tooltip>
+                  )}
+                </PDFDownloadLink>
+              </Stack>
+              <Button
+                variant='contained'
+                startIcon={<Iconify icon='icon-park-outline:excel' />}
+                onClick={handleExportExcel}
+                sx={{ margin: '0px 10px' }}
+              >
+                Export to Excel
+              </Button>
+              <Button
+                component={RouterLink}
+                href={paths.dashboard.employee.new}
+                variant='contained'
+                startIcon={<Iconify icon='mingcute:add-line' />}
+              >
+                New Employee
+              </Button>
+            </Box>
           }
           sx={{ mb: { xs: 3, md: 5 } }}
         />
