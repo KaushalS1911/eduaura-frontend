@@ -73,20 +73,30 @@ export default function CalendarForm({ currentEvent, colorOptions, onClose, muta
   const eventTypeOptions = ['holiday', 'student leave', 'employee leave', 'notice'];
 
   const onSubmit = handleSubmit(async (data) => {
-    const payload =
-      getValues().event_type === 'student leave'
-        ? {
-          ...getValues(),
-          user_id: studentId || currentEvent.user_id,
-          leave_status: leaveStatus,
-          company_id: user?.company_id,
-        }
-        : {
-          ...getValues(),
-          user_id: user._id,
-          leave_status: leaveStatus,
-          company_id: user?.company_id,
-        };
+    let payload = {};
+
+    if (getValues().event_type === 'student leave') {
+      payload = {
+        ...getValues(),
+        user_id: studentId || currentEvent?.user_id,
+        leave_status: leaveStatus,
+        company_id: user?.company_id,
+      };
+    } else if (getValues().event_type === 'employee leave') {
+      payload = {
+        ...getValues(),
+        user_id: employeeId || currentEvent?.user_id,
+        leave_status: leaveStatus,
+        company_id: user?.company_id,
+      };
+    } else {
+      payload = {
+        ...getValues(),
+        user_id: user._id,
+        leave_status: leaveStatus,
+        company_id: user?.company_id,
+      };
+    }
     try {
       if (!dateError) {
         if (currentEvent?._id) {
@@ -102,9 +112,10 @@ export default function CalendarForm({ currentEvent, colorOptions, onClose, muta
         reset();
       }
     } catch (err) {
-      console.log('ERROR : ', err);
+      console.error('ERROR: ', err);
     }
   });
+
 
   const onDelete = useCallback(async () => {
     try {
