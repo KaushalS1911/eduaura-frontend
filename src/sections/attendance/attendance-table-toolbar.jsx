@@ -92,8 +92,6 @@ export default function AttendanceTableToolbar({ filters, onFilters, dateError, 
   );
   const handleFilterDays = useCallback(
     (event) => {
-
-
       setDay(event.target.value);
     },
     [onFilters],

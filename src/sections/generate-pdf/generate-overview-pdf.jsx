@@ -113,6 +113,8 @@ const GenerateOverviewPdf = ({ orientation, heading, allData, configs, SubHeadin
         return `${row.student.firstName} ${row.student.lastName}`;
       case 'DOB':
         return fDate(row.dob);
+      case 'Installments':
+        return fDate(row.fee_detail.installments.installment_date);
         case 'Date':
         return fDate(row.date);
       case 'Assigned to':

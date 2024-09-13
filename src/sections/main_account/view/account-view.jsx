@@ -8,7 +8,7 @@ import { useSettingsContext } from 'src/components/settings';
 import AccountSalesOverview from '../account-sales-overview';
 import AccountWidgetSummary from '../account-widget-summary';
 import AccountCurrentDownload from '../account-current-download';
-import AccountNewInvoice from '../account-new-invoice';
+import OverdueListView from '../overdue/overdue-list-view';
 
 import { useGetAccount, useGetAccountOverDue } from 'src/api/account';
 import { BookingIllustration } from 'src/assets/illustrations';
@@ -83,7 +83,7 @@ export default function AccountView() {
           </Grid>
         ))}
         <Grid item xs={12} lg={8}>
-          <AccountNewInvoice
+          <OverdueListView
             title='Overdue payments'
             tableData={overdue}
             tableLabels={[

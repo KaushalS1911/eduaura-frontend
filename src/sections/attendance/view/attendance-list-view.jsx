@@ -79,13 +79,11 @@ export default function AttendanceListView() {
   const [filters, setFilters] = useState(defaultFilters);
 
   const dateError = isAfter(filters.startDate, filters.endDate);
-  const dayError = isAfter(filters.startDay, filters.endDay);
   const dataFiltered = applyFilter({
     inputData: attendance,
     comparator: getComparator(table.order, table.orderBy),
     filters,
     dateError,
-    dayError,
   });
 
   const dataInPage = dataFiltered.slice(
@@ -257,7 +255,6 @@ export default function AttendanceListView() {
           <AttendanceTableToolbar
             filters={filters}
             onFilters={handleFilters}
-            //
             dateError={dateError}
             serviceOptions={INVOICE_SERVICE_OPTIONS.map((option) => option.name)}
           />
@@ -335,7 +332,7 @@ export default function AttendanceListView() {
 
 // ----------------------------------------------------------------------
 
-function applyFilter({ inputData, comparator, filters, dateError,dayError }) {
+function applyFilter({ inputData, comparator, filters, dateError }) {
   const { name, status, service, startDate, endDate , startDay, endDay} = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
@@ -347,11 +344,9 @@ function applyFilter({ inputData, comparator, filters, dateError,dayError }) {
   });
 
   inputData = stabilizedThis.map((el) => el[0]);
-  if (!dayError) {
     if (startDay && endDay) {
       inputData = inputData.filter((product) => isBetween(product.date, startDay, endDay));
     }
-  }
   if (name) {
     inputData = inputData.filter(
       (invoice) =>
