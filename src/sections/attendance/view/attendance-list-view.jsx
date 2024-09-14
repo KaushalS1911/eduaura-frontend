@@ -39,6 +39,9 @@ import AttendanceTableRow from '../attendance-table-row';
 import AttendanceTableToolbar from '../attendance-table-toolbar';
 import AttendanceTableFiltersResult from '../attendance-table-filters-result';
 import { LoadingScreen } from '../../../components/loading-screen';
+import { useAuthContext } from '../../../auth/hooks';
+import { useGetConfigs } from '../../../api/config';
+import { getResponsibilityValue } from '../../../permission/permission';
 
 const TABLE_HEAD = [
   { id: 'srNo', label: '#', align: 'center' },
@@ -64,9 +67,12 @@ const defaultFilters = {
 export default function AttendanceListView() {
   const { enqueueSnackbar } = useSnackbar();
 
+  const { configs } = useGetConfigs();
+  const { user } = useAuthContext();
+
   const theme = useTheme();
 
-  const { attendance, attendanceLoading,mutate } = useGetAllAttendance();
+  const { attendance, attendanceLoading, mutate } = useGetAllAttendance();
 
   const settings = useSettingsContext();
 
@@ -79,16 +85,18 @@ export default function AttendanceListView() {
   const [filters, setFilters] = useState(defaultFilters);
 
   const dateError = isAfter(filters.startDate, filters.endDate);
+  const dayError = isAfter(filters.startDay, filters.endDay);
   const dataFiltered = applyFilter({
     inputData: attendance,
     comparator: getComparator(table.order, table.orderBy),
     filters,
     dateError,
+    dayError,
   });
 
   const dataInPage = dataFiltered.slice(
     table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
+    table.page * table.rowsPerPage + table.rowsPerPage,
   );
 
   const denseHeight = table.dense ? 56 : 56 + 20;
@@ -106,7 +114,7 @@ export default function AttendanceListView() {
   const getTotalAmount = (status) =>
     sumBy(
       tableData.filter((item) => item.status === status),
-      'totalAmount'
+      'totalAmount',
     );
 
   const getPercentByStatus = (status) => (getInvoiceLength(status) / tableData.length) * 100;
@@ -141,7 +149,7 @@ export default function AttendanceListView() {
         [name]: value,
       }));
     },
-    [table]
+    [table],
   );
 
   const handleResetFilters = useCallback(() => {
@@ -158,7 +166,7 @@ export default function AttendanceListView() {
 
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
-    [dataInPage.length, enqueueSnackbar, table, tableData]
+    [dataInPage.length, enqueueSnackbar, table, tableData],
   );
 
   const handleDeleteRows = useCallback(() => {
@@ -178,28 +186,28 @@ export default function AttendanceListView() {
     (id) => {
       router.push(paths.dashboard.invoice.edit(id));
     },
-    [router]
+    [router],
   );
 
   const handleViewRow = useCallback(
     (id) => {
       router.push(paths.dashboard.invoice.details(id));
     },
-    [router]
+    [router],
   );
 
   const handleFilterStatus = useCallback(
     (event, newValue) => {
       handleFilters('status', newValue);
     },
-    [handleFilters]
+    [handleFilters],
   );
 
   return (
     <>
       {attendanceLoading ? <LoadingScreen /> : <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="Attendance logs"
+          heading='Attendance logs'
           links={[
             {
               name: 'Dashboard',
@@ -210,14 +218,16 @@ export default function AttendanceListView() {
             },
           ]}
           action={
-            <Button
-              component={RouterLink}
-              href={paths.dashboard.attendance.new}
-              variant="contained"
-              startIcon={<Iconify icon="mingcute:add-line" />}
-            >
-              Add Attendance
-            </Button>
+            <div>
+              {getResponsibilityValue('create_attendance', configs, user) && <Button
+                component={RouterLink}
+                href={paths.dashboard.attendance.new}
+                variant='contained'
+                startIcon={<Iconify icon='mingcute:add-line' />}
+              >
+                Add Attendance
+              </Button>
+              }</div>
           }
           sx={{
             mb: { xs: 3, md: 5 },
@@ -237,7 +247,7 @@ export default function AttendanceListView() {
                 key={tab.value}
                 value={tab.value}
                 label={tab.label}
-                iconPosition="end"
+                iconPosition='end'
                 icon={
                   <Label
                     variant={
@@ -255,6 +265,7 @@ export default function AttendanceListView() {
           <AttendanceTableToolbar
             filters={filters}
             onFilters={handleFilters}
+            //
             dateError={dateError}
             serviceOptions={INVOICE_SERVICE_OPTIONS.map((option) => option.name)}
           />
@@ -287,7 +298,7 @@ export default function AttendanceListView() {
                   {dataFiltered
                     ?.slice(
                       table.page * table.rowsPerPage,
-                      table.page * table.rowsPerPage + table.rowsPerPage
+                      table.page * table.rowsPerPage + table.rowsPerPage,
                     )
                     .map((row, index) => (
                       <AttendanceTableRow
@@ -332,8 +343,8 @@ export default function AttendanceListView() {
 
 // ----------------------------------------------------------------------
 
-function applyFilter({ inputData, comparator, filters, dateError }) {
-  const { name, status, service, startDate, endDate , startDay, endDay} = filters;
+function applyFilter({ inputData, comparator, filters, dateError, dayError }) {
+  const { name, status, service, startDate, endDate, startDay, endDay } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
@@ -344,15 +355,17 @@ function applyFilter({ inputData, comparator, filters, dateError }) {
   });
 
   inputData = stabilizedThis.map((el) => el[0]);
+  if (!dayError) {
     if (startDay && endDay) {
       inputData = inputData.filter((product) => isBetween(product.date, startDay, endDay));
     }
+  }
   if (name) {
     inputData = inputData.filter(
       (invoice) =>
         invoice.student_id.firstName.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
         invoice.student_id.lastName.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        invoice.student_id.email.toLowerCase().indexOf(name.toLowerCase()) !== -1
+        invoice.student_id.email.toLowerCase().indexOf(name.toLowerCase()) !== -1,
     );
   }
 
@@ -362,7 +375,7 @@ function applyFilter({ inputData, comparator, filters, dateError }) {
 
   if (service.length) {
     inputData = inputData.filter((invoice) =>
-      invoice.items.some((filterItem) => service.includes(filterItem.service))
+      invoice.items.some((filterItem) => service.includes(filterItem.service)),
     );
   }
 

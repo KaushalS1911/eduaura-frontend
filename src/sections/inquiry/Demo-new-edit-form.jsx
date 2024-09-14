@@ -32,7 +32,7 @@ export default function DemoNewEditForm({ open, onClose, currentId }) {
       .nullable()
       .required('Faculty name is required'),
     date: Yup.date().required('Date is required'),
-    technology: Yup.string().required('Technology is required'),
+    technology: Yup.object().required('Technology is required'),
     detail: Yup.string().required('Detail is required'),
   });
 
@@ -92,7 +92,7 @@ export default function DemoNewEditForm({ open, onClose, currentId }) {
         inquiry_id: currentId?._id,
         company_id: user?.company_id,
         detail: data.detail,
-        technology: data.technology,
+        technology: data.technology.value,
         date: dayjs(data.date).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'),
         faculty_id: data.faculty_name.id,
       };

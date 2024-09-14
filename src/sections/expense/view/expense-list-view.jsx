@@ -51,6 +51,7 @@ import GenerateOverviewPdf from '../../generate-pdf/generate-overview-pdf';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useGetConfigs } from '../../../api/config';
 import * as XLSX from 'xlsx';
+import { getResponsibilityValue } from '../../../permission/permission';
 
 // ----------------------------------------------------------------------
 
@@ -107,7 +108,7 @@ export default function ExpenseListView() {
     async (id) => {
       try {
         const response = await axios.delete(
-          `https://admin-panel-dmawv.ondigitalocean.app/api/company/${user?.company_id}/delete/all-expense`,
+          `https://server-eduaura-pyjuy.ondigitalocean.app/api/company/${user?.company_id}/delete/all-expense`,
           { data: { ids: id } },
         );
         if (response.status === 200) {
@@ -130,7 +131,7 @@ export default function ExpenseListView() {
     try {
       const selectedIdsArray = [...table.selected];
       const response = await axios.delete(
-        `https://admin-panel-dmawv.ondigitalocean.app/api/company/${user?.company_id}/delete/all-expense`,
+        `https://server-eduaura-pyjuy.ondigitalocean.app/api/company/${user?.company_id}/delete/all-expense`,
         { data: { ids: selectedIdsArray } },
       );
       if (response.status === 200) {
@@ -251,7 +252,7 @@ export default function ExpenseListView() {
           ]}
           action={
             <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center', gap: 1 }}>
-              <FormControl
+              {getResponsibilityValue('print_expense_detail', configs, user) && (<> <FormControl
                 sx={{
                   flexShrink: 0,
                   width: { xs: '100%', md: 200 },
@@ -283,64 +284,65 @@ export default function ExpenseListView() {
                   ))}
                 </Select>
               </FormControl>
-              <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
-                <PDFDownloadLink
-                  document={
-                    <GenerateOverviewPdf
-                      allData={dataFiltered}
-                      heading={[
-                        { hed: 'Date', Size: '180px' },
-                        {
-                          hed: 'Expense Type',
-                          Size: '180px',
-                        },
-                        {
-                          hed: 'Amount',
-                          Size: '180px',
-                        },
-                        {
-                          hed: 'Description',
-                          Size: '180px',
-                        }].filter((item) => (field.includes(item.hed) || !field.length))}
-                      orientation={'landscape'}
-                      configs={configs}
-                      SubHeading={'Expense'}
-                      fieldMapping={field.length ? extractedData : fieldMapping}
-                    />
-                  }
-                  fileName={'Expenses'}
-                  style={{ textDecoration: 'none' }}
+                <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
+                  <PDFDownloadLink
+                    document={
+                      <GenerateOverviewPdf
+                        allData={dataFiltered}
+                        heading={[
+                          { hed: 'Date', Size: '180px' },
+                          {
+                            hed: 'Expense Type',
+                            Size: '180px',
+                          },
+                          {
+                            hed: 'Amount',
+                            Size: '180px',
+                          },
+                          {
+                            hed: 'Description',
+                            Size: '180px',
+                          }].filter((item) => (field.includes(item.hed) || !field.length))}
+                        orientation={'landscape'}
+                        configs={configs}
+                        SubHeading={'Expense'}
+                        fieldMapping={field.length ? extractedData : fieldMapping}
+                      />
+                    }
+                    fileName={'Expenses'}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    {({ loading }) => (
+                      <Tooltip>
+                        <Button
+                          variant='contained'
+                          onClick={() => setField([])}
+                          startIcon={loading ? <CircularProgress size={24} color='inherit' /> :
+                            <Iconify icon='eva:cloud-download-fill' />}
+                        >
+                          {loading ? 'Generating...' : 'Download PDF'}
+                        </Button>
+                      </Tooltip>
+                    )}
+                  </PDFDownloadLink>
+                </Stack>
+                <Button
+                  variant='contained'
+                  startIcon={<Iconify icon='icon-park-outline:excel' />}
+                  onClick={handleExportExcel}
+                  sx={{ margin: '0px 10px' }}
                 >
-                  {({ loading }) => (
-                    <Tooltip>
-                      <Button
-                        variant='contained'
-                        onClick={() => setField([])}
-                        startIcon={loading ? <CircularProgress size={24} color='inherit' /> :
-                          <Iconify icon='eva:cloud-download-fill' />}
-                      >
-                        {loading ? 'Generating...' : 'Download PDF'}
-                      </Button>
-                    </Tooltip>
-                  )}
-                </PDFDownloadLink>
-              </Stack>
-              <Button
+                  Export to Excel
+                </Button></>)}
+
+              {getResponsibilityValue('create_expense', configs, user) && <Button
+                component={RouterLink}
+                href={paths.dashboard.expenses.new}
                 variant='contained'
-                startIcon={<Iconify icon='icon-park-outline:excel' />}
-                onClick={handleExportExcel}
-                sx={{ margin: '0px 10px' }}
+                startIcon={<Iconify icon='mingcute:add-line' />}
               >
-                Export to Excel
-              </Button>
-            <Button
-              component={RouterLink}
-              href={paths.dashboard.expenses.new}
-              variant='contained'
-              startIcon={<Iconify icon='mingcute:add-line' />}
-            >
-              New Expense
-            </Button>
+                New Expense
+              </Button>}
             </Box>
           }
           sx={{

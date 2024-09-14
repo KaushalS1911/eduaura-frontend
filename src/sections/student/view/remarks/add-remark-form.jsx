@@ -67,7 +67,7 @@ export default function AddRemarkForm({ open, onClose, currentStudent }) {
 
   const onSubmit = handleSubmit(async (data) => {
     allRemark.push(data);
-    const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/student/${currentStudent?._id}`;
+    const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/v2/student/${currentStudent?._id}`;
     try {
       axios
         .put(URL, { remarks: allRemark })

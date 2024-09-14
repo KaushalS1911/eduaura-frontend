@@ -24,19 +24,24 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { useState } from 'react';
 import AttendanceFormDialog from './attendance-form-dialog';
 import { useDeleteSingleAttendance } from 'src/api/attendance';
+import { useAuthContext } from '../../auth/hooks';
+import { useGetConfigs } from '../../api/config';
+import { getResponsibilityValue } from '../../permission/permission';
 
 // ----------------------------------------------------------------------
 
 export default function AttendanceTableRow({
-  row,
-  selected,
-  onSelectRow,
-  onViewRow,
-  onEditRow,
-  onDeleteRow,
-  mutate,
-}) {
+                                             row,
+                                             selected,
+                                             onSelectRow,
+                                             onViewRow,
+                                             onEditRow,
+                                             onDeleteRow,
+                                             mutate,
+                                           }) {
   const { date, status, student_id, index, _id } = row;
+  const { configs } = useGetConfigs();
+  const { user } = useAuthContext();
   const confirm = useBoolean();
   const [open, setOpen] = useState(false);
   const [singleAttendanceID, setsingleAttendanceID] = useState();
@@ -55,7 +60,7 @@ export default function AttendanceTableRow({
   return (
     <>
       <TableRow hover selected={selected}>
-        <TableCell align="center">{index + 1}</TableCell>
+        <TableCell align='center'>{index + 1}</TableCell>
 
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
           <Avatar alt={student_id.profile_pic} src={student_id.profile_pic} sx={{ mr: 2 }}>
@@ -65,7 +70,7 @@ export default function AttendanceTableRow({
           <ListItemText
             disableTypography
             primary={
-              <Typography variant="body2" noWrap>
+              <Typography variant='body2' noWrap>
                 {student_id?.firstName + ' ' + student_id?.lastName || ''}
               </Typography>
             }
@@ -90,7 +95,7 @@ export default function AttendanceTableRow({
 
         <TableCell>
           <Label
-            variant="soft"
+            variant='soft'
             color={
               (status === 'present' && 'success') ||
               (status === 'late' && 'warning') ||
@@ -102,9 +107,9 @@ export default function AttendanceTableRow({
           </Label>
         </TableCell>
 
-        <TableCell align="right" sx={{ px: 3 }}>
+        <TableCell align='right' sx={{ px: 3 }}>
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
-            <Iconify icon="eva:more-vertical-fill" />
+            <Iconify icon='eva:more-vertical-fill' />
           </IconButton>
         </TableCell>
       </TableRow>
@@ -112,21 +117,21 @@ export default function AttendanceTableRow({
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
-        arrow="right-top"
+        arrow='right-top'
         sx={{ width: 160 }}
       >
-        <MenuItem
+        {getResponsibilityValue('update_attendance', configs, user) && <MenuItem
           onClick={() => {
             setOpen(true);
             setsingleAttendanceID(_id);
             popover.onClose();
           }}
         >
-          <Iconify icon="solar:pen-bold" />
+          <Iconify icon='solar:pen-bold' />
           Edit
-        </MenuItem>
+        </MenuItem>}
         <Divider sx={{ borderStyle: 'dashed' }} />
-        <MenuItem
+        {getResponsibilityValue('delete_attendance', configs, user) && <MenuItem
           onClick={() => {
             confirm.onTrue();
             setsingleAttendanceID(_id);
@@ -134,19 +139,19 @@ export default function AttendanceTableRow({
           }}
           sx={{ color: 'error.main' }}
         >
-          <Iconify icon="solar:trash-bin-trash-bold" />
+          <Iconify icon='solar:trash-bin-trash-bold' />
           Delete
-        </MenuItem>
+        </MenuItem>}
       </CustomPopover>
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
-        content="Are you sure want to delete?"
+        title='Delete'
+        content='Are you sure want to delete?'
         action={
           <Button
-            variant="contained"
-            color="error"
+            variant='contained'
+            color='error'
             onClick={() => handleDelete(singleAttendanceID)}
           >
             Delete

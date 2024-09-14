@@ -51,6 +51,7 @@ import GenerateOverviewPdf from '../../generate-pdf/generate-overview-pdf';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useGetConfigs } from '../../../api/config';
 import * as XLSX from 'xlsx';
+import { getResponsibilityValue } from '../../../permission/permission';
 
 // ----------------------------------------------------------------------
 
@@ -112,7 +113,7 @@ export default function TaskListView() {
     async (id) => {
       try {
         const response = await axios.delete(
-          `https://admin-panel-dmawv.ondigitalocean.app/api/company/task`,
+          `https://server-eduaura-pyjuy.ondigitalocean.app/api/company/task`,
           { data: { ids: id } },
         );
         if (response.status === 200) {
@@ -135,7 +136,7 @@ export default function TaskListView() {
     try {
       const selectedIdsArray = [...table.selected];
       const response = await axios.delete(
-        `https://admin-panel-dmawv.ondigitalocean.app/api/company/task`,
+        `https://server-eduaura-pyjuy.ondigitalocean.app/api/company/task`,
         { data: { ids: selectedIdsArray } },
       );
       if (response.status === 200) {
@@ -216,7 +217,7 @@ export default function TaskListView() {
       'Assigned to': `${task.assigned_to.firstName} ${task.assigned_to.lastName}`,
       Description: task.desc,
       Date: fDate(task.createdAt),
-      Status: task.status
+      Status: task.status,
     }));
     if (field.length) {
       data = data.map((item) => {
@@ -256,7 +257,7 @@ export default function TaskListView() {
           ]}
           action={
             <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center', gap: 1 }}>
-              <FormControl
+              {getResponsibilityValue('print_task_detail', configs, user) && (<> <FormControl
                 sx={{
                   flexShrink: 0,
                   width: { xs: '100%', md: 200 },
@@ -288,73 +289,74 @@ export default function TaskListView() {
                   ))}
                 </Select>
               </FormControl>
-              <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
-                <PDFDownloadLink
-                  document={
-                    <GenerateOverviewPdf
-                      allData={dataFiltered}
-                      heading={[
-                        { hed: 'Title', Size: '240px' },
-                        {
-                          hed: 'Assigned by',
-                          Size: '260px',
-                        },
-                        {
-                          hed: 'Assigned to',
-                          Size: '180px',
-                        },
-                        {
-                          hed: 'Description',
-                          Size: '180px',
-                        },
-                        {
-                          hed: 'Date',
-                          Size: '180px',
-                        },
-                        {
-                          hed: 'Status',
-                          Size: '180px',
-                        }
-                      ].filter((item) => (field.includes(item.hed) || !field.length))}
-                      orientation={'landscape'}
-                      configs={configs}
-                      SubHeading={'Task'}
-                      fieldMapping={field.length ? extractedData : fieldMapping}
-                    />
-                  }
-                  fileName={'Inquiries'}
-                  style={{ textDecoration: 'none' }}
+                <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
+                  <PDFDownloadLink
+                    document={
+                      <GenerateOverviewPdf
+                        allData={dataFiltered}
+                        heading={[
+                          { hed: 'Title', Size: '240px' },
+                          {
+                            hed: 'Assigned by',
+                            Size: '260px',
+                          },
+                          {
+                            hed: 'Assigned to',
+                            Size: '180px',
+                          },
+                          {
+                            hed: 'Description',
+                            Size: '180px',
+                          },
+                          {
+                            hed: 'Date',
+                            Size: '180px',
+                          },
+                          {
+                            hed: 'Status',
+                            Size: '180px',
+                          },
+                        ].filter((item) => (field.includes(item.hed) || !field.length))}
+                        orientation={'landscape'}
+                        configs={configs}
+                        SubHeading={'Task'}
+                        fieldMapping={field.length ? extractedData : fieldMapping}
+                      />
+                    }
+                    fileName={'Inquiries'}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    {({ loading }) => (
+                      <Tooltip>
+                        <Button
+                          variant='contained'
+                          onClick={() => setField([])}
+                          startIcon={loading ? <CircularProgress size={24} color='inherit' /> :
+                            <Iconify icon='eva:cloud-download-fill' />}
+                        >
+                          {loading ? 'Generating...' : 'Download PDF'}
+                        </Button>
+                      </Tooltip>
+                    )}
+                  </PDFDownloadLink>
+                </Stack>
+                <Button
+                  variant='contained'
+                  startIcon={<Iconify icon='icon-park-outline:excel' />}
+                  onClick={handleExportExcel}
+                  sx={{ margin: '0px 10px' }}
                 >
-                  {({ loading }) => (
-                    <Tooltip>
-                      <Button
-                        variant='contained'
-                        onClick={() => setField([])}
-                        startIcon={loading ? <CircularProgress size={24} color='inherit' /> :
-                          <Iconify icon='eva:cloud-download-fill' />}
-                      >
-                        {loading ? 'Generating...' : 'Download PDF'}
-                      </Button>
-                    </Tooltip>
-                  )}
-                </PDFDownloadLink>
-              </Stack>
-              <Button
-                variant='contained'
-                startIcon={<Iconify icon='icon-park-outline:excel' />}
-                onClick={handleExportExcel}
-                sx={{ margin: '0px 10px' }}
-              >
-                Export to Excel
-              </Button>
-              <Button
+                  Export to Excel
+                </Button></>)}
+
+              {getResponsibilityValue('create_task', configs, user) && <Button
                 component={RouterLink}
                 href={paths.dashboard.task.new}
                 variant='contained'
                 startIcon={<Iconify icon='mingcute:add-line' />}
               >
                 New Task
-              </Button>
+              </Button>}
             </Box>
           }
           sx={{

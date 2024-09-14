@@ -15,18 +15,23 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import TaskQuickEditForm from './task-quick-edit-form';
 import Label from 'src/components/label';
+import { useGetConfigs } from '../../api/config';
+import { useAuthContext } from '../../auth/hooks';
+import { getResponsibilityValue } from '../../permission/permission';
 
 // ----------------------------------------------------------------------
 
 export default function TaskTableRow({
-  row,
-  selected,
-  onEditRow,
-  onSelectRow,
-  onDeleteRow,
-  index,
-}) {
-  const { assigned_to,  desc, title, createdAt } = row;
+                                       row,
+                                       selected,
+                                       onEditRow,
+                                       onSelectRow,
+                                       onDeleteRow,
+                                       index,
+                                     }) {
+  const { assigned_to, desc, title, createdAt } = row;
+  const { configs } = useGetConfigs();
+  const { user } = useAuthContext();
   const confirm = useBoolean();
   const quickEdit = useBoolean();
 
@@ -34,19 +39,19 @@ export default function TaskTableRow({
 
   return (
     <>
-      <TableRow hover selected={selected} >
-        <TableCell >{index + 1}</TableCell>
-        <TableCell >{moment(createdAt).format("DD/MM/YYYY")}</TableCell>
+      <TableRow hover selected={selected}>
+        <TableCell>{index + 1}</TableCell>
+        <TableCell>{moment(createdAt).format('DD/MM/YYYY')}</TableCell>
 
-        <TableCell >{title}</TableCell>
+        <TableCell>{title}</TableCell>
 
         <TableCell>{`${assigned_to?.firstName} ${assigned_to?.lastName}`}</TableCell>
-        <TableCell >{desc} </TableCell>
+        <TableCell>{desc} </TableCell>
 
 
         <TableCell>
           <Label
-            variant="soft"
+            variant='soft'
             color={
               (row.status === 'Completed' && 'success') ||
               (row.status === 'Pending' && 'warning') ||
@@ -56,9 +61,9 @@ export default function TaskTableRow({
             {row.status}
           </Label>
         </TableCell>
-        <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
+        <TableCell align='right' sx={{ px: 1, whiteSpace: 'nowrap' }}>
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
-            <Iconify icon="eva:more-vertical-fill" />
+            <Iconify icon='eva:more-vertical-fill' />
           </IconButton>
         </TableCell>
       </TableRow>
@@ -68,39 +73,39 @@ export default function TaskTableRow({
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
-        arrow="right-top"
+        arrow='right-top'
         sx={{ width: 140 }}
       >
-        <MenuItem
+        {getResponsibilityValue('delete_task', configs, user) && <MenuItem
           onClick={() => {
             confirm.onTrue();
             popover.onClose();
           }}
           sx={{ color: 'error.main' }}
         >
-          <Iconify icon="solar:trash-bin-trash-bold" />
+          <Iconify icon='solar:trash-bin-trash-bold' />
           Delete
-        </MenuItem>
+        </MenuItem>}
 
-        <MenuItem
+        {getResponsibilityValue('update_task', configs, user) && <MenuItem
           onClick={() => {
             onEditRow();
             popover.onClose();
           }}
         >
-          <Iconify icon="solar:pen-bold" />
+          <Iconify icon='solar:pen-bold' />
           Edit
-        </MenuItem>
+        </MenuItem>}
       </CustomPopover>
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete Task"
-        content="Are you sure want to delete selected task?"
+        title='Delete Task'
+        content='Are you sure want to delete selected task?'
         action={
           <Button
-            variant="contained"
-            color="error"
+            variant='contained'
+            color='error'
             onClick={() => {
               onDeleteRow();
               confirm.onFalse();

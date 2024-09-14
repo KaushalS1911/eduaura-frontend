@@ -19,6 +19,9 @@ import ExaminationQuickEditForm from './examination-quick-edit-form';
 import { ExamImage } from '../../_mock/_inquiry';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
+import { useGetConfigs } from '../../api/config';
+import { useAuthContext } from '../../auth/hooks';
+import { getResponsibilityValue } from '../../permission/permission';
 
 // ----------------------------------------------------------------------
 
@@ -32,6 +35,8 @@ export default function ExaminationTableRow({
                                               mutate,
                                             }) {
   const { conducted_by, date, desc, title, total_marks } = row;
+  const { configs } = useGetConfigs();
+  const { user } = useAuthContext();
   const dta = ExamImage(title);
   const confirm = useBoolean();
   const quickEdit = useBoolean();
@@ -86,12 +91,12 @@ export default function ExaminationTableRow({
         </TableCell>
       </TableRow>
 
-      <ExaminationQuickEditForm
+      {getResponsibilityValue('create_batch', configs, user) && <ExaminationQuickEditForm
         mutate={mutate}
         currentUser={row}
         open={quickEdit.value}
         onClose={quickEdit.onFalse}
-      />
+      />}
 
       <CustomPopover
         open={popover.open}
@@ -99,7 +104,7 @@ export default function ExaminationTableRow({
         arrow='right-top'
         sx={{ width: 'auto' }}
       >
-        <MenuItem
+        {getResponsibilityValue('delete_exam', configs, user) && <MenuItem
           onClick={() => {
             confirm.onTrue();
             popover.onClose();
@@ -108,9 +113,9 @@ export default function ExaminationTableRow({
         >
           <Iconify icon='solar:trash-bin-trash-bold' />
           Delete
-        </MenuItem>
+        </MenuItem>}
 
-        <MenuItem
+        {getResponsibilityValue('update_exam', configs, user) && <MenuItem
           onClick={() => {
             onEditRow();
             popover.onClose();
@@ -118,8 +123,8 @@ export default function ExaminationTableRow({
         >
           <Iconify icon='solar:pen-bold' />
           Edit
-        </MenuItem>
-        <MenuItem
+        </MenuItem>}
+        {getResponsibilityValue('print_exam_detail', configs, user) && <MenuItem
           onClick={() => {
             router.push(paths.dashboard.examination.examoverview(row?._id));
             popover.onClose();
@@ -128,7 +133,7 @@ export default function ExaminationTableRow({
           <Iconify icon='healthicons:i-exam-multiple-choice' />
           Exam Overview
         </MenuItem>
-      </CustomPopover>
+        }   </CustomPopover>
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}

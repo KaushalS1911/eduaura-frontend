@@ -46,6 +46,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { Box } from '@mui/system';
 import { useGetConfigs } from '../../../api/config';
 import * as XLSX from 'xlsx';
+import { getResponsibilityValue } from '../../../permission/permission';
 
 // ----------------------------------------------------------------------
 
@@ -97,8 +98,8 @@ const fieldMapping = {
 
 export default function EmployeeListView() {
   const { user } = useAuthContext();
-  const { enqueueSnackbar } = useSnackbar();
   const { configs } = useGetConfigs();
+  const { enqueueSnackbar } = useSnackbar();
   const table = useTable();
   const settings = useSettingsContext();
   const router = useRouter();
@@ -250,7 +251,8 @@ export default function EmployeeListView() {
           ]}
           action={
             <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center', gap: 1 }}>
-              <FormControl
+              {getResponsibilityValue('print_employee_detail', configs, user)
+              && <><FormControl
                 sx={{
                   flexShrink: 0,
                   width: { xs: '100%', md: 200 },
@@ -282,92 +284,93 @@ export default function EmployeeListView() {
                   ))}
                 </Select>
               </FormControl>
-              <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
-                <PDFDownloadLink
-                  document={
-                    <GenerateOverviewPdf
-                      allData={dataFiltered}
-                      heading={[
-                        { hed: 'Name', Size: '240px' },
-                        {
-                          hed: 'Email',
-                          Size: '260px',
-                        },
-                        {
-                          hed: 'Contact No.',
-                          Size: '180px',
-                        },
-                        {
-                          hed: 'Gender',
-                          Size: '180px',
-                        },
-                        {
-                          hed: 'Role',
-                          Size: '180px',
-                        },
-                        {
-                          hed: 'Experience',
-                          Size: '180px',
-                        },
-                        {
-                          hed: 'Qualification',
-                          Size: '180px',
-                        },
-                        {
-                          hed: 'Technology',
-                          Size: '180px',
-                        },
-                        {
-                          hed: 'Joining Date',
-                          Size: '180px',
-                        },
-                        ...(field.length ? [
+                <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
+                  <PDFDownloadLink
+                    document={
+                      <GenerateOverviewPdf
+                        allData={dataFiltered}
+                        heading={[
+                          { hed: 'Name', Size: '240px' },
                           {
-                            hed: 'DOB',
-                            Size: '140px',
+                            hed: 'Email',
+                            Size: '260px',
                           },
-                          { hed: 'Address', Size: '100%' },
+                          {
+                            hed: 'Contact No.',
+                            Size: '180px',
+                          },
+                          {
+                            hed: 'Gender',
+                            Size: '180px',
+                          },
+                          {
+                            hed: 'Role',
+                            Size: '180px',
+                          },
+                          {
+                            hed: 'Experience',
+                            Size: '180px',
+                          },
+                          {
+                            hed: 'Qualification',
+                            Size: '180px',
+                          },
+                          {
+                            hed: 'Technology',
+                            Size: '180px',
+                          },
+                          {
+                            hed: 'Joining Date',
+                            Size: '180px',
+                          },
+                          ...(field.length ? [
+                            {
+                              hed: 'DOB',
+                              Size: '140px',
+                            },
+                            { hed: 'Address', Size: '100%' },
                           ] : []),
-                      ].filter((item) => (field.includes(item.hed) || !field.length))}
-                      orientation={'landscape'}
-                      configs={configs}
-                      SubHeading={'Employee'}
-                      fieldMapping={field.length ? extractedData : fieldMapping}
-                    />
-                  }
-                  fileName={'Inquiries'}
-                  style={{ textDecoration: 'none' }}
+                        ].filter((item) => (field.includes(item.hed) || !field.length))}
+                        orientation={'landscape'}
+                        configs={configs}
+                        SubHeading={'Employee'}
+                        fieldMapping={field.length ? extractedData : fieldMapping}
+                      />
+                    }
+                    fileName={'Inquiries'}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    {({ loading }) => (
+                      <Tooltip>
+                        <Button
+                          variant='contained'
+                          onClick={() => setField([])}
+                          startIcon={loading ? <CircularProgress size={24} color='inherit' /> :
+                            <Iconify icon='eva:cloud-download-fill' />}
+                        >
+                          {loading ? 'Generating...' : 'Download PDF'}
+                        </Button>
+                      </Tooltip>
+                    )}
+                  </PDFDownloadLink>
+                </Stack>
+                <Button
+                  variant='contained'
+                  startIcon={<Iconify icon='icon-park-outline:excel' />}
+                  onClick={handleExportExcel}
+                  sx={{ margin: '0px 10px' }}
                 >
-                  {({ loading }) => (
-                    <Tooltip>
-                      <Button
-                        variant='contained'
-                        onClick={() => setField([])}
-                        startIcon={loading ? <CircularProgress size={24} color='inherit' /> :
-                          <Iconify icon='eva:cloud-download-fill' />}
-                      >
-                        {loading ? 'Generating...' : 'Download PDF'}
-                      </Button>
-                    </Tooltip>
-                  )}
-                </PDFDownloadLink>
-              </Stack>
-              <Button
-                variant='contained'
-                startIcon={<Iconify icon='icon-park-outline:excel' />}
-                onClick={handleExportExcel}
-                sx={{ margin: '0px 10px' }}
-              >
-                Export to Excel
-              </Button>
-              <Button
+                  Export to Excel
+                </Button></>}
+              {getResponsibilityValue('create_employee', configs, user)
+              && <Button
                 component={RouterLink}
                 href={paths.dashboard.employee.new}
                 variant='contained'
                 startIcon={<Iconify icon='mingcute:add-line' />}
               >
                 New Employee
-              </Button>
+              </Button>}
             </Box>
           }
           sx={{ mb: { xs: 3, md: 5 } }}
@@ -485,7 +488,11 @@ export default function EmployeeListView() {
 
 // ----------------------------------------------------------------------
 
-function applyFilter({ inputData, comparator, filters, dateError }) {
+function applyFilter(
+  {
+    inputData, comparator, filters, dateError,
+  },
+) {
   const { name, status, role, startDate, endDate, technology } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);

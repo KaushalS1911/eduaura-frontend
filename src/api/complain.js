@@ -8,7 +8,7 @@ import { fetcher } from '../utils/axios';
 export function useGetComplaints() {
   const { user } = useAuthContext();
 
-  const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/${user?.company_id}/complain`;
+  const URL = `https://server-eduaura-pyjuy.ondigitalocean.app//api/v2/${user?.company_id}/complain`;
 
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 

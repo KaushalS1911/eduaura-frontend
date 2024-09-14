@@ -7,7 +7,7 @@ import { useAuthContext } from 'src/auth/hooks';
 // Hook to get all demos
 export function useGetAllDemos() {
   const { user } = useAuthContext();
-  const DemoURL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/${user?.company_id}/demo`;
+  const DemoURL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/v2/${user?.company_id}/demo`;
   const { data, isLoading, error, isValidating, mutate } = useSWR(DemoURL, fetcher);
   const memoizedValue = useMemo(
     () => ({
@@ -26,7 +26,7 @@ export function useGetAllDemos() {
 
 // Hook to delete a demo
 export async function DeleteDemo(deleteID) {
-  const deleteURL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/demo/${deleteID}`;
+  const deleteURL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/v2/demo/${deleteID}`;
   try {
     await axios.delete(deleteURL);
     mutate(deleteURL);
@@ -37,7 +37,7 @@ export async function DeleteDemo(deleteID) {
 
 // Hook to edit a demo
 export async function useEditDemo(payload, demoID) {
-  const demoEditURL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/demo/${demoID}`;
+  const demoEditURL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/v2/demo/${demoID}`;
   try {
     const response = await axios.put(demoEditURL, payload);
     mutate(demoEditURL);

@@ -35,6 +35,8 @@ import FeesTableFiltersResult from '../fees-table-filters-result';
 import FeesTableRow from '../fees-table-row';
 import FeesTableToolbar from '../fees-table-toolbar';
 import { useGetStudents } from 'src/api/student';
+import { useAuthContext } from '../../../auth/hooks';
+import { useGetConfigs } from '../../../api/config';
 import { useGetConfigs } from '../../../api/config';
 import { Box, Checkbox, FormControl, InputLabel, MenuItem, OutlinedInput, Select, Stack } from '@mui/material';
 import { PDFDownloadLink } from '@react-pdf/renderer';
@@ -106,7 +108,7 @@ export default function FeesListView() {
 
   const dataInPage = dataFiltered.slice(
     table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
+    table.page * table.rowsPerPage + table.rowsPerPage,
   );
 
   const denseHeight = table.dense ? 56 : 56 + 20;
@@ -124,9 +126,10 @@ export default function FeesListView() {
         [name]: value,
       }));
     },
-    [table]
+    [table],
   );
-  const handleEditRow = () => {};
+  const handleEditRow = () => {
+  };
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
   }, []);
@@ -141,7 +144,7 @@ export default function FeesListView() {
 
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
-    [dataInPage.length, enqueueSnackbar, table, tableData]
+    [dataInPage.length, enqueueSnackbar, table, tableData],
   );
 
   const handleDeleteRows = useCallback(() => {
@@ -161,14 +164,14 @@ export default function FeesListView() {
     (id) => {
       router.push(paths.dashboard.order.details(id));
     },
-    [router]
+    [router],
   );
 
   const handleFilterStatus = useCallback(
     (event, newValue) => {
       handleFilters('status', newValue);
     },
-    [handleFilters]
+    [handleFilters],
   );
   const handleFilterField1 = (event) => {
     const { value } = event.target;
@@ -185,7 +188,7 @@ export default function FeesListView() {
   return (
     <>
       <CustomBreadcrumbs
-        heading="Fees"
+        heading='Fees'
         links={[
           {
             name: 'Dashboard',
@@ -289,7 +292,9 @@ export default function FeesListView() {
           <FeesTableFiltersResult
             filters={filters}
             onFilters={handleFilters}
+            //
             onResetFilters={handleResetFilters}
+            //
             results={dataFiltered.length}
             sx={{ p: 2.5, pt: 0 }}
           />
@@ -303,13 +308,13 @@ export default function FeesListView() {
             onSelectAllRows={(checked) =>
               table.onSelectAllRows(
                 checked,
-                dataFiltered.map((row) => row.id)
+                dataFiltered.map((row) => row.id),
               )
             }
             action={
-              <Tooltip title="Delete">
-                <IconButton color="primary" onClick={confirm.onTrue}>
-                  <Iconify icon="solar:trash-bin-trash-bold" />
+              <Tooltip title='Delete'>
+                <IconButton color='primary' onClick={confirm.onTrue}>
+                  <Iconify icon='solar:trash-bin-trash-bold' />
                 </IconButton>
               </Tooltip>
             }
@@ -336,7 +341,7 @@ export default function FeesListView() {
                 {dataFiltered
                   .slice(
                     table.page * table.rowsPerPage,
-                    table.page * table.rowsPerPage + table.rowsPerPage
+                    table.page * table.rowsPerPage + table.rowsPerPage,
                   )
                   .map((row, index) => (
                     <FeesTableRow
@@ -378,7 +383,7 @@ export default function FeesListView() {
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
+        title='Delete'
         content={
           <>
             Are you sure want to delete <strong> {table.selected.length} </strong> items?
@@ -386,8 +391,8 @@ export default function FeesListView() {
         }
         action={
           <Button
-            variant="contained"
-            color="error"
+            variant='contained'
+            color='error'
             onClick={() => {
               handleDeleteRows();
               confirm.onFalse();
@@ -419,7 +424,7 @@ function applyFilter({ inputData, comparator, filters, dateError }) {
     inputData = inputData.filter(
       (item) =>
         item.firstName.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        item.lastName.toLowerCase().indexOf(name.toLowerCase()) !== -1
+        item.lastName.toLowerCase().indexOf(name.toLowerCase()) !== -1,
     );
   }
 

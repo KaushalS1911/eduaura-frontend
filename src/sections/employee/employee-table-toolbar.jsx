@@ -131,7 +131,7 @@ export default function EmployeeTableToolbar({
               },
             }}
           >
-            {configs.developer_type.map((option) => (
+            {configs?.developer_type?.map((option) => (
               <MenuItem key={option} value={option}>
                 <Checkbox disableRipple size='small' checked={filters.technology.includes(option)} />
                 {option}

@@ -42,7 +42,7 @@ const RemarkListView = ({ currentStudent, mutate }) => {
   const handleDelete = (id) => {
     const filteredRemarks = currentStudent?.remarks?.filter((item) => item._id !== id);
 
-    const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/student/${currentStudent?._id}`;
+    const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/v2/student/${currentStudent?._id}`;
     try {
       axios
         .put(URL, { ...currentStudent, remarks: filteredRemarks })

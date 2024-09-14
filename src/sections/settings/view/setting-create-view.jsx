@@ -28,20 +28,15 @@ const TABS = [
     label: 'Company Profile',
     icon: <Iconify icon='mdi:company' width={24} />,
   },
-  // {
-  //   value: 'Permission',
-  //   label: 'Permission',
-  //   icon: <Iconify icon='mdi:eye-lock' width={24} />,
-  // },
+  {
+    value: 'Permission',
+    label: 'Permission',
+    icon: <Iconify icon='mdi:eye-lock' width={24} />,
+  },
   {
     value: 'Courses',
     label: 'Courses',
     icon: <Iconify icon='hugeicons:course' width={24} />,
-  },
-  {
-    value: 'User Role',
-    label: 'User Role',
-    icon: <Iconify icon='fa6-solid:user-gear' width={24} />,
   },
   {
     value: 'Employee Role',
@@ -63,7 +58,6 @@ const TABS = [
     label: 'Lab',
     icon: <Iconify icon='mdi:google-classroom' width={24} />,
   },
-
   {
     value: 'Application Banner',
     label: 'Application Banner',
@@ -73,7 +67,6 @@ const TABS = [
 
 export default function SettingsPage() {
   const settings = useSettingsContext();
-
   const [currentTab, setCurrentTab] = useState('My Profile');
 
   const handleChangeTab = useCallback((event, newValue) => {
@@ -90,7 +83,6 @@ export default function SettingsPage() {
             mb: { xs: 3, md: 5 },
           }}
         />
-
         <Tabs
           value={currentTab}
           onChange={handleChangeTab}
@@ -102,14 +94,13 @@ export default function SettingsPage() {
             <Tab key={tab.value} label={tab.label} icon={tab.icon} value={tab.value} />
           ))}
         </Tabs>
-
         {currentTab === 'My Profile' && <MyProfile />}
         {currentTab === 'Expeneses' && <ExpensesCreatePage />}
         {currentTab === 'Company Profile' && <CompanyProfile />}
         {currentTab === 'User Role' && <Userrolecreatepage />}
         {currentTab === 'Courses' && <CourseCreatePage />}
         {currentTab === 'Lab' && <Labcreatepage />}
-        {currentTab === 'Employee Role' && <EmployeeCreatePage />}
+        {currentTab === 'Employee Role' && <EmployeeCreatePage setTab={setCurrentTab} />}
         {currentTab === 'Developer Option' && <Developercreatepage />}
         {currentTab === 'Application Banner' && <AppbanerCreate />}
         {currentTab === 'Permission' && <PermissionView />}

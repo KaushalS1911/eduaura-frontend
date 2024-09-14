@@ -14,23 +14,25 @@ import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import VisitQuickEditForm from './visit-quick-edit-form';
+import { getResponsibilityValue } from '../../permission/permission';
+import { useGetConfigs } from '../../api/config';
+import { useAuthContext } from '../../auth/hooks';
 
 // ----------------------------------------------------------------------
 
 export default function VisitTableRow({
-  row,
-  selected,
-  onEditRow,
-  onSelectRow,
-  onDeleteRow,
-  index,
-}) {
+                                        row,
+                                        selected,
+                                        onEditRow,
+                                        onSelectRow,
+                                        onDeleteRow,
+                                        index,
+                                      }) {
   const { firstName, lastName, address, contact, notes, reference } = row;
-
+  const { configs } = useGetConfigs();
+  const { user } = useAuthContext();
   const confirm = useBoolean();
-
   const quickEdit = useBoolean();
-
   const popover = usePopover();
 
   return (
@@ -40,7 +42,7 @@ export default function VisitTableRow({
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell> */}
 
-        <TableCell align="center">{index + 1}</TableCell>
+        <TableCell align='center'>{index + 1}</TableCell>
 
         <TableCell>{`${firstName} ${lastName}`}</TableCell>
 
@@ -49,9 +51,9 @@ export default function VisitTableRow({
         <TableCell>{notes}</TableCell>
         <TableCell>{address}</TableCell>
 
-        <TableCell align="center" >
+        <TableCell align='center'>
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
-            <Iconify icon="eva:more-vertical-fill" />
+            <Iconify icon='eva:more-vertical-fill' />
           </IconButton>
         </TableCell>
       </TableRow>
@@ -61,39 +63,39 @@ export default function VisitTableRow({
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
-        arrow="right-top"
+        arrow='right-top'
         sx={{ width: 140 }}
       >
-        <MenuItem
+        {getResponsibilityValue('delete_visit', configs, user) && <MenuItem
           onClick={() => {
             confirm.onTrue();
             popover.onClose();
           }}
           sx={{ color: 'error.main' }}
         >
-          <Iconify icon="solar:trash-bin-trash-bold" />
+          <Iconify icon='solar:trash-bin-trash-bold' />
           Delete
-        </MenuItem>
+        </MenuItem>}
 
-        <MenuItem
+        {getResponsibilityValue('update_visit', configs, user) && <MenuItem
           onClick={() => {
             onEditRow();
             popover.onClose();
           }}
         >
-          <Iconify icon="solar:pen-bold" />
+          <Iconify icon='solar:pen-bold' />
           Edit
-        </MenuItem>
+        </MenuItem>}
       </CustomPopover>
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete Visit"
-        content="Are you sure want to delete selected visit?"
+        title='Delete Visit'
+        content='Are you sure want to delete selected visit?'
         action={
           <Button
-            variant="contained"
-            color="error"
+            variant='contained'
+            color='error'
             onClick={() => {
               onDeleteRow(), confirm.onFalse();
             }}

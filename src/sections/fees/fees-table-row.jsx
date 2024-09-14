@@ -26,6 +26,9 @@ import { RHFAutocomplete } from 'src/components/hook-form';
 import axios from 'axios';
 import moment from 'moment';
 import { DatePicker } from '@mui/x-date-pickers';
+import { useGetConfigs } from '../../api/config';
+import { useAuthContext } from '../../auth/hooks';
+import { getResponsibilityValue } from '../../permission/permission';
 
 // ----------------------------------------------------------------------
 
@@ -50,6 +53,8 @@ export default function FeesTableRow({
                                        mutate,
                                      }) {
   const { enrollment_no } = row;
+  const { configs } = useGetConfigs();
+  const { user } = useAuthContext();
   const [deleteInstallmentId, setDeleteInstallmentId] = useState();
   const [singleInstallment, setSingleInstallment] = useState();
   const { profile_pic, course, email, contact, joining_date, firstName, lastName } = row;
@@ -245,7 +250,7 @@ export default function FeesTableRow({
         arrow='right-top'
         sx={{ width: 140 }}
       >
-        <MenuItem
+        {getResponsibilityValue('update_fees', configs, user) && <MenuItem
           onClick={() => {
             dialog.onTrue();
             popover.onClose();
@@ -253,8 +258,8 @@ export default function FeesTableRow({
         >
           <Iconify icon='solar:pen-bold' />
           Edit
-        </MenuItem>
-        <MenuItem
+        </MenuItem>}
+        {getResponsibilityValue('print_fees_detail', configs, user) && <MenuItem
           onClick={() => {
             router.push(paths.dashboard.general.feesInvoice(row._id, singleInstallment));
             popover.onClose();
@@ -262,7 +267,7 @@ export default function FeesTableRow({
         >
           <Iconify icon='solar:eye-bold' />
           Invoice
-        </MenuItem>
+        </MenuItem>}
       </CustomPopover>
 
       <ConfirmDialog

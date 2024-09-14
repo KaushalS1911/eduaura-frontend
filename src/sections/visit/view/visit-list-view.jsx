@@ -43,6 +43,7 @@ import { PDFDownloadLink } from '@react-pdf/renderer';
 import GenerateOverviewPdf from '../../generate-pdf/generate-overview-pdf';
 import { useGetConfigs } from '../../../api/config';
 import CircularProgress from '@mui/material/CircularProgress';
+import { getResponsibilityValue } from '../../../permission/permission';
 
 // ----------------------------------------------------------------------
 
@@ -89,7 +90,7 @@ export default function VisitListView() {
     async (id) => {
       try {
         const response = await axios.delete(
-          `https://admin-panel-dmawv.ondigitalocean.app/api/v2/visit`,
+          `https://server-eduaura-pyjuy.ondigitalocean.app/api/v2/visit`,
           { data: { ids: id } },
         );
         if (response.status === 200) {
@@ -111,7 +112,7 @@ export default function VisitListView() {
     try {
       const selectedIdsArray = [...table.selected];
       const response = await axios.delete(
-        `https://admin-panel-dmawv.ondigitalocean.app/api/v2/visit`,
+        `https://server-eduaura-pyjuy.ondigitalocean.app/api/v2/visit`,
         { data: { ids: selectedIdsArray } },
       );
       if (response.status === 200) {
@@ -252,105 +253,109 @@ export default function VisitListView() {
           ]}
           action={
             <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center', gap: 1 }}>
-              <FormControl
-                sx={{
-                  flexShrink: 0,
-                  width: { xs: '100%', md: 200 },
-                  margin: '0px 10px',
-                }}
-              >
-                <InputLabel>Field</InputLabel>
-                <Select
-                  multiple
-                  value={field}
-                  onChange={handleFilterField1}
-                  input={<OutlinedInput label='Field' />}
-                  renderValue={(selected) => selected.join(', ')}
-                  MenuProps={{
-                    PaperProps: {
-                      sx: { maxHeight: 240 },
-                    },
+              {getResponsibilityValue('print_visit_detail', configs, user) &&
+              (<>
+                <FormControl
+                  sx={{
+                    flexShrink: 0,
+                    width: { xs: '100%', md: 200 },
+                    margin: '0px 10px',
                   }}
                 >
-                  {VisitField.map((option) => (
-                    <MenuItem key={option} value={option}>
-                      <Checkbox
-                        disableRipple
-                        size='small'
-                        checked={field?.includes(option)}
+                  <InputLabel>Field</InputLabel>
+                  <Select
+                    multiple
+                    value={field}
+                    onChange={handleFilterField1}
+                    input={<OutlinedInput label='Field' />}
+                    renderValue={(selected) => selected.join(', ')}
+                    MenuProps={{
+                      PaperProps: {
+                        sx: { maxHeight: 240 },
+                      },
+                    }}
+                  >
+                    {VisitField.map((option) => (
+                      <MenuItem key={option} value={option}>
+                        <Checkbox
+                          disableRipple
+                          size='small'
+                          checked={field?.includes(option)}
+                        />
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
+                  <PDFDownloadLink
+                    document={
+                      <GenerateOverviewPdf
+                        allData={dataFiltered}
+                        heading={[
+                          { hed: 'Name', Size: '240px' },
+                          {
+                            hed: 'Contact No.'
+                            , Size: '180px',
+                          },
+                          {
+                            hed: 'Contact Person',
+                            Size: '180px',
+                          },
+                          {
+                            hed: 'Reference',
+                            Size: '180px',
+                          },
+                          {
+                            hed: 'Notes',
+                            Size: '200px',
+                          },
+                          {
+                            hed: 'Address_',
+                            Size: '100%',
+                          },
+                        ].filter((item) => (field.includes(item.hed) || !field.length))}
+                        orientation={'landscape'}
+                        configs={configs}
+                        SubHeading={'Visits'}
+                        fieldMapping={field.length ? extractedData : fieldMapping}
                       />
-                      {option}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
-                <PDFDownloadLink
-                  document={
-                    <GenerateOverviewPdf
-                      allData={dataFiltered}
-                      heading={[
-                        { hed: 'Name', Size: '240px' },
-                        {
-                          hed: 'Contact No.'
-                          , Size: '180px',
-                        },
-                        {
-                          hed: 'Contact Person',
-                          Size: '180px',
-                        },
-                        {
-                          hed: 'Reference',
-                          Size: '180px',
-                        },
-                        {
-                          hed: 'Notes',
-                          Size: '200px',
-                        },
-                        {
-                          hed: 'Address_',
-                          Size: '100%',
-                        },
-                      ].filter((item) => (field.includes(item.hed) || !field.length))}
-                      orientation={'landscape'}
-                      configs={configs}
-                      SubHeading={'Visits'}
-                      fieldMapping={field.length ? extractedData : fieldMapping}
-                    />
-                  }
-                  fileName={'Visits'}
-                  style={{ textDecoration: 'none' }}
+                    }
+                    fileName={'Visits'}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    {({ loading }) => (
+                      <Tooltip>
+                        <Button
+                          variant='contained'
+                          onClick={() => setField([])}
+                          startIcon={loading ? <CircularProgress size={24} color='inherit' /> :
+                            <Iconify icon='eva:cloud-download-fill' />}
+                        >
+                          {loading ? 'Generating...' : 'Download PDF'}
+                        </Button>
+                      </Tooltip>
+                    )}
+                  </PDFDownloadLink>
+                </Stack>
+                <Button
+                  variant='contained'
+                  startIcon={<Iconify icon='icon-park-outline:excel' />}
+                  onClick={handleExportExcel}
+                  sx={{ margin: '0px 10px' }}
                 >
-                  {({ loading }) => (
-                    <Tooltip>
-                      <Button
-                        variant='contained'
-                        onClick={() => setField([])}
-                        startIcon={loading ? <CircularProgress size={24} color='inherit' /> :
-                          <Iconify icon='eva:cloud-download-fill' />}
-                      >
-                        {loading ? 'Generating...' : 'Download PDF'}
-                      </Button>
-                    </Tooltip>
-                  )}
-                </PDFDownloadLink>
-              </Stack>
-              <Button
-                variant='contained'
-                startIcon={<Iconify icon='icon-park-outline:excel' />}
-                onClick={handleExportExcel}
-                sx={{ margin: '0px 10px' }}
-              >
-                Export to Excel
-              </Button>
-              <Button
+                  Export to Excel
+                </Button>
+              </>)}
+              {getResponsibilityValue('create_visit', configs, user)
+              && <Button
                 component={RouterLink}
                 href={paths.dashboard.visit.new}
                 variant='contained'
                 startIcon={<Iconify icon='mingcute:add-line' />}
               >
                 New Visit
-              </Button>
+              </Button>}
             </Box>
           }
           sx={{
@@ -472,7 +477,8 @@ export default function VisitListView() {
 
 function applyFilter({
                        inputData, comparator, dateError, filters,
-                     },
+                     }
+  ,
 ) {
   const { startDate, name, status, role, endDate } = filters;
 

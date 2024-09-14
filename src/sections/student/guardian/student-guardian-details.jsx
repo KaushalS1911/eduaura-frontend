@@ -38,7 +38,7 @@ export default function StudentGuardianDetails({ currentStudent, mutate }) {
       // handleClose();
       setAddressId(id);
       const filteredGuardian = currentStudent?.guardian_detail?.filter((item) => item._id !== id);
-      const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/student/${currentStudent?._id}`;
+      const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/v2/student/${currentStudent?._id}`;
       try {
         axios
           .put(URL, { guardian_detail: filteredGuardian })

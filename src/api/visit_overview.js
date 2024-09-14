@@ -7,7 +7,7 @@ import { useAuthContext } from '../auth/hooks/index.js';
 export function useGetVisitsOverview() {
   const { user } = useAuthContext();
 
-  const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/${user?.company_id}/visit/overview`;
+  const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/v2/${user?.company_id}/visit/overview`;
 
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
   console.log(data);

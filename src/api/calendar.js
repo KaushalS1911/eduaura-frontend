@@ -16,7 +16,7 @@ const options = {
 
 export function useGetCalendar(page, limit) {
   const { user } = useAuthContext();
-  const calendarURL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/${user?.company_id}/event`;
+  const calendarURL = `https://server-eduaura-pyjuy.ondigitalocean.app//api/v2/${user?.company_id}/event`;
   const { data, isLoading, error, isValidating, mutate } = useSWR(calendarURL, fetcher);
   const memoizedValue = useMemo(
     () => ({
@@ -57,7 +57,7 @@ export function useGetEvents() {
 // ----------------------------------------------------------------------
 
 export async function createEvent(eventData) {
-  const URL = 'https://admin-panel-dmawv.ondigitalocean.app/api/v2/event';
+  const URL = 'https://server-eduaura-pyjuy.ondigitalocean.app//api/v2/event';
   try {
     const response = await axios.post(URL, eventData);
     const newEvent = response.data;
@@ -83,7 +83,7 @@ export async function createEvent(eventData) {
 export async function updateEvent(eventData) {
   try {
     const response = await axios.put(
-      `https://admin-panel-dmawv.ondigitalocean.app/api/v2/event/${eventData._id}`,
+      `https://server-eduaura-pyjuy.ondigitalocean.app//api/v2/event/${eventData._id}`,
       eventData
     );
     const updatedEvent = response.data;
@@ -109,7 +109,7 @@ export async function updateEvent(eventData) {
 // ----------------------------------------------------------------------
 
 export async function deleteEvent(eventId) {
-  const deleteURL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/event/${eventId}`;
+  const deleteURL = `https://server-eduaura-pyjuy.ondigitalocean.app//api/v2/event/${eventId}`;
   try {
     await axios.delete(deleteURL);
 

@@ -114,7 +114,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
 
   const values = watch();
   const createStudent = async (studentPayload) => {
-    const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/${user?.company_id}/student`;
+    const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/v2/${user?.company_id}/student`;
     const formData = new FormData();
     Object.keys(studentPayload).forEach((key) => {
       formData.append(key, studentPayload[key]);
@@ -134,7 +134,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
   };
 
   const updateStudent = async (studentPayload) => {
-    const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/student/${currentStudent?._id}`;
+    const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/v2/student/${currentStudent?._id}`;
     const formData = new FormData();
     Object.keys(studentPayload).forEach((key) => {
       formData.append(key, studentPayload[key]);

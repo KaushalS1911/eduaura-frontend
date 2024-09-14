@@ -41,6 +41,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useGetConfigs } from '../../../api/config';
 import { fDate, fDateTime } from '../../../utils/format-time';
 import * as XLSX from 'xlsx';
+import { useAuthContext } from '../../../auth/hooks';
+import { getResponsibilityValue } from '../../../permission/permission';
 
 // ----------------------------------------------------------------------
 
@@ -63,7 +65,7 @@ const seminarField = [
   'Description',
   'Seminar Date',
   'Schedule by',
-  'Attended by'
+  'Attended by',
 ];
 const fieldMapping = {
   'Title': 'title',
@@ -78,6 +80,7 @@ export default function SeminarListView() {
   const { enqueueSnackbar } = useSnackbar();
   const table = useTable();
   const { configs } = useGetConfigs();
+  const { user } = useAuthContext();
   const settings = useSettingsContext();
 
   const router = useRouter();
@@ -195,7 +198,7 @@ export default function SeminarListView() {
           ]}
           action={
             <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center', gap: 1 }}>
-              <FormControl
+              {getResponsibilityValue('print_seminar_detail', configs, user) && (<><FormControl
                 sx={{
                   flexShrink: 0,
                   width: { xs: '100%', md: 200 },
@@ -227,69 +230,70 @@ export default function SeminarListView() {
                   ))}
                 </Select>
               </FormControl>
-              <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
-                <PDFDownloadLink
-                  document={
-                    <GenerateOverviewPdf
-                      allData={dataFiltered}
-                      heading={[
-                        { hed: 'Title', Size: '240px' },
-                        {
-                          hed: 'Description',
-                          Size: '260px',
-                        },
-                        {
-                          hed: 'Seminar Date',
-                          Size: '180px',
-                        },
-                        {
-                          hed: 'Schedule by',
-                          Size: '180px',
-                        },
-                        {
-                          hed: 'Attended by',
-                          Size: '250px',
-                        }
-                      ].filter((item) => (field.includes(item.hed) || !field.length))}
-                      orientation={'landscape'}
-                      configs={configs}
-                      SubHeading={'Seminar'}
-                      fieldMapping={field.length ? extractedData : fieldMapping}
-                    />
-                  }
-                  fileName={'Seminar'}
-                  style={{ textDecoration: 'none' }}
+                <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
+                  <PDFDownloadLink
+                    document={
+                      <GenerateOverviewPdf
+                        allData={dataFiltered}
+                        heading={[
+                          { hed: 'Title', Size: '240px' },
+                          {
+                            hed: 'Description',
+                            Size: '260px',
+                          },
+                          {
+                            hed: 'Seminar Date',
+                            Size: '180px',
+                          },
+                          {
+                            hed: 'Schedule by',
+                            Size: '180px',
+                          },
+                          {
+                            hed: 'Attended by',
+                            Size: '250px',
+                          },
+                        ].filter((item) => (field.includes(item.hed) || !field.length))}
+                        orientation={'landscape'}
+                        configs={configs}
+                        SubHeading={'Seminar'}
+                        fieldMapping={field.length ? extractedData : fieldMapping}
+                      />
+                    }
+                    fileName={'Seminar'}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    {({ loading }) => (
+                      <Tooltip>
+                        <Button
+                          variant='contained'
+                          onClick={() => setField([])}
+                          startIcon={loading ? <CircularProgress size={24} color='inherit' /> :
+                            <Iconify icon='eva:cloud-download-fill' />}
+                        >
+                          {loading ? 'Generating...' : 'Download PDF'}
+                        </Button>
+                      </Tooltip>
+                    )}
+                  </PDFDownloadLink>
+                </Stack>
+                <Button
+                  variant='contained'
+                  startIcon={<Iconify icon='icon-park-outline:excel' />}
+                  onClick={handleExportExcel}
+                  sx={{ margin: '0px 10px' }}
                 >
-                  {({ loading }) => (
-                    <Tooltip>
-                      <Button
-                        variant='contained'
-                        onClick={() => setField([])}
-                        startIcon={loading ? <CircularProgress size={24} color='inherit' /> :
-                          <Iconify icon='eva:cloud-download-fill' />}
-                      >
-                        {loading ? 'Generating...' : 'Download PDF'}
-                      </Button>
-                    </Tooltip>
-                  )}
-                </PDFDownloadLink>
-              </Stack>
-              <Button
-                variant='contained'
-                startIcon={<Iconify icon='icon-park-outline:excel' />}
-                onClick={handleExportExcel}
-                sx={{ margin: '0px 10px' }}
-              >
-                Export to Excel
-              </Button>
-              <Button
+                  Export to Excel
+                </Button></>)}
+
+              {getResponsibilityValue('create_seminar', configs, user) && <Button
                 component={RouterLink}
                 href={paths.dashboard.seminar.new}
                 variant='contained'
                 startIcon={<Iconify icon='mingcute:add-line' />}
               >
                 New Seminar
-              </Button>
+              </Button>}
             </Box>
           }
           sx={{
@@ -381,10 +385,10 @@ export default function SeminarListView() {
 // ----------------------------------------------------------------------
 
 function applyFilter({
-  inputData, comparator, filters,
-},
-)
-{
+                       inputData, comparator, filters,
+                     }
+  ,
+) {
   const { status, name } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);

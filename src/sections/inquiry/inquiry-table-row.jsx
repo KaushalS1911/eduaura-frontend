@@ -20,6 +20,9 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import DemoNewEditForm from './Demo-new-edit-form';
 import moment from 'moment';
 import Label from '../../components/label';
+import { useGetConfigs } from '../../api/config';
+import { useAuthContext } from '../../auth/hooks';
+import { getResponsibilityValue } from '../../permission/permission';
 
 export default function InquiryTableRow({
                                           row,
@@ -33,8 +36,9 @@ export default function InquiryTableRow({
 
   const confirm = useBoolean();
   const popover = usePopover();
-
   const quickEdit = useBoolean();
+  const { configs } = useGetConfigs();
+  const { user } = useAuthContext();
 
   return (
     <>
@@ -85,7 +89,8 @@ export default function InquiryTableRow({
         arrow='right-top'
         sx={{ width: 140 }}
       >
-        <MenuItem
+        {getResponsibilityValue('delete_inquiry', configs, user)
+        && <MenuItem
           onClick={() => {
             confirm.onTrue();
             popover.onClose();
@@ -94,9 +99,10 @@ export default function InquiryTableRow({
         >
           <Iconify icon='solar:trash-bin-trash-bold' />
           Delete
-        </MenuItem>
+        </MenuItem>}
 
-        <MenuItem
+        {getResponsibilityValue('update_inquiry', configs, user)
+        && <MenuItem
           onClick={() => {
             onEditRow();
             popover.onClose();
@@ -104,10 +110,12 @@ export default function InquiryTableRow({
         >
           <Iconify icon='solar:eye-bold' />
           Edit
-        </MenuItem>
+        </MenuItem>}
       </CustomPopover>
 
-      <DemoNewEditForm currentId={row} open={quickEdit.value} onClose={quickEdit.onFalse} />
+
+      {getResponsibilityValue('create_demo', configs, user)
+      && <DemoNewEditForm currentId={row} open={quickEdit.value} onClose={quickEdit.onFalse} />}
 
       <ConfirmDialog
         open={confirm.value}

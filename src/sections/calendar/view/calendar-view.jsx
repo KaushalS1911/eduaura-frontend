@@ -34,6 +34,8 @@ import CalendarFilters from '../calendar-filters';
 import CalendarFiltersResult from '../calendar-filters-result';
 import { Box } from '@mui/system';
 import { useAuthContext } from 'src/auth/hooks';
+import { useGetConfigs } from '../../../api/config';
+import { getResponsibilityValue } from '../../../permission/permission';
 
 // ----------------------------------------------------------------------
 
@@ -46,10 +48,11 @@ const defaultFilters = {
 // ----------------------------------------------------------------------
 
 export default function CalendarView() {
+  const { configs } = useGetConfigs();
+  const { user } = useAuthContext();
   const theme = useTheme();
   const settings = useSettingsContext();
   const smUp = useResponsive('up', 'sm');
-  const { user } = useAuthContext();
   const openFilters = useBoolean();
   const [filters, setFilters] = useState(defaultFilters);
   const { events, eventsLoading } = useGetEvents();
@@ -174,7 +177,7 @@ export default function CalendarView() {
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'xl'}>
-        <Stack
+        {getResponsibilityValue('create_event', configs, user) && <Stack
           direction='row'
           alignItems='center'
           justifyContent='space-between'
@@ -190,7 +193,7 @@ export default function CalendarView() {
           >
             New Event
           </Button>
-        </Stack>
+        </Stack>}
         {canReset && renderResults}
         <Card>
           <StyledCalendar>
@@ -240,7 +243,7 @@ export default function CalendarView() {
           </StyledCalendar>
         </Card>
       </Container>
-      <Dialog
+      {getResponsibilityValue('update_event', configs, user) && <Dialog
         fullWidth
         maxWidth='xs'
         open={openForm}
@@ -259,7 +262,7 @@ export default function CalendarView() {
           onClose={onCloseForm}
           mutate={mutate}
         />
-      </Dialog>
+      </Dialog>}
       <CalendarFilters
         open={openFilters.value}
         onClose={openFilters.onFalse}

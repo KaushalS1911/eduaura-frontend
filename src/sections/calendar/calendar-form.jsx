@@ -32,10 +32,13 @@ import { useGetStudents } from 'src/api/student';
 import { useAuthContext } from 'src/auth/hooks';
 import axios from 'axios';
 import { useGetEmployees } from '../../api/employee';
+import { useGetConfigs } from '../../api/config';
+import { getResponsibilityValue } from '../../permission/permission';
 
 // ----------------------------------------------------------------------
 
 export default function CalendarForm({ currentEvent, colorOptions, onClose, mutate }) {
+  const { configs } = useGetConfigs();
   const { enqueueSnackbar } = useSnackbar();
   const { students } = useGetStudents();
   const { employees } = useGetEmployees();
@@ -279,11 +282,11 @@ export default function CalendarForm({ currentEvent, colorOptions, onClose, muta
       {currentEvent?.event_type === 'student leave' || currentEvent?.event_type === 'employee leave' ? (
         <>
           <DialogActions>
-            <Tooltip title='Delete Event'>
+            {getResponsibilityValue('delete_event', configs, user) && <Tooltip title='Delete Event'>
               <IconButton onClick={onDelete}>
                 <Iconify icon='solar:trash-bin-trash-bold' />
               </IconButton>
-            </Tooltip>
+            </Tooltip>}
             <Box sx={{ flexGrow: 1 }} />
 
             <Button
@@ -310,11 +313,11 @@ export default function CalendarForm({ currentEvent, colorOptions, onClose, muta
       ) : (
         <>
           <DialogActions>
-            <Tooltip title='Delete Event'>
+            {getResponsibilityValue('delete_event', configs, user) && <Tooltip title='Delete Event'>
               <IconButton onClick={onDelete}>
                 <Iconify icon='solar:trash-bin-trash-bold' />
               </IconButton>
-            </Tooltip>
+            </Tooltip>}
 
             <Box sx={{ flexGrow: 1 }} />
 

@@ -74,7 +74,7 @@ export default function GuardianAddForm({ open, onClose, currentStudent, mutate,
     const updatedGuardians = [...allGuardian, data];
     try {
       if (updateGuardian) {
-        const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/student/${currentStudent?._id}/guardian/${updateGuardian?._id}`;
+        const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/v2/student/${currentStudent?._id}/guardian/${updateGuardian?._id}`;
         await axios
           .put(URL, data)
           .then((res) => mutate())
@@ -82,7 +82,7 @@ export default function GuardianAddForm({ open, onClose, currentStudent, mutate,
         setAllGuardian(updatedGuardians);
         onClose();
       } else {
-        const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/student/${currentStudent?._id}`;
+        const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/v2/student/${currentStudent?._id}`;
         await axios
           .put(URL, { guardian_detail: updatedGuardians })
           .then((res) => mutate())

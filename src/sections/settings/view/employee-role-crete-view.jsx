@@ -7,7 +7,7 @@ import { useSnackbar } from 'src/components/snackbar';
 import Iconify from 'src/components/iconify';
 import { Stack } from '@mui/system';
 
-export default function EmployeeRolecreatepage() {
+export default function EmployeeRolecreatepage({ setTab }) {
   const { user } = useAuthContext();
   const { configs, mutate } = useGetConfigs();
   const [inputVal, setInputVal] = useState('');
@@ -24,6 +24,7 @@ export default function EmployeeRolecreatepage() {
           enqueueSnackbar('EmployeeRole Add Successfully', {
             variant: 'success',
           });
+          setTab('Permission')
           mutate();
         }
       })
@@ -56,7 +57,7 @@ export default function EmployeeRolecreatepage() {
       >
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <CardHeader title="Add Employee Roles" />
+            <CardHeader title='Add Employee Roles' />
           </Grid>
           <Grid item md={4} xs={12}>
             <Box
@@ -70,16 +71,16 @@ export default function EmployeeRolecreatepage() {
               <Grid item>
                 <TextField
                   fullWidth
-                  variant="outlined"
+                  variant='outlined'
                   onChange={(e) => setInputVal(e.target.value)}
-                  label="Role"
+                  label='Role'
                   value={inputVal}
                   sx={{
                     fontSize: '16px',
                   }}
                 />
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: '20px' }}>
-                  <Button variant="contained" onClick={handleClick}>
+                  <Button variant='contained' onClick={handleClick}>
                     Add
                   </Button>
                 </Box>
@@ -92,41 +93,41 @@ export default function EmployeeRolecreatepage() {
                 <Box
                   columnGap={2}
                   rowGap={2}
-                  display="grid"
+                  display='grid'
                   gridTemplateColumns={{
                     xs: 'repeat(1, 1fr)',
                     sm: 'repeat(2, 1fr)',
                   }}
                 >
                   {configs?.emp_type &&
-                    configs?.emp_type.length !== 0 &&
-                    configs?.emp_type.map((role, index) => (
-                      <Grid
-                        container
-                        sx={{
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          width: '100%',
-                          boxShadow: 4,
-                          borderRadius: 1,
-                          p: 2,
-                          m: 1,
-                        }}
-                        key={index}
-                      >
-                        <Grid item>
-                          <Typography sx={{ fontSize: '14px' }}>{role}</Typography>
-                        </Grid>
-                        <Grid item>
-                          <Box
-                            sx={{ color: 'error.main', cursor: 'pointer' }}
-                            onClick={() => handleDelete(role)}
-                          >
-                            <Iconify icon="solar:trash-bin-trash-bold" />
-                          </Box>
-                        </Grid>
+                  configs?.emp_type.length !== 0 &&
+                  configs?.emp_type.map((role, index) => (
+                    <Grid
+                      container
+                      sx={{
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        width: '100%',
+                        boxShadow: 4,
+                        borderRadius: 1,
+                        p: 2,
+                        m: 1,
+                      }}
+                      key={index}
+                    >
+                      <Grid item>
+                        <Typography sx={{ fontSize: '14px' }}>{role}</Typography>
                       </Grid>
-                    ))}
+                      <Grid item>
+                        <Box
+                          sx={{ color: 'error.main', cursor: 'pointer' }}
+                          onClick={() => handleDelete(role)}
+                        >
+                          <Iconify icon='solar:trash-bin-trash-bold' />
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  ))}
                 </Box>
               </Stack>
             </Card>

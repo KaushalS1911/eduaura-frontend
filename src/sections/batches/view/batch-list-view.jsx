@@ -46,6 +46,8 @@ import BatchTableRow from '../batch-table-row';
 import BatchTableToolbar from '../batch-table-toolbar';
 import BatchTableFiltersResult from '../batch-table-filters-result';
 import { LoadingScreen } from '../../../components/loading-screen';
+import { getResponsibilityValue } from '../../../permission/permission';
+import { useGetConfigs } from '../../../api/config';
 
 // ----------------------------------------------------------------------
 
@@ -71,8 +73,9 @@ const defaultFilters = {
 // ----------------------------------------------------------------------
 
 export default function BatchListView() {
-  const { enqueueSnackbar } = useSnackbar();
+  const { configs } = useGetConfigs();
   const { user } = useAuthContext();
+  const { enqueueSnackbar } = useSnackbar();
   const { batch, batchLoading, mutate } = useGetBatches(`${user?.company_id}`);
   const table = useTable({ defaultOrderBy: 'orderNumber' });
 
@@ -100,7 +103,7 @@ export default function BatchListView() {
 
   const dataInPage = dataFiltered.slice(
     table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
+    table.page * table.rowsPerPage + table.rowsPerPage,
   );
 
   const denseHeight = table.dense ? 56 : 56 + 20;
@@ -118,7 +121,7 @@ export default function BatchListView() {
         [name]: value,
       }));
     },
-    [table]
+    [table],
   );
 
   const handleResetFilters = useCallback(() => {
@@ -144,7 +147,7 @@ export default function BatchListView() {
         enqueueSnackbar('Failed to delete batch', { variant: 'error' });
       }
     },
-    [dataInPage.length, mutate, enqueueSnackbar, table, tableData]
+    [dataInPage.length, mutate, enqueueSnackbar, table, tableData],
   );
 
   const handleDeleteRows = useCallback(async () => {
@@ -172,27 +175,27 @@ export default function BatchListView() {
     (id) => {
       router.push(paths.dashboard.batches.edit(id));
     },
-    [router]
+    [router],
   );
   const handleRegisterViewRow = useCallback(
     (id) => {
       router.push(paths.dashboard.batches.view(id));
     },
-    [router]
+    [router],
   );
 
   const handleViewRow = useCallback(
     (id) => {
       router.push(paths.dashboard.order.details(id));
     },
-    [router]
+    [router],
   );
 
   const handleFilterStatus = useCallback(
     (event, newValue) => {
       handleFilters('status', newValue);
     },
-    [handleFilters]
+    [handleFilters],
   );
 
   return (
@@ -202,7 +205,7 @@ export default function BatchListView() {
       ) : (
         <Container maxWidth={settings.themeStretch ? false : 'lg'}>
           <CustomBreadcrumbs
-            heading="Batch"
+            heading='Batch'
             links={[
               {
                 name: 'Dashboard',
@@ -214,14 +217,18 @@ export default function BatchListView() {
               },
             ]}
             action={
-              <Button
-                component={RouterLink}
-                href={paths.dashboard.batches.new}
-                variant="contained"
-                startIcon={<Iconify icon="mingcute:add-line" />}
-              >
-                New Batch
-              </Button>
+              <div>
+                {getResponsibilityValue('create_batch', configs, user) && (
+                  <Button
+                    component={RouterLink}
+                    to={paths.dashboard.batches.new}
+                    variant='contained'
+                    startIcon={<Iconify icon='mingcute:add-line' />}
+                  >
+                    New Batch
+                  </Button>
+                )}
+              </div>
             }
             sx={{
               mb: { xs: 3, md: 5 },
@@ -247,9 +254,9 @@ export default function BatchListView() {
                 numSelected={table.selected.length}
                 rowCount={dataFiltered.length}
                 action={
-                  <Tooltip title="Delete">
-                    <IconButton color="primary" onClick={confirm.onTrue}>
-                      <Iconify icon="solar:trash-bin-trash-bold" />
+                  <Tooltip title='Delete'>
+                    <IconButton color='primary' onClick={confirm.onTrue}>
+                      <Iconify icon='solar:trash-bin-trash-bold' />
                     </IconButton>
                   </Tooltip>
                 }
@@ -270,7 +277,7 @@ export default function BatchListView() {
                     {dataFiltered
                       .slice(
                         table.page * table.rowsPerPage,
-                        table.page * table.rowsPerPage + table.rowsPerPage
+                        table.page * table.rowsPerPage + table.rowsPerPage,
                       )
                       .map((row, index) => (
                         <BatchTableRow
@@ -313,7 +320,7 @@ export default function BatchListView() {
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
+        title='Delete'
         content={
           <>
             Are you sure want to delete <strong> {table.selected.length} </strong> items?
@@ -321,8 +328,8 @@ export default function BatchListView() {
         }
         action={
           <Button
-            variant="contained"
-            color="error"
+            variant='contained'
+            color='error'
             onClick={() => {
               handleDeleteRows();
               confirm.onFalse();
@@ -355,7 +362,7 @@ function applyFilter({ inputData, comparator, filters, dateError }) {
     inputData = inputData.filter(
       (order) =>
         order.technology.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        order.batch_name.toLowerCase().indexOf(name.toLowerCase()) !== -1
+        order.batch_name.toLowerCase().indexOf(name.toLowerCase()) !== -1,
     );
   }
 
