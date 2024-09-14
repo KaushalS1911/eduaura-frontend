@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Page, View, Font, Document, Text, StyleSheet, Image } from '@react-pdf/renderer';
 import logo from '../../assets/logo/jbs.png';
-import { fDate } from '../../utils/format-time';
+import { fDate, fDateTime } from '../../utils/format-time';
 
 Font.register({
   family: 'Roboto',
@@ -113,10 +113,16 @@ const GenerateOverviewPdf = ({ orientation, heading, allData, configs, SubHeadin
         return `${row.student.firstName} ${row.student.lastName}`;
       case 'DOB':
         return fDate(row.dob);
+      case 'Attended by': // Handling "Attended by"
+        return row.attended_by ? row.attended_by.map((attendee) => `${attendee.firstName} ${attendee.lastName}`).join(', ') : '-';
       case 'Installments':
         return fDate(row.fee_detail.installments.installment_date);
         case 'Date':
         return fDate(row.date);
+      case 'Schedule by':
+        return row.schedule_by.firstName + ' ' + row.schedule_by.lastName;
+        case 'Seminar Date':
+        return fDateTime(row.date_time);
       case 'Assigned to':
         return formatAssign(row[fieldMapping['Assigned to']]);
         case 'Assigned by':
