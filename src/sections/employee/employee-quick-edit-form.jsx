@@ -59,7 +59,7 @@ export default function EmployeeQuickEditForm({ currentEmployee, open, onClose }
 
   const onSubmit = async (data) => {
     try {
-      const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/company/664ec61d671bf9a7f53664b5/${currentEmployee._id}/updateEmployee`;
+      const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/company/664ec61d671bf9a7f53664b5/${currentEmployee._id}/updateEmployee`;
       const response = axios.put(URL, data);
       reset();
       onClose();

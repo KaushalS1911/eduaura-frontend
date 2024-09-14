@@ -40,6 +40,7 @@ import GenerateOverviewPdf from '../../generate-pdf/generate-overview-pdf';
 import CircularProgress from '@mui/material/CircularProgress';
 import * as XLSX from 'xlsx';
 import { useGetConfigs } from '../../../api/config';
+import { getResponsibilityValue } from '../../../permission/permission';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -64,6 +65,7 @@ const defaultFilters = {
 
 export default function InquiryListView() {
   const { configs } = useGetConfigs();
+  const { user } = useAuthContext();
   const [field, setField] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const table = useTable();
@@ -264,144 +266,149 @@ export default function InquiryListView() {
           ]}
           action={
             <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center', gap: 1 }}>
-              <FormControl
-                sx={{
-                  flexShrink: 0,
-                  width: { xs: '100%', md: 200 },
-                  margin: '0px 10px',
-                }}
-              >
-                <InputLabel>Field</InputLabel>
-                <Select
-                  multiple
-                  value={field}
-                  onChange={handleFilterField1}
-                  input={<OutlinedInput label='Field' />}
-                  renderValue={(selected) => selected.join(', ')}
-                  MenuProps={{
-                    PaperProps: {
-                      sx: { maxHeight: 240 },
-                    },
+              {getResponsibilityValue('print_inquiry_detail', configs, user)
+              && <>
+                <FormControl
+                  sx={{
+                    flexShrink: 0,
+                    width: { xs: '100%', md: 200 },
+                    margin: '0px 10px',
                   }}
                 >
-                  {inquiryField.map((option) => (
-                    <MenuItem key={option} value={option}>
-                      <Checkbox
-                        disableRipple
-                        size='small'
-                        checked={field?.includes(option)}
-                      />
-                      {option}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
-                <PDFDownloadLink
-                  document={
-                    <GenerateOverviewPdf
-                      allData={dataFiltered}
-                      heading={[
-                        { hed: 'Name', Size: '240px' },
-                        {
-                          hed: 'Email',
-                          Size: '260px',
-                        },
-                        {
-                          hed: 'Contact No.',
-                          Size: '180px',
-                        },
-                        {
-                          hed: 'Occupation',
-                          Size: '180px',
-                        },
-                        {
-                          hed: 'Education',
-                          Size: '180px',
-                        },
-                        {
-                          hed: 'Reference By',
-                          Size: '180px',
-                        },
-                        {
-                          hed: 'Father Name',
-                          Size: '180px',
-                        },
-                        {
-                          hed: 'Father Contact',
-                          Size: '180px',
-                        },
-                        {
-                          hed: 'Suggested By',
-                          Size: '180px',
-                        },
-                        {
-                          hed: 'Status',
-                          Size: '180px',
-                        },
-                        {
-                          hed: 'Remark',
-                          Size: '180px',
-                        },
-                        ...(field.length ? [{ hed: 'Address', Size: '100%' }, {
-                          hed: 'Father Occupation',
-                          Size: '180px',
-                        },
+                  <InputLabel>Field</InputLabel>
+                  <Select
+                    multiple
+                    value={field}
+                    onChange={handleFilterField1}
+                    input={<OutlinedInput label='Field' />}
+                    renderValue={(selected) => selected.join(', ')}
+                    MenuProps={{
+                      PaperProps: {
+                        sx: { maxHeight: 240 },
+                      },
+                    }}
+                  >
+                    {inquiryField.map((option) => (
+                      <MenuItem key={option} value={option}>
+                        <Checkbox
+                          disableRipple
+                          size='small'
+                          checked={field?.includes(option)}
+                        />
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
+                  <PDFDownloadLink
+                    document={
+                      <GenerateOverviewPdf
+                        allData={dataFiltered}
+                        heading={[
+                          { hed: 'Name', Size: '240px' },
+                          {
+                            hed: 'Email',
+                            Size: '260px',
+                          },
+                          {
+                            hed: 'Contact No.',
+                            Size: '180px',
+                          },
                           {
                             hed: 'Occupation',
                             Size: '180px',
-                          }, {
-                            hed: 'Interested In',
+                          },
+                          {
+                            hed: 'Education',
                             Size: '180px',
                           },
                           {
-                            hed: 'dob',
-                            Size: '140px',
+                            hed: 'Reference By',
+                            Size: '180px',
                           },
                           {
-                            hed: 'dob',
-                            Size: '140px',
-                          }] : []),
-                      ].filter((item) => (field.includes(item.hed) || !field.length))}
-                      orientation={'landscape'}
-                      configs={configs}
-                      SubHeading={'Inquiries'}
-                      fieldMapping={field.length ? extractedData : fieldMapping}
-                    />
-                  }
-                  fileName={'Inquiries'}
-                  style={{ textDecoration: 'none' }}
+                            hed: 'Father Name',
+                            Size: '180px',
+                          },
+                          {
+                            hed: 'Father Contact',
+                            Size: '180px',
+                          },
+                          {
+                            hed: 'Suggested By',
+                            Size: '180px',
+                          },
+                          {
+                            hed: 'Status',
+                            Size: '180px',
+                          },
+                          {
+                            hed: 'Remark',
+                            Size: '180px',
+                          },
+                          ...(field.length ? [{ hed: 'Address', Size: '100%' }, {
+                            hed: 'Father Occupation',
+                            Size: '180px',
+                          },
+                            {
+                              hed: 'Occupation',
+                              Size: '180px',
+                            }, {
+                              hed: 'Interested In',
+                              Size: '180px',
+                            },
+                            {
+                              hed: 'dob',
+                              Size: '140px',
+                            },
+                            {
+                              hed: 'dob',
+                              Size: '140px',
+                            }] : []),
+                        ].filter((item) => (field.includes(item.hed) || !field.length))}
+                        orientation={'landscape'}
+                        configs={configs}
+                        SubHeading={'Inquiries'}
+                        fieldMapping={field.length ? extractedData : fieldMapping}
+                      />
+                    }
+                    fileName={'Inquiries'}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    {({ loading }) => (
+                      <Tooltip>
+                        <Button
+                          variant='contained'
+                          onClick={() => setField([])}
+                          startIcon={loading ? <CircularProgress size={24} color='inherit' /> :
+                            <Iconify icon='eva:cloud-download-fill' />}
+                        >
+                          {loading ? 'Generating...' : 'Download PDF'}
+                        </Button>
+                      </Tooltip>
+                    )}
+                  </PDFDownloadLink>
+                </Stack>
+                <Button
+                  variant='contained'
+                  startIcon={<Iconify icon='icon-park-outline:excel' />}
+                  onClick={handleExportExcel}
+                  sx={{ margin: '0px 10px' }}
                 >
-                  {({ loading }) => (
-                    <Tooltip>
-                      <Button
-                        variant='contained'
-                        onClick={() => setField([])}
-                        startIcon={loading ? <CircularProgress size={24} color='inherit' /> :
-                          <Iconify icon='eva:cloud-download-fill' />}
-                      >
-                        {loading ? 'Generating...' : 'Download PDF'}
-                      </Button>
-                    </Tooltip>
-                  )}
-                </PDFDownloadLink>
-              </Stack>
-              <Button
-                variant='contained'
-                startIcon={<Iconify icon='icon-park-outline:excel' />}
-                onClick={handleExportExcel}
-                sx={{ margin: '0px 10px' }}
-              >
-                Export to Excel
-              </Button>
-              <Button
+                  Export to Excel
+                </Button>
+              </>
+              }
+              {getResponsibilityValue('create_visit', configs, user)
+              && <Button
                 component={RouterLink}
                 href={paths.dashboard.inquiry.new}
                 variant='contained'
                 startIcon={<Iconify icon='mingcute:add-line' />}
               >
                 New Inquiry
-              </Button>
+              </Button>}
             </Box>
           }
           sx={{
@@ -514,7 +521,10 @@ export default function InquiryListView() {
 
 // ----------------------------------------------------------------------
 
-function applyFilter({ inputData, comparator, filters, dateError }) {
+function applyFilter({
+                       inputData, comparator, filters, dateError,
+                     },
+) {
   const { startDate, endDate, status, name } = filters;
   const stabilizedThis = inputData.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {

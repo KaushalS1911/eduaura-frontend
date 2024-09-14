@@ -31,7 +31,7 @@ export default function StudentProgrssDetailsFormDialog({ open, setOpen, current
   const { enqueueSnackbar } = useSnackbar(); // Initialize the snackbar hook
 
   const onSubmit = async (data) => {
-    const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/student/${currentStudent?._id}`;
+    const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/v2/student/${currentStudent?._id}`;
     try {
       const response = await axios.put(URL, data);
       enqueueSnackbar(response?.data?.message || 'Status updated successfully', {

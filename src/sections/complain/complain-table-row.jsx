@@ -18,6 +18,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { RHFAutocomplete } from '../../components/hook-form';
 import { useSnackbar } from 'notistack';
+import { useAuthContext } from '../../auth/hooks';
+import { useGetConfigs } from '../../api/config';
+import { getResponsibilityValue } from '../../permission/permission';
 
 // ----------------------------------------------------------------------
 
@@ -32,6 +35,8 @@ export default function ComplainTableRow({
                                            onDeleteRow,
                                          }) {
   const { date, title, status, student } = row;
+  const { configs } = useGetConfigs();
+  const { user } = useAuthContext();
   const confirm = useBoolean();
   const dialog = useBoolean();
   const popover = usePopover();
@@ -136,7 +141,7 @@ export default function ComplainTableRow({
         arrow='right-top'
         sx={{ width: 'auto' }}
       >
-        <MenuItem
+        {getResponsibilityValue('delete_complaint', configs, user) && <MenuItem
           onClick={() => {
             confirm.onTrue();
             popover.onClose();
@@ -145,8 +150,8 @@ export default function ComplainTableRow({
         >
           <Iconify icon='solar:trash-bin-trash-bold' />
           Delete
-        </MenuItem>
-        <MenuItem
+        </MenuItem>}
+        {getResponsibilityValue('update_complaint', configs, user) && <MenuItem
           onClick={() => {
             dialog.onTrue();
             popover.onClose();
@@ -154,7 +159,7 @@ export default function ComplainTableRow({
         >
           <Iconify icon='solar:pen-bold' />
           Edit
-        </MenuItem>
+        </MenuItem>}
       </CustomPopover>
       {dialog.value && (
         <Dialog

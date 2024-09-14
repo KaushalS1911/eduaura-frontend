@@ -10,7 +10,7 @@ function BatchRagisterView({ registerId }) {
   const [student, setStudent] = useState([]);
 
   useEffect(() => {
-    const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/company/batch/${registerId}`;
+    const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/company/batch/${registerId}`;
     axios
       .get(URL)
       .then((resp) => setStudent(resp.data.data.batch.batch_members))

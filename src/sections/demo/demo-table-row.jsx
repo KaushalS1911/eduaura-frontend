@@ -20,6 +20,9 @@ import { usePopover } from 'src/components/custom-popover';
 import { DeleteDemo } from 'src/api/demo';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import moment from 'moment';
+import { useGetConfigs } from '../../api/config';
+import { useAuthContext } from '../../auth/hooks';
+import { getResponsibilityValue } from '../../permission/permission';
 
 export default function DemoTableRow({
                                        row,
@@ -30,6 +33,8 @@ export default function DemoTableRow({
                                        srNumber,
                                        mutate,
                                      }) {
+  const { configs } = useGetConfigs();
+  const { user } = useAuthContext();
   const [open, setOpen] = useState(false);
   const [demosID, setDemosID] = useState(null);
   const [demoID, setDemoID] = useState(null);
@@ -156,7 +161,7 @@ export default function DemoTableRow({
                     variant='soft'
                     color={
                       (item.status === 'Completed' && 'success') ||
-                      (item.status === 'Pending' && 'warning') ||
+                      (item.status === 'pending' && 'warning') ||
                       (item.status === 'Cancelled' && 'error') ||
                       'default'
                     }
@@ -164,7 +169,8 @@ export default function DemoTableRow({
                     {item.status}
                   </Label>
                 </TableCell>
-                <MenuItem>
+                {getResponsibilityValue('update_demo', configs, user)
+                && <MenuItem>
                   <IconButton
                     color='default'
                     onClick={() => {
@@ -175,8 +181,9 @@ export default function DemoTableRow({
                   >
                     <Iconify icon='solar:pen-bold' />
                   </IconButton>
-                </MenuItem>
-                <MenuItem
+                </MenuItem>}
+                {getResponsibilityValue('delete_demo', configs, user)
+                && <MenuItem
                   onClick={() => {
                     confirm.onTrue();
                     popover.onClose();
@@ -187,7 +194,7 @@ export default function DemoTableRow({
                   <IconButton color='default'>
                     <Iconify icon='solar:trash-bin-trash-bold' />
                   </IconButton>
-                </MenuItem>
+                </MenuItem>}
               </Stack>
             ))}
           </Stack>

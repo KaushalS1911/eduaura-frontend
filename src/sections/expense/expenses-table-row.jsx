@@ -14,20 +14,26 @@ import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import ExpenseQuickEditForm from './expenses-quick-edit-form';
+import { useGetConfigs } from '../../api/config';
+import { useAuthContext } from '../../auth/hooks';
+import { getResponsibilityValue } from '../../permission/permission';
 
 // ----------------------------------------------------------------------
 
 export default function ExpenseTableRow({
-  row,
-  selected,
-  onEditRow,
-  onSelectRow,
-  onDeleteRow,
-  index,
-}) {
+                                          row,
+                                          selected,
+                                          onEditRow,
+                                          onSelectRow,
+                                          onDeleteRow,
+                                          index,
+                                        }) {
   const { amount, date, desc, type } = row;
 
   const confirm = useBoolean();
+
+  const { configs } = useGetConfigs();
+  const { user } = useAuthContext();
 
   const quickEdit = useBoolean();
 
@@ -49,10 +55,10 @@ export default function ExpenseTableRow({
         <TableCell>{desc}</TableCell>
 
 
-        <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
+        <TableCell align='right' sx={{ px: 1, whiteSpace: 'nowrap' }}>
 
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
-            <Iconify icon="eva:more-vertical-fill" />
+            <Iconify icon='eva:more-vertical-fill' />
           </IconButton>
         </TableCell>
       </TableRow>
@@ -62,38 +68,40 @@ export default function ExpenseTableRow({
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
-        arrow="right-top"
+        arrow='right-top'
         sx={{ width: 140 }}
       >
-        <MenuItem
+        {getResponsibilityValue('delete_expense', configs, user) && <MenuItem
           onClick={() => {
             confirm.onTrue();
             popover.onClose();
           }}
           sx={{ color: 'error.main' }}
         >
-          <Iconify icon="solar:trash-bin-trash-bold" />
+          <Iconify icon='solar:trash-bin-trash-bold' />
           Delete
-        </MenuItem>
+        </MenuItem>}
 
-        <MenuItem
+        {getResponsibilityValue('update_expense', configs, user) && <MenuItem
           onClick={() => {
             onEditRow();
             popover.onClose();
           }}
         >
-          <Iconify icon="solar:pen-bold" />
+          <Iconify icon='solar:pen-bold' />
           Edit
         </MenuItem>
-
+        }
       </CustomPopover>
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
-        content="Are you sure want to delete?"
+        title='Delete'
+        content='Are you sure want to delete?'
         action={
-          <Button variant="contained" color="error" onClick={() => {onDeleteRow() ,confirm.onFalse()}}>
+          <Button variant='contained' color='error' onClick={() => {
+            onDeleteRow() , confirm.onFalse();
+          }}>
             Delete
           </Button>
         }

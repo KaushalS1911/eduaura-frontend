@@ -6,8 +6,8 @@ import { useAuthContext } from 'src/auth/hooks';
 
 export function useGetAccount(startDate, endDate) {
   const { user } = useAuthContext();
-  // `https://admin-panel-dmawv.ondigitalocean.app/api/company/${user?.company_id}/account?startDate=${startDate}&endDate=${endDate}`;
-  const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/company/${user?.company_id}/account`;
+  // `https://server-eduaura-pyjuy.ondigitalocean.app/api/company/${user?.company_id}/account?startDate=${startDate}&endDate=${endDate}`;
+  const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/company/${user?.company_id}/account`;
 
   const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
   const memoizedValue = useMemo(() => {
@@ -26,7 +26,7 @@ export function useGetAccount(startDate, endDate) {
 
 export function useGetAccountOverDue(startDate, endDate) {
   const { user } = useAuthContext();
-  const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/${user?.company_id}/student/fee-detail/overdue`;
+  const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/v2/${user?.company_id}/student/fee-detail/overdue`;
 
   const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
   const memoizedValue = useMemo(() => {

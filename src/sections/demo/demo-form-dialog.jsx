@@ -156,7 +156,7 @@ export default function DemoFormDialog({ open, setOpen, demosID, demoID, mutate 
     }
   };
 
-  const status = ['Pending', 'Completed', 'Cancelled'];
+  const status = ['pending', 'Completed', 'Cancelled'];
   const uniqueSubcategories =
     configs?.courses
       ?.flatMap((course) => course.subcategories)

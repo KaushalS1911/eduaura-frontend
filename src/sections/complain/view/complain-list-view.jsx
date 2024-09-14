@@ -46,6 +46,8 @@ import MenuItem from '@mui/material/MenuItem';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
 import { RouterLink } from '../../../routes/components';
+import { getResponsibilityValue } from '../../../permission/permission';
+import { useAuthContext } from '../../../auth/hooks';
 
 // ----------------------------------------------------------------------
 
@@ -61,7 +63,7 @@ const complainField = [
   'Complain By',
   'Date',
   'Title',
-  'Status'
+  'Status',
 ];
 const fieldMapping = {
   'Complain By': 'student',
@@ -82,6 +84,7 @@ const defaultFilters = {
 export default function ComplainListView() {
   const { enqueueSnackbar } = useSnackbar();
   const { configs } = useGetConfigs();
+  const { user } = useAuthContext();
   const theme = useTheme();
   const { complaints, mutate } = useGetComplaints();
   const settings = useSettingsContext();
@@ -237,7 +240,7 @@ export default function ComplainListView() {
           }}
           action={
             <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center', gap: 1 }}>
-              <FormControl
+              {getResponsibilityValue('print_complaint_detail', configs, user) && <FormControl
                 sx={{
                   flexShrink: 0,
                   width: { xs: '100%', md: 200 },
@@ -268,7 +271,7 @@ export default function ComplainListView() {
                     </MenuItem>
                   ))}
                 </Select>
-              </FormControl>
+              </FormControl>}
             </Box>
           }
         />
@@ -309,7 +312,9 @@ export default function ComplainListView() {
             ))}
             <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'} width={'100%'}>
               <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
-                <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
+                {getResponsibilityValue('print_complaint_detail', configs, user) && (<>  <Stack direction='row'
+                                                                                                spacing={1}
+                                                                                                flexGrow={1} mx={1}>
                   <PDFDownloadLink
                     document={
                       <GenerateOverviewPDF
@@ -317,7 +322,7 @@ export default function ComplainListView() {
                         heading={[
                           {
                             hed: 'Complain By',
-                            Size: '240px'
+                            Size: '240px',
                           },
                           {
                             hed: 'Date',
@@ -356,9 +361,12 @@ export default function ComplainListView() {
                     )}
                   </PDFDownloadLink>
                 </Stack>
-                <Tooltip title='Export to Excel'>
-                  <Iconify icon='icon-park-outline:excel' width={24} height={24} color={'#637381'} onClick={handleExportExcel} sx={{ cursor: 'pointer' }} />
-                </Tooltip>
+                  <Tooltip title='Export to Excel'>
+                    <Iconify icon='icon-park-outline:excel' width={24} height={24} color={'#637381'}
+                             onClick={handleExportExcel} sx={{ cursor: 'pointer' }} />
+                  </Tooltip>
+                </>)}
+
               </Box>
             </Box>
           </Tabs>

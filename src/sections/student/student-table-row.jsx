@@ -21,6 +21,9 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import StudentQuickEditForm from './student-quick-edit-form';
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
+import { getResponsibilityValue } from '../../permission/permission';
+import { useGetConfigs } from '../../api/config';
+import { useAuthContext } from '../../auth/hooks';
 
 // ----------------------------------------------------------------------
 
@@ -28,19 +31,19 @@ export default function StudentTableRow({ row, selected, onEditRow, onSelectRow,
   const { firstName, lastName, profile_pic, course, joining_date, email, contact } = row;
 
   const confirm = useBoolean();
-
+  const { configs } = useGetConfigs();
+  const { user } = useAuthContext();
   const quickEdit = useBoolean();
-
   const popover = usePopover();
-
   const router = useRouter();
 
   return (
     <>
       <TableRow hover selected={selected}>
-        <TableCell padding='checkbox'>
+        {getResponsibilityValue('delete_student', configs, user)
+        && <TableCell padding='checkbox'>
           <Checkbox checked={selected} onClick={onSelectRow} />
-        </TableCell>
+        </TableCell>}
 
         <TableCell>{row.enrollment_no}</TableCell>
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
@@ -95,7 +98,8 @@ export default function StudentTableRow({ row, selected, onEditRow, onSelectRow,
         arrow='right-top'
         sx={{ width: 140 }}
       >
-        <MenuItem
+        {getResponsibilityValue('update_student', configs, user)
+        && <MenuItem
           onClick={() => {
             onEditRow();
             popover.onClose();
@@ -103,8 +107,9 @@ export default function StudentTableRow({ row, selected, onEditRow, onSelectRow,
         >
           <Iconify icon='solar:pen-bold' />
           Edit
-        </MenuItem>
-        <MenuItem
+        </MenuItem>}
+        {getResponsibilityValue('print_student_detail', configs, user)
+        && <MenuItem
           onClick={() => {
             router.push(paths.dashboard.student.studentView(row._id));
             popover.onClose();
@@ -112,7 +117,7 @@ export default function StudentTableRow({ row, selected, onEditRow, onSelectRow,
         >
           <Iconify icon='raphael:view' />
           View Detail
-        </MenuItem>
+        </MenuItem>}
       </CustomPopover>
 
       <ConfirmDialog

@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { fetcher } from '../utils/axios';
 
 export function useGetExpense(user) {
-  const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/company/${user?.company_id}/expense`;
+  const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/company/${user?.company_id}/expense`;
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(

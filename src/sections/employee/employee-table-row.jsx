@@ -19,32 +19,35 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 import { Box } from '@mui/system';
 import EmployeeQuickEditForm from './employee-quick-edit-form';
+import { useGetConfigs } from '../../api/config';
+import { useAuthContext } from '../../auth/hooks';
+import { getResponsibilityValue } from '../../permission/permission';
 
 // ----------------------------------------------------------------------
 
 export default function EmployeeTableRow({
-  row,
-  index,
-  selected,
-  onEditRow,
-  onSelectRow,
-  onDeleteRow,
-}) {
+                                           row,
+                                           index,
+                                           selected,
+                                           onEditRow,
+                                           onSelectRow,
+                                           onDeleteRow,
+                                         }) {
   const { avatar_url, role, email, contact, firstName, lastName, technology, joining_date, dob } =
     row;
-
   const confirm = useBoolean();
-
+  const { configs } = useGetConfigs();
+  const { user } = useAuthContext();
   const quickEdit = useBoolean();
-
   const popover = usePopover();
 
   return (
     <>
       <TableRow hover selected={selected}>
-        <TableCell padding="checkbox">
+        {getResponsibilityValue('delete_employee', configs, user)
+        && <TableCell padding='checkbox'>
           <Checkbox checked={selected} onClick={onSelectRow} />
-        </TableCell>
+        </TableCell>}
 
         <TableCell>
           <Box>{index + 1}</Box>
@@ -73,7 +76,8 @@ export default function EmployeeTableRow({
           {moment(joining_date).format('DD/MM/YYYY')}
         </TableCell>
 
-        <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
+        {getResponsibilityValue('update_employee', configs, user)
+        && <TableCell align='right' sx={{ px: 1, whiteSpace: 'nowrap' }}>
           {/* <Tooltip title="Quick Edit" placement="top" arrow>
             <IconButton
               color={quickEdit.value ? 'inherit' : 'default'}
@@ -84,11 +88,10 @@ export default function EmployeeTableRow({
               <Iconify icon="solar:pen-bold" />
             </IconButton>
           </Tooltip> */}
-
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
-            <Iconify icon="eva:more-vertical-fill" />
+            <Iconify icon='eva:more-vertical-fill' />
           </IconButton>
-        </TableCell>
+        </TableCell>}
       </TableRow>
 
       <EmployeeQuickEditForm
@@ -100,7 +103,7 @@ export default function EmployeeTableRow({
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
-        arrow="right-top"
+        arrow='right-top'
         sx={{ width: 140 }}
       >
         {/* <MenuItem
@@ -120,7 +123,7 @@ export default function EmployeeTableRow({
             popover.onClose();
           }}
         >
-          <Iconify icon="solar:pen-bold" />
+          <Iconify icon='solar:pen-bold' />
           Edit
         </MenuItem>
       </CustomPopover>
@@ -128,10 +131,10 @@ export default function EmployeeTableRow({
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
-        content="Are you sure want to delete?"
+        title='Delete'
+        content='Are you sure want to delete?'
         action={
-          <Button variant="contained" color="error" onClick={onDeleteRow}>
+          <Button variant='contained' color='error' onClick={onDeleteRow}>
             Delete
           </Button>
         }

@@ -6,7 +6,7 @@ import { useAuthContext } from '../auth/hooks';
 
 export function useGetDemos() {
   const { user } = useAuthContext();
-  const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/company/${user?.company_id}/upcoming-demo`;
+  const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/company/${user?.company_id}/upcoming-demo`;
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
@@ -25,7 +25,7 @@ export function useGetDemos() {
 }
 export function useGetDashboardData() {
   const { user } = useAuthContext();
-  const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/company/${user?.company_id}/dashboard`;
+  const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/company/${user?.company_id}/dashboard`;
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
@@ -44,7 +44,7 @@ export function useGetDashboardData() {
 }
 export function useGetCourses() {
   const { user } = useAuthContext();
-  const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/company/${user?.company_id}/student/course`;
+  const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/company/${user?.company_id}/student/course`;
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
@@ -63,7 +63,7 @@ export function useGetCourses() {
 }
 export function useGetAttendance() {
   const { user } = useAuthContext();
-  const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/company/${user?.company_id}/attendance/logs`;
+  const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/company/${user?.company_id}/attendance/logs`;
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(

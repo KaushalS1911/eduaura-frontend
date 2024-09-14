@@ -6,6 +6,9 @@ import Checkbox from '@mui/material/Checkbox';
 import TableHead from '@mui/material/TableHead';
 import TableCell from '@mui/material/TableCell';
 import TableSortLabel from '@mui/material/TableSortLabel';
+import { useGetConfigs } from '../../api/config';
+import { useAuthContext } from '../../auth/hooks';
+import { getResponsibilityValue } from '../../permission/permission';
 
 // ----------------------------------------------------------------------
 
@@ -24,28 +27,32 @@ const visuallyHidden = {
 // ----------------------------------------------------------------------
 
 export default function TableHeadCustom({
-  order,
-  orderBy,
-  rowCount = 0,
-  headLabel,
-  numSelected = 0,
-  onSort,
-  onSelectAllRows,
-  sx,
-}) {
+                                          order,
+                                          orderBy,
+                                          rowCount = 0,
+                                          headLabel,
+                                          numSelected = 0,
+                                          onSort,
+                                          onSelectAllRows,
+                                          sx,
+                                        }) {
+
+  const { configs } = useGetConfigs();
+  const { user } = useAuthContext();
   return (
     <TableHead sx={sx}>
       <TableRow>
-        {onSelectAllRows && (
-          <TableCell padding="checkbox">
-            <Checkbox
-              indeterminate={!!numSelected && numSelected < rowCount}
-              checked={!!rowCount && numSelected === rowCount}
-              onChange={(event) => onSelectAllRows(event.target.checked)}
-            />
-          </TableCell>
+        {getResponsibilityValue('delete_student' || 'delete_employee', configs, user) && (
+          onSelectAllRows && (
+            <TableCell padding='checkbox'>
+              <Checkbox
+                indeterminate={!!numSelected && numSelected < rowCount}
+                checked={!!rowCount && numSelected === rowCount}
+                onChange={(event) => onSelectAllRows(event.target.checked)}
+              />
+            </TableCell>
+          )
         )}
-
         {headLabel.map((headCell) => (
           <TableCell
             key={headCell.id}

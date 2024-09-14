@@ -47,6 +47,8 @@ import ExaminationTableToolbar from '../examination-table-toolbar';
 import ExaminationTableFiltersResult from '../examination-table-filters-result';
 import { useGetExam } from 'src/api/examination';
 import { LoadingScreen } from '../../../components/loading-screen';
+import { getResponsibilityValue } from '../../../permission/permission';
+import { useGetConfigs } from '../../../api/config';
 
 // ----------------------------------------------------------------------
 
@@ -69,6 +71,7 @@ const defaultFilters = {
 // ----------------------------------------------------------------------
 
 export default function ExpenseListView() {
+  const { configs } = useGetConfigs();
   const { user } = useAuthContext();
   const { enqueueSnackbar } = useSnackbar();
   const table = useTable();
@@ -88,7 +91,7 @@ export default function ExpenseListView() {
     async (id) => {
       try {
         const response = await axios.delete(
-          `https://admin-panel-dmawv.ondigitalocean.app/api/company/exam/${id}`,
+          `https://server-eduaura-pyjuy.ondigitalocean.app/api/company/exam/${id}`,
           { data: { ids: id } },
         );
         if (response.status === 200) {
@@ -111,7 +114,7 @@ export default function ExpenseListView() {
     try {
       const selectedIdsArray = [...table.selected];
       const response = await axios.delete(
-        `https://admin-panel-dmawv.ondigitalocean.app/api/company/exam`,
+        `https://server-eduaura-pyjuy.ondigitalocean.app/api/company/exam`,
         { data: { ids: selectedIdsArray } },
       );
       if (response.status === 200) {
@@ -192,14 +195,16 @@ export default function ExpenseListView() {
             { name: 'Exams', href: paths.dashboard.examination.root },
           ]}
           action={
-            <Button
-              component={RouterLink}
-              href={paths.dashboard.examination.new}
-              variant='contained'
-              startIcon={<Iconify icon='mingcute:add-line' />}
-            >
-              New Exam
-            </Button>
+            <div>
+              {getResponsibilityValue('create_exam', configs, user) && <Button
+                component={RouterLink}
+                href={paths.dashboard.examination.new}
+                variant='contained'
+                startIcon={<Iconify icon='mingcute:add-line' />}
+              >
+                New Exam
+              </Button>}
+            </div>
           }
           sx={{
             mb: { xs: 3, md: 5 },

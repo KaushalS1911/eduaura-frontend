@@ -22,30 +22,32 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { TableHeadCustom } from 'src/components/table';
 import { Table } from '@mui/material';
+import { useGetConfigs } from '../../api/config';
+import { useAuthContext } from '../../auth/hooks';
+import { getResponsibilityValue } from '../../permission/permission';
 
 // ----------------------------------------------------------------------
 
 export default function BatchTableRow({
-  row,
-  selected,
-  onViewRow,
-  onSelectRow,
-  onEditRow,
-  onDeleteRow,
-  index,
-  onRegisterViewRow,
-}) {
+                                        row,
+                                        selected,
+                                        onViewRow,
+                                        onSelectRow,
+                                        onEditRow,
+                                        onDeleteRow,
+                                        index,
+                                        onRegisterViewRow,
+                                      }) {
   const { technology, batch_name, batch_time, batch_members, faculty } = row;
-
+  const { configs } = useGetConfigs();
+  const { user } = useAuthContext();
   const confirm = useBoolean();
-
   const collapse = useBoolean();
-
   const popover = usePopover();
 
   const renderPrimary = (
     <TableRow hover selected={selected}>
-      <TableCell align="center">{index + 1}</TableCell>
+      <TableCell align='center'>{index + 1}</TableCell>
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
         <Avatar alt={faculty?.avatar_url} src={faculty?.avatar_url} sx={{ mr: 2 }} />
         <ListItemText
@@ -64,7 +66,7 @@ export default function BatchTableRow({
 
       <TableCell>{fTime(batch_time)}</TableCell>
 
-      <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
+      <TableCell align='center' sx={{ px: 1, whiteSpace: 'nowrap' }}>
         <IconButton
           color={collapse.value ? 'inherit' : 'default'}
           onClick={collapse.onToggle}
@@ -74,12 +76,12 @@ export default function BatchTableRow({
             }),
           }}
         >
-          <Iconify icon="eva:arrow-ios-downward-fill" />
+          <Iconify icon='eva:arrow-ios-downward-fill' />
         </IconButton>
       </TableCell>
-      <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
+      <TableCell align='center' sx={{ px: 1, whiteSpace: 'nowrap' }}>
         <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
-          <Iconify icon="eva:more-vertical-fill" />
+          <Iconify icon='eva:more-vertical-fill' />
         </IconButton>
       </TableCell>
     </TableRow>
@@ -90,7 +92,7 @@ export default function BatchTableRow({
       <TableCell sx={{ p: 0, border: 'none' }} colSpan={8}>
         <Collapse
           in={collapse.value}
-          timeout="auto"
+          timeout='auto'
           unmountOnExit
           sx={{ bgcolor: 'background.neutral' }}
         >
@@ -98,8 +100,8 @@ export default function BatchTableRow({
             {batch_members?.map((item) => (
               <Stack
                 key={item._id}
-                direction="row"
-                alignItems="center"
+                direction='row'
+                alignItems='center'
                 sx={{
                   px: 1,
                   p: (theme) => theme.spacing(1.5, 2, 1.5, 1.5),
@@ -113,7 +115,7 @@ export default function BatchTableRow({
                 </TableCell>
                 <Avatar
                   src={item?.profile_pic}
-                  variant="circular"
+                  variant='circular'
                   sx={{ width: 48, height: 48, mr: 2 }}
                 />
 
@@ -148,47 +150,47 @@ export default function BatchTableRow({
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
-        arrow="right-top"
+        arrow='right-top'
         sx={{ width: 140 }}
       >
-        <MenuItem
+        {getResponsibilityValue('delete_batch', configs, user) && <MenuItem
           onClick={() => {
             confirm.onTrue();
             popover.onClose();
           }}
           sx={{ color: 'error.main' }}
         >
-          <Iconify icon="solar:trash-bin-trash-bold" />
+          <Iconify icon='solar:trash-bin-trash-bold' />
           Delete
-        </MenuItem>
+        </MenuItem>}
 
-        <MenuItem
+        {getResponsibilityValue('update_batch', configs, user) && <MenuItem
           onClick={() => {
             onEditRow(), popover.onClose();
           }}
         >
-          <Iconify icon="solar:pen-bold" />
+          <Iconify icon='solar:pen-bold' />
           Edit
-        </MenuItem>
-        <MenuItem
+        </MenuItem>}
+        {getResponsibilityValue('print_batch_detail', configs, user) && <MenuItem
           onClick={() => {
             onRegisterViewRow(), popover.onClose();
           }}
         >
-          <Iconify icon="solar:eye-bold" />
+          <Iconify icon='solar:eye-bold' />
           Register
-        </MenuItem>
+        </MenuItem>}
       </CustomPopover>
 
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
-        content="Are you sure want to delete?"
+        title='Delete'
+        content='Are you sure want to delete?'
         action={
           <Button
-            variant="contained"
-            color="error"
+            variant='contained'
+            color='error'
             onClick={() => {
               onDeleteRow();
               confirm.onFalse();

@@ -28,7 +28,7 @@ export function useGetAllAttendance() {
 
 // Hook to get single student attendance
 export function useGetSingleStudentAttendance(studentId) {
-  const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/company/attendance/student/${studentId}`;
+  const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/company/attendance/student/${studentId}`;
   const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
   console.log('data ', data);
   return data;
@@ -46,7 +46,7 @@ export async function GetAttendanceAdd(postData) {
 }
 
 export async function useAttendanceEdit(payload, AttendanceID) {
-  const attendanceEditURL = `https://admin-panel-dmawv.ondigitalocean.app/api/company/attendance/${AttendanceID}`;
+  const attendanceEditURL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/company/attendance/${AttendanceID}`;
   try {
     const response = await axios.put(attendanceEditURL, payload);
     mutate(attendanceEditURL);
@@ -58,7 +58,7 @@ export async function useAttendanceEdit(payload, AttendanceID) {
 }
 
 export async function useDeleteSingleAttendance(deleteID) {
-  const deleteURL = `https://admin-panel-dmawv.ondigitalocean.app/api/company/attendance/${deleteID}`;
+  const deleteURL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/company/attendance/${deleteID}`;
   try {
     await axios.delete(deleteURL);
     mutate(deleteURL);

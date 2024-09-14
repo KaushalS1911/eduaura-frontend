@@ -8,7 +8,7 @@ import { useAuthContext } from '../auth/hooks/index.js';
 export function useGetStudents() {
   const { user } = useAuthContext();
 
-  const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/${user?.company_id}/student`;
+  const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/v2/${user?.company_id}/student`;
 
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 
@@ -28,7 +28,7 @@ export function useGetStudents() {
 }
 
 export function useGetStudentsList(id) {
-  const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/${id}/student-list`;
+  const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/v2/${id}/student-list`;
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
   const memoizedValue = useMemo(
     () => ({
@@ -47,10 +47,10 @@ export function useGetStudentsList(id) {
 // get single student
 
 export function useGetSingleStudent(studentId) {
-  // const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/student/${studentId}`;
+  // const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/v2/student/${studentId}`;
   const { user } = useAuthContext();
 
-  const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/${user?.company_id}/student`;
+  const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/v2/${user?.company_id}/student`;
 
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
   const singleStudent = data?.students.find((data) => data?._id === studentId);
