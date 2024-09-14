@@ -16,7 +16,7 @@ const options = {
 
 export function useGetCalendar(page, limit) {
   const { user } = useAuthContext();
-  const calendarURL = `https://server-eduaura-pyjuy.ondigitalocean.app//api/v2/${user?.company_id}/event`;
+  const calendarURL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/v2/${user?.company_id}/event`;
   const { data, isLoading, error, isValidating, mutate } = useSWR(calendarURL, fetcher);
   const memoizedValue = useMemo(
     () => ({

@@ -37,7 +37,6 @@ import FeesTableToolbar from '../fees-table-toolbar';
 import { useGetStudents } from 'src/api/student';
 import { useAuthContext } from '../../../auth/hooks';
 import { useGetConfigs } from '../../../api/config';
-import { useGetConfigs } from '../../../api/config';
 import { Box, Checkbox, FormControl, InputLabel, MenuItem, OutlinedInput, Select, Stack } from '@mui/material';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import GenerateOverviewPdf from '../../generate-pdf/generate-overview-pdf';
