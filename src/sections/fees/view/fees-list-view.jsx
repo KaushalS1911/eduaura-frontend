@@ -35,6 +35,13 @@ import FeesTableFiltersResult from '../fees-table-filters-result';
 import FeesTableRow from '../fees-table-row';
 import FeesTableToolbar from '../fees-table-toolbar';
 import { useGetStudents } from 'src/api/student';
+import { useGetConfigs } from '../../../api/config';
+import { Box, Checkbox, FormControl, InputLabel, MenuItem, OutlinedInput, Select, Stack } from '@mui/material';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import GenerateOverviewPdf from '../../generate-pdf/generate-overview-pdf';
+import CircularProgress from '@mui/material/CircularProgress';
+import { RouterLink } from '../../../routes/components';
+import PdfFeesPdf from '../fees-overview-pdf';
 
 // ----------------------------------------------------------------------
 
@@ -54,6 +61,22 @@ const defaultFilters = {
   startDate: null,
   endDate: null,
 };
+const feesField = [
+  'Name',
+  // 'Contact',
+  'Amount paid',
+  'Discount',
+  'Total Amount',
+  'Installments',
+];
+const fieldMapping = {
+  'Name': 'name',
+  // 'Contact': 'contact',
+  'Amount paid': 'amount_paid',
+  'Discount': 'discount',
+  'Total Amount': 'total_amount',
+  'Installments': 'fee_detail.installments',
+};
 
 // ----------------------------------------------------------------------
 
@@ -63,9 +86,9 @@ export default function FeesListView() {
   const table = useTable({ defaultOrderBy: 'feesNumber' });
 
   const router = useRouter();
-
+  const [field, setField] = useState([]);
   const confirm = useBoolean();
-
+  const { configs } = useGetConfigs();
   const { students, mutate } = useGetStudents();
 
   const [tableData, setTableData] = useState(students);
@@ -147,6 +170,18 @@ export default function FeesListView() {
     },
     [handleFilters]
   );
+  const handleFilterField1 = (event) => {
+    const { value } = event.target;
+    if (value.length > 7) {
+      enqueueSnackbar('You can only select up to 7 options!', { variant: 'error' });
+      return;
+    }
+    setField(value);
+  };
+  const extractedData = field.reduce((result, key) => ({
+    ...result,
+    [key]: fieldMapping[key].split('.').reduce((o, i) => o[i]),
+  }), {});
   return (
     <>
       <CustomBreadcrumbs
@@ -162,6 +197,86 @@ export default function FeesListView() {
           },
           // { name: 'Fees' },
         ]}
+        action={
+          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center', gap: 1 }}>
+            <FormControl
+              sx={{
+                flexShrink: 0,
+                width: { xs: '100%', md: 200 },
+                margin: '0px 10px',
+              }}
+            >
+              <InputLabel>Field</InputLabel>
+              <Select
+                multiple
+                value={field}
+                onChange={handleFilterField1}
+                input={<OutlinedInput label='Field' />}
+                renderValue={(selected) => selected.join(', ')}
+                MenuProps={{
+                  PaperProps: {
+                    sx: { maxHeight: 240 },
+                  },
+                }}
+              >
+                {feesField.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    <Checkbox
+                      disableRipple
+                      size='small'
+                      checked={field?.includes(option)}
+                    />
+                    {option}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
+              <PDFDownloadLink
+                document={
+                  <PdfFeesPdf
+                    feeData={dataFiltered}
+                    heading={[
+                      { hed: 'Name', Size: '240px' },
+                      // { hed: 'Contact', Size: '260px' },
+                      { hed: 'Amount paid', Size: '140px' },
+                      { hed: 'Discount', Size: '100px' },
+                      { hed: 'Total Amount', Size: '140px' },
+                      { hed: 'Installments', Size: '100%' },
+                    ].filter((item) => (field.includes(item.hed) || !field.length))}
+                    orientation={'landscape'}
+                    configs={configs}
+                    SubHeading={'Fees'}
+                    fieldMapping={field.length ? extractedData : fieldMapping}
+                  />
+                }
+                fileName={'FeesList'}
+                style={{ textDecoration: 'none' }}
+              >
+                {({ loading }) => (
+                  <Tooltip>
+                    <Button
+                      variant='contained'
+                      onClick={() => setField([])}
+                      startIcon={loading ? <CircularProgress size={24} color='inherit' /> :
+                        <Iconify icon='eva:cloud-download-fill' />}
+                    >
+                      {loading ? 'Generating...' : 'Download PDF'}
+                    </Button>
+                  </Tooltip>
+                )}
+              </PDFDownloadLink>
+            </Stack>
+            {/*<Button*/}
+            {/*  variant='contained'*/}
+            {/*  startIcon={<Iconify icon='icon-park-outline:excel' />}*/}
+            {/*  onClick={handleExportExcel}*/}
+            {/*  sx={{ margin: '0px 10px' }}*/}
+            {/*>*/}
+            {/*  Export to Excel*/}
+            {/*</Button>*/}
+          </Box>
+        }
         sx={{
           mb: { xs: 3, md: 5 },
         }}
@@ -174,9 +289,7 @@ export default function FeesListView() {
           <FeesTableFiltersResult
             filters={filters}
             onFilters={handleFilters}
-            //
             onResetFilters={handleResetFilters}
-            //
             results={dataFiltered.length}
             sx={{ p: 2.5, pt: 0 }}
           />

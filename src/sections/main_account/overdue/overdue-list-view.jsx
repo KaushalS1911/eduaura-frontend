@@ -41,7 +41,7 @@ const fieldMapping = {
   'Name': 'firstName',
   'Fee': 'fee_detail.installments.amount',
   'Contact': 'contact',
-  'Installments': 'fee_detail',
+  'Installment Date': 'fee_detail',
 };
 export default function OverdueListView({ title, subheader, tableData, tableLabels, ...other }) {
   const [page, setPage] = useState(0);
@@ -127,7 +127,7 @@ export default function OverdueListView({ title, subheader, tableData, tableLabe
                             Size: '180px',
                           },
                           {
-                            hed: 'Installments',
+                            hed: 'Installment Date',
                             Size: '180px',
                           }].filter((item) => (field.includes(item.hed) || !field.length))}
                         orientation={'landscape'}

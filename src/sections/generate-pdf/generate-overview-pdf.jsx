@@ -113,9 +113,35 @@ const GenerateOverviewPdf = ({ orientation, heading, allData, configs, SubHeadin
         return `${row.student.firstName} ${row.student.lastName}`;
       case 'DOB':
         return fDate(row.dob);
-      case 'Attended by': // Handling "Attended by"
+      case 'Attended by':
         return row.attended_by ? row.attended_by.map((attendee) => `${attendee.firstName} ${attendee.lastName}`).join(', ') : '-';
       case 'Installments':
+        return (
+          <View style={{ flexDirection: 'row' }}>
+            <View style={{ width: '33%', paddingRight: 8 }}>
+              {row.fee_detail.installments.map((installment, idx) => (
+                <Text key={idx} style={{ fontSize: '8px', textAlign: 'center', marginBottom: 4 }}>
+                  {fDate(installment.installment_date)}
+                </Text>
+              ))}
+            </View>
+            <View style={{ width: '33%', paddingRight: 8 }}>
+              {row.fee_detail.installments.map((installment, idx) => (
+                <Text key={idx} style={{ fontSize: '8px', textAlign: 'center', marginBottom: 4 }}>
+                  {installment.amount}
+                </Text>
+              ))}
+            </View>
+            <View style={{ width: '33%' }}>
+              {row.fee_detail.installments.map((installment, idx) => (
+                <Text key={idx} style={{ fontSize: '8px', textAlign: 'center', marginBottom: 4 }}>
+                  {installment.status}
+                </Text>
+              ))}
+            </View>
+          </View>
+        );
+      case 'Installment Date':
         return fDate(row.fee_detail.installments.installment_date);
         case 'Date':
         return fDate(row.date);
