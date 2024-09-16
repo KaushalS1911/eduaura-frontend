@@ -184,9 +184,16 @@ export default function PermissionView() {
   const [moduleSwitchState, setModuleSwitchState] = useState({});
   const [permissionsState, setPermissionsState] = useState({});
   const [openPopup, setOpenPopup] = useState(false);
+  const [isFirstRender, setIsFirstRender] = useState(true);
 
   useEffect(() => {
-    setOpenPopup(true);
+    if (isFirstRender) {
+      setOpenPopup(true);
+      setIsFirstRender(false);
+    }
+  }, [isFirstRender]);
+
+  useEffect(() => {
     if (selectedRole) {
       const rolePermissions = configs.permissions?.[selectedRole] || {};
 
