@@ -41,7 +41,6 @@ export default function BatchNewEditForm({ batchId }) {
   }, [students, faculty]);
 
   const NewBlogSchema = Yup.object().shape({
-    technology: Yup.object().required('Technology is required'),
     batch_time: Yup.string().required('Time is required'),
     batch_name: Yup.string().required('Batch Name is required'),
     batch_members: Yup.array().required('Batch Member is required'),
@@ -109,17 +108,6 @@ export default function BatchNewEditForm({ batchId }) {
       console.log('Error:', error);
     }
   });
-  const technology = [
-    'Full-Stack',
-    'Flutter',
-    'Game',
-    'Ui/Ux',
-    'C++ programing',
-    'C programing',
-    'CCC language',
-    'HTML',
-    'CSS',
-  ];
 
   const renderDetails = (
     <>

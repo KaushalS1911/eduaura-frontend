@@ -1,12 +1,9 @@
 import { useState, useCallback, useEffect } from 'react';
 
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
-import { alpha } from '@mui/material/styles';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
@@ -41,6 +38,11 @@ import { useGetAllDemos } from 'src/api/demo';
 import DemoTableRow from '../demo-table-row';
 import DemoTableToolbar from '../demo-table-toolbar';
 import DemoTableFiltersResult from '../demo-table-filters-result';
+import { Box, Stack } from '@mui/material';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import CircularProgress from '@mui/material/CircularProgress';
+import { useGetConfigs } from '../../../api/config';
+import DemoPDF from '../../generate-pdf/demo-overview-pdf';
 
 // ----------------------------------------------------------------------
 
@@ -76,6 +78,8 @@ export default function DemoListView() {
   const confirm = useBoolean();
 
   const { demo, mutate } = useGetAllDemos();
+
+  const { configs } = useGetConfigs();
 
   const [tableData, setTableData] = useState();
 
@@ -178,6 +182,35 @@ export default function DemoListView() {
               href: paths.dashboard.demo.root,
             },
           ]}
+          action={
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center', gap: 1 }}>
+              <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
+                <PDFDownloadLink
+                  document={
+                    <DemoPDF
+                      Demos={demo}
+                      configs={configs}
+                    />
+                  }
+                  fileName={'Demo'}
+                  style={{ textDecoration: 'none' }}
+                >
+                  {({ loading }) => (
+                    <Tooltip>
+                      <Button
+                        variant='contained'
+                        startIcon={loading ? <CircularProgress size={24} color='inherit' /> :
+                          <Iconify icon='eva:cloud-download-fill' />}
+                      >
+                        {loading ? 'Generating...' : 'Download PDF'}
+                      </Button>
+                    </Tooltip>
+                  )}
+                </PDFDownloadLink>
+              </Stack>
+            </Box>
+          }
+
           sx={{
             mb: { xs: 3, md: 5 },
           }}

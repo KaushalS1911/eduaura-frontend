@@ -14,7 +14,7 @@ import TableContainer from '@mui/material/TableContainer';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
-import { RouterLink } from 'src/routes/components'; // Moved here
+import { RouterLink } from 'src/routes/components';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
@@ -48,6 +48,11 @@ import BatchTableFiltersResult from '../batch-table-filters-result';
 import { LoadingScreen } from '../../../components/loading-screen';
 import { getResponsibilityValue } from '../../../permission/permission';
 import { useGetConfigs } from '../../../api/config';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import GenerateOverviewPdf from '../../generate-pdf/generate-overview-pdf';
+import CircularProgress from '@mui/material/CircularProgress';
+import { Box, Stack } from '@mui/material';
+import BatchPDF from '../../generate-pdf/batch-overview-pdf';
 
 // ----------------------------------------------------------------------
 
@@ -85,11 +90,19 @@ export default function BatchListView() {
   const confirm = useBoolean();
 
   const [tableData, setTableData] = useState([]);
+
   useEffect(() => {
     if (batch) {
-      setTableData(batch);
+      if (user?.role === 'Admin') {
+        setTableData(batch);
+      } else {
+        const filteredData = batch?.filter(item => item?.faculty?._id === user?.employee_id);
+        setTableData(filteredData);
+      }
     }
-  }, [batch]);
+  }, [batch, user]);
+
+
   const [filters, setFilters] = useState(defaultFilters);
 
   const dateError = isAfter(filters.startDate, filters.endDate);
@@ -101,7 +114,7 @@ export default function BatchListView() {
     dateError,
   });
 
-  const dataInPage = dataFiltered.slice(
+  const dataInPage = dataFiltered?.slice(
     table.page * table.rowsPerPage,
     table.page * table.rowsPerPage + table.rowsPerPage,
   );
@@ -111,7 +124,7 @@ export default function BatchListView() {
   const canReset =
     !!filters.name || filters.status !== 'all' || (!!filters.startDate && !!filters.endDate);
 
-  const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
+  const notFound = (!dataFiltered?.length && canReset) || !dataFiltered?.length;
 
   const handleFilters = useCallback(
     (name, value) => {
@@ -147,7 +160,7 @@ export default function BatchListView() {
         enqueueSnackbar('Failed to delete batch', { variant: 'error' });
       }
     },
-    [dataInPage.length, mutate, enqueueSnackbar, table, tableData],
+    [dataInPage?.length, mutate, enqueueSnackbar, table, tableData],
   );
 
   const handleDeleteRows = useCallback(async () => {
@@ -169,7 +182,7 @@ export default function BatchListView() {
       console.error('Failed to delete Batches', error);
       enqueueSnackbar('Failed to delete Batches', { variant: 'error' });
     }
-  }, [dataFiltered.length, dataInPage.length, enqueueSnackbar, table, tableData]);
+  }, [dataFiltered?.length, dataInPage?.length, enqueueSnackbar, table, tableData]);
 
   const handleEditRow = useCallback(
     (id) => {
@@ -217,7 +230,31 @@ export default function BatchListView() {
               },
             ]}
             action={
-              <div>
+              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center', gap: 1 }}>
+                <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
+                  <PDFDownloadLink
+                    document={
+                      <BatchPDF
+                        batches={batch}
+                        configs={configs}
+                      />
+                    }
+                    fileName={'Batch'}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    {({ loading }) => (
+                      <Tooltip>
+                        <Button
+                          variant='contained'
+                          startIcon={loading ? <CircularProgress size={24} color='inherit' /> :
+                            <Iconify icon='eva:cloud-download-fill' />}
+                        >
+                          {loading ? 'Generating...' : 'Download PDF'}
+                        </Button>
+                      </Tooltip>
+                    )}
+                  </PDFDownloadLink>
+                </Stack>
                 {getResponsibilityValue('create_batch', configs, user) && (
                   <Button
                     component={RouterLink}
@@ -228,7 +265,7 @@ export default function BatchListView() {
                     New Batch
                   </Button>
                 )}
-              </div>
+              </Box>
             }
             sx={{
               mb: { xs: 3, md: 5 },
@@ -243,7 +280,7 @@ export default function BatchListView() {
                 filters={filters}
                 onFilters={handleFilters}
                 onResetFilters={handleResetFilters}
-                results={dataFiltered.length}
+                results={dataFiltered?.length}
                 sx={{ p: 2.5, pt: 0 }}
               />
             )}
@@ -252,7 +289,7 @@ export default function BatchListView() {
               <TableSelectedAction
                 dense={table.dense}
                 numSelected={table.selected.length}
-                rowCount={dataFiltered.length}
+                rowCount={dataFiltered?.length}
                 action={
                   <Tooltip title='Delete'>
                     <IconButton color='primary' onClick={confirm.onTrue}>
@@ -268,14 +305,14 @@ export default function BatchListView() {
                     order={table.order}
                     orderBy={table.orderBy}
                     headLabel={TABLE_HEAD}
-                    rowCount={dataFiltered.length}
+                    rowCount={dataFiltered?.length}
                     numSelected={table.selected.length}
                     onSort={table.onSort}
                   />
 
                   <TableBody>
                     {dataFiltered
-                      .slice(
+                      ?.slice(
                         table.page * table.rowsPerPage,
                         table.page * table.rowsPerPage + table.rowsPerPage,
                       )
@@ -295,7 +332,7 @@ export default function BatchListView() {
 
                     <TableEmptyRows
                       height={denseHeight}
-                      emptyRows={emptyRows(table.page, table.rowsPerPage, dataFiltered.length)}
+                      emptyRows={emptyRows(table.page, table.rowsPerPage, dataFiltered?.length)}
                     />
 
                     <TableNoData notFound={notFound} />
@@ -305,7 +342,7 @@ export default function BatchListView() {
             </TableContainer>
 
             <TablePaginationCustom
-              count={dataFiltered.length}
+              count={dataFiltered?.length}
               page={table.page}
               rowsPerPage={table.rowsPerPage}
               onPageChange={table.onChangePage}
@@ -348,15 +385,15 @@ export default function BatchListView() {
 function applyFilter({ inputData, comparator, filters, dateError }) {
   const { status, name, startDate, endDate } = filters;
 
-  const stabilizedThis = inputData.map((el, index) => [el, index]);
+  const stabilizedThis = inputData?.map((el, index) => [el, index]);
 
-  stabilizedThis.sort((a, b) => {
+  stabilizedThis?.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
     return a[1] - b[1];
   });
 
-  inputData = stabilizedThis.map((el) => el[0]);
+  inputData = stabilizedThis?.map((el) => el[0]);
 
   if (name) {
     inputData = inputData.filter(

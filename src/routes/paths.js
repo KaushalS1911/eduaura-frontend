@@ -1,12 +1,4 @@
-import { paramCase } from 'src/utils/change-case';
-
-// import { _id, _postTitles } from 'src/_mock/assets';
-
 // ----------------------------------------------------------------------
-
-// const MOCK_ID = _id[1];
-
-// const MOCK_TITLE = _postTitles[2];
 
 const ROOTS = {
   AUTH: '/auth',
@@ -36,23 +28,6 @@ export const paths = {
   freeUI: 'https://mui.com/store/items/minimal-dashboard-free/',
   figma:
     'https://www.figma.com/file/hjxMnGUJCjY7pX8lQbS7kn/%5BPreview%5D-Minimal-Web.v5.4.0?type=design&node-id=0-1&mode=design&t=2fxnS70DuiTLGzND-0',
-  // product: {
-  //   root: `/product`,
-  //   checkout: `/product/checkout`,
-  //   details: (id) => `/product/${id}`,
-  //   demo: {
-  //     details: `/product/${MOCK_ID}`,
-  //   },
-  // },
-  // post: {
-  //   root: `/post`,
-  //   details: (title) => `/post/${paramCase(title)}`,
-  //   demo: {
-  //     details: `/post/${paramCase(MOCK_TITLE)}`,
-  //   },
-  // },
-  // AUTH
-  // api/invite-user
   auth: {
     amplify: {
       login: `${ROOTS.AUTH}/amplify/login`,
@@ -103,6 +78,7 @@ export const paths = {
     root: ROOTS.DASHBOARD,
     calendar: `${ROOTS.DASHBOARD}/calendar`,
     setting: `${ROOTS.DASHBOARD}/setting`,
+    // kanban: `${ROOTS.DASHBOARD}/kanban`,
 
     general: {
       fees: `${ROOTS.DASHBOARD}/fees`,
@@ -154,11 +130,11 @@ export const paths = {
       edit: (id) => `${ROOTS.DASHBOARD}/seminar/${id}/edit`,
     },
 
-    profile: {
-      root: `${ROOTS.DASHBOARD}/profile`,
-      list: `${ROOTS.DASHBOARD}/profile/list`,
-      new: `${ROOTS.DASHBOARD}/profile/new`,
-    },
+    // profile: {
+    //   root: `${ROOTS.DASHBOARD}/profile`,
+    //   list: `${ROOTS.DASHBOARD}/profile/list`,
+    //   new: `${ROOTS.DASHBOARD}/profile/new`,
+    // },
 
     invoice: {
       root: `${ROOTS.DASHBOARD}/invoice`,

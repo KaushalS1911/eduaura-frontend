@@ -99,7 +99,7 @@ export default function AddAttendanceListView() {
 
   const dataInPage = dataFiltered.slice(
     table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
+    table.page * table.rowsPerPage + table.rowsPerPage,
   );
 
   const denseHeight = table.dense ? 56 : 56 + 20;
@@ -122,7 +122,7 @@ export default function AddAttendanceListView() {
         [name]: value,
       }));
     },
-    [table]
+    [table],
   );
 
   const handleDeleteRow = useCallback(
@@ -135,7 +135,7 @@ export default function AddAttendanceListView() {
 
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
-    [dataInPage.length, enqueueSnackbar, table, tableData]
+    [dataInPage.length, enqueueSnackbar, table, tableData],
   );
 
   const handleDeleteRows = useCallback(() => {
@@ -155,14 +155,14 @@ export default function AddAttendanceListView() {
     (id) => {
       router.push(paths.dashboard.invoice.edit(id));
     },
-    [router]
+    [router],
   );
 
   const handleViewRow = useCallback(
     (id) => {
       router.push(paths.dashboard.invoice.details(id));
     },
-    [router]
+    [router],
   );
 
   // ====================================
@@ -213,7 +213,7 @@ export default function AddAttendanceListView() {
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="Add Attendance"
+          heading='Add Attendance'
           sx={{ marginBottom: 4 }}
           links={[
             {
@@ -280,8 +280,8 @@ export default function AddAttendanceListView() {
                 </Table>
                 <Box sx={{ m: '18px', display: 'flex', justifyContent: 'end' }}>
                   <Button
-                    variant="contained"
-                    type="submit"
+                    variant='contained'
+                    type='submit'
                     onClick={() => attendancePost(attendanceData)}
                   >
                     Submit
@@ -296,7 +296,7 @@ export default function AddAttendanceListView() {
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
+        title='Delete'
         content={
           <>
             Are you sure want to delete <strong> {table.selected.length} </strong> items?
@@ -304,8 +304,8 @@ export default function AddAttendanceListView() {
         }
         action={
           <Button
-            variant="contained"
-            color="error"
+            variant='contained'
+            color='error'
             onClick={() => {
               handleDeleteRows();
               confirm.onFalse();
@@ -340,19 +340,13 @@ function applyFilter({ inputData, comparator, filters, dateError }) {
     inputData = inputData.filter(
       (invoice) =>
         invoice.invoiceNumber.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        invoice.invoiceTo.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
+        invoice.invoiceTo.name.toLowerCase().indexOf(name.toLowerCase()) !== -1,
     );
   }
 
   if (status !== 'all') {
     inputData = inputData.filter((invoice) => invoice.status === status);
   }
-
-  // if (service.length) {
-  //   inputData = inputData.filter((invoice) =>
-  //     invoice.items.some((filterItem) => service.includes(filterItem.service))
-  //   );
-  // }
 
   if (!dateError) {
     if (startDate && endDate) {

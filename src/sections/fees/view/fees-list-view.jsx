@@ -13,7 +13,7 @@ import { useRouter } from 'src/routes/hooks';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
-import { isAfter, isBetween } from 'src/utils/format-time';
+import { fDate, isAfter, isBetween } from 'src/utils/format-time';
 
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
@@ -43,6 +43,7 @@ import GenerateOverviewPdf from '../../generate-pdf/generate-overview-pdf';
 import CircularProgress from '@mui/material/CircularProgress';
 import { RouterLink } from '../../../routes/components';
 import PdfFeesPdf from '../fees-overview-pdf';
+import * as XLSX from 'xlsx';
 
 // ----------------------------------------------------------------------
 
@@ -56,12 +57,14 @@ const TABLE_HEAD = [
   // { id: 'status', label: 'Status' },
   { id: 'installments', label: 'Installments', align: 'center' },
 ];
+
 const defaultFilters = {
   name: '',
   status: 'all',
   startDate: null,
   endDate: null,
 };
+
 const feesField = [
   'Name',
   // 'Contact',
@@ -70,6 +73,7 @@ const feesField = [
   'Total Amount',
   'Installments',
 ];
+
 const fieldMapping = {
   'Name': 'name',
   // 'Contact': 'contact',
@@ -83,19 +87,14 @@ const fieldMapping = {
 
 export default function FeesListView() {
   const { enqueueSnackbar } = useSnackbar();
-
   const table = useTable({ defaultOrderBy: 'feesNumber' });
-
   const router = useRouter();
   const [field, setField] = useState([]);
   const confirm = useBoolean();
   const { configs } = useGetConfigs();
   const { students, mutate } = useGetStudents();
-
   const [tableData, setTableData] = useState(students);
-
   const [filters, setFilters] = useState(defaultFilters);
-
   const dateError = isAfter(filters.startDate, filters.endDate);
 
   const dataFiltered = applyFilter({
@@ -111,10 +110,8 @@ export default function FeesListView() {
   );
 
   const denseHeight = table.dense ? 56 : 56 + 20;
-
   const canReset =
     !!filters.name || filters.status !== 'all' || (!!filters.startDate && !!filters.endDate);
-
   const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
 
   const handleFilters = useCallback(
@@ -127,8 +124,10 @@ export default function FeesListView() {
     },
     [table],
   );
+
   const handleEditRow = () => {
   };
+
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
   }, []);
@@ -172,18 +171,53 @@ export default function FeesListView() {
     },
     [handleFilters],
   );
-  const handleFilterField1 = (event) => {
-    const { value } = event.target;
-    if (value.length > 7) {
-      enqueueSnackbar('You can only select up to 7 options!', { variant: 'error' });
-      return;
+
+  // const handleFilterField1 = (event) => {
+  //   const { value } = event.target;
+  //   if (value.length > 7) {
+  //     enqueueSnackbar('You can only select up to 7 options!', { variant: 'error' });
+  //     return;
+  //   }
+  //   setField(value);
+  // };
+  // const extractedData = field.reduce((result, key) => ({
+  //   ...result,
+  //   [key]: fieldMapping[key].split('.').reduce((o, i) => o[i]),
+  // }), {});
+
+  const handleExportExcel = () => {
+    let data = dataFiltered.map((fees) =>
+      fees.fee_detail.installments.map((item) => ({
+        Name: fees.firstName + ' ' + fees.lastName,
+        'Installment Date': fDate(item.installment_date),
+        'Installment Amount': item.amount,
+        Status: item.status,
+        'Amount Paid': fees.fee_detail.amount_paid,
+        Discount: fees.fee_detail.discount,
+        'Total Amount': fees.fee_detail.total_amount,
+      })),
+    );
+
+    if (field.length) {
+      data = data.map((item) => {
+        const filteredItem = {};
+        field.forEach((key) => {
+          if (item.hasOwnProperty(key)) {
+            filteredItem[key] = item[key];
+          }
+        });
+        return filteredItem;
+      });
     }
-    setField(value);
+
+    data = data.flat();
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'fees');
+    XLSX.writeFile(workbook, 'FeesList.xlsx');
+    setField([]);
   };
-  const extractedData = field.reduce((result, key) => ({
-    ...result,
-    [key]: fieldMapping[key].split('.').reduce((o, i) => o[i]),
-  }), {});
+
   return (
     <>
       <CustomBreadcrumbs
@@ -201,82 +235,82 @@ export default function FeesListView() {
         ]}
         action={
           <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center', gap: 1 }}>
-            <FormControl
-              sx={{
-                flexShrink: 0,
-                width: { xs: '100%', md: 200 },
-                margin: '0px 10px',
-              }}
-            >
-              <InputLabel>Field</InputLabel>
-              <Select
-                multiple
-                value={field}
-                onChange={handleFilterField1}
-                input={<OutlinedInput label='Field' />}
-                renderValue={(selected) => selected.join(', ')}
-                MenuProps={{
-                  PaperProps: {
-                    sx: { maxHeight: 240 },
-                  },
-                }}
-              >
-                {feesField.map((option) => (
-                  <MenuItem key={option} value={option}>
-                    <Checkbox
-                      disableRipple
-                      size='small'
-                      checked={field?.includes(option)}
-                    />
-                    {option}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <Stack direction='row' spacing={1} flexGrow={1} mx={1}>
-              <PDFDownloadLink
-                document={
-                  <PdfFeesPdf
-                    feeData={dataFiltered}
-                    heading={[
-                      { hed: 'Name', Size: '240px' },
-                      // { hed: 'Contact', Size: '260px' },
-                      { hed: 'Amount paid', Size: '140px' },
-                      { hed: 'Discount', Size: '100px' },
-                      { hed: 'Total Amount', Size: '140px' },
-                      { hed: 'Installments', Size: '100%' },
-                    ].filter((item) => (field.includes(item.hed) || !field.length))}
-                    orientation={'landscape'}
-                    configs={configs}
-                    SubHeading={'Fees'}
-                    fieldMapping={field.length ? extractedData : fieldMapping}
-                  />
-                }
-                fileName={'FeesList'}
-                style={{ textDecoration: 'none' }}
-              >
-                {({ loading }) => (
-                  <Tooltip>
-                    <Button
-                      variant='contained'
-                      onClick={() => setField([])}
-                      startIcon={loading ? <CircularProgress size={24} color='inherit' /> :
-                        <Iconify icon='eva:cloud-download-fill' />}
-                    >
-                      {loading ? 'Generating...' : 'Download PDF'}
-                    </Button>
-                  </Tooltip>
-                )}
-              </PDFDownloadLink>
-            </Stack>
-            {/*<Button*/}
-            {/*  variant='contained'*/}
-            {/*  startIcon={<Iconify icon='icon-park-outline:excel' />}*/}
-            {/*  onClick={handleExportExcel}*/}
-            {/*  sx={{ margin: '0px 10px' }}*/}
+            {/*<FormControl*/}
+            {/*  sx={{*/}
+            {/*    flexShrink: 0,*/}
+            {/*    width: { xs: '100%', md: 200 },*/}
+            {/*    margin: '0px 10px',*/}
+            {/*  }}*/}
             {/*>*/}
-            {/*  Export to Excel*/}
-            {/*</Button>*/}
+            {/*  <InputLabel>Field</InputLabel>*/}
+            {/*  <Select*/}
+            {/*    multiple*/}
+            {/*    value={field}*/}
+            {/*    onChange={handleFilterField1}*/}
+            {/*    input={<OutlinedInput label='Field' />}*/}
+            {/*    renderValue={(selected) => selected.join(', ')}*/}
+            {/*    MenuProps={{*/}
+            {/*      PaperProps: {*/}
+            {/*        sx: { maxHeight: 240 },*/}
+            {/*      },*/}
+            {/*    }}*/}
+            {/*  >*/}
+            {/*    {feesField.map((option) => (*/}
+            {/*      <MenuItem key={option} value={option}>*/}
+            {/*        <Checkbox*/}
+            {/*          disableRipple*/}
+            {/*          size='small'*/}
+            {/*          checked={field?.includes(option)}*/}
+            {/*        />*/}
+            {/*        {option}*/}
+            {/*      </MenuItem>*/}
+            {/*    ))}*/}
+            {/*  </Select>*/}
+            {/*</FormControl>*/}
+            {/*<Stack direction='row' spacing={1} flexGrow={1} mx={1}>*/}
+            {/*  <PDFDownloadLink*/}
+            {/*    document={*/}
+            {/*      <PdfFeesPdf*/}
+            {/*        feeData={dataFiltered}*/}
+            {/*        heading={[*/}
+            {/*          { hed: 'Name', Size: '240px' },*/}
+            {/*          // { hed: 'Contact', Size: '260px' },*/}
+            {/*          { hed: 'Amount paid', Size: '140px' },*/}
+            {/*          { hed: 'Discount', Size: '100px' },*/}
+            {/*          { hed: 'Total Amount', Size: '140px' },*/}
+            {/*          { hed: 'Installments', Size: '100%' },*/}
+            {/*        ].filter((item) => (field.includes(item.hed) || !field.length))}*/}
+            {/*        orientation={'landscape'}*/}
+            {/*        configs={configs}*/}
+            {/*        SubHeading={'Fees'}*/}
+            {/*        fieldMapping={field.length ? extractedData : fieldMapping}*/}
+            {/*      />*/}
+            {/*    }*/}
+            {/*    fileName={'FeesList'}*/}
+            {/*    style={{ textDecoration: 'none' }}*/}
+            {/*  >*/}
+            {/*    {({ loading }) => (*/}
+            {/*      <Tooltip>*/}
+            {/*        <Button*/}
+            {/*          variant='contained'*/}
+            {/*          onClick={() => setField([])}*/}
+            {/*          startIcon={loading ? <CircularProgress size={24} color='inherit' /> :*/}
+            {/*            <Iconify icon='eva:cloud-download-fill' />}*/}
+            {/*        >*/}
+            {/*          {loading ? 'Generating...' : 'Download PDF'}*/}
+            {/*        </Button>*/}
+            {/*      </Tooltip>*/}
+            {/*    )}*/}
+            {/*  </PDFDownloadLink>*/}
+            {/*</Stack>*/}
+            <Button
+              variant='contained'
+              startIcon={<Iconify icon='icon-park-outline:excel' />}
+              onClick={handleExportExcel}
+              sx={{ margin: '0px 10px' }}
+            >
+              Export to Excel
+            </Button>
           </Box>
         }
         sx={{
@@ -401,7 +435,6 @@ export default function FeesListView() {
           </Button>
         }
       />
-      {/* <InvoiceDetailsView id="e99f09a7-dd88-49d5-b1c8-1daf80c2d7b2" /> */}
     </>
   );
 }
@@ -433,7 +466,6 @@ function applyFilter({ inputData, comparator, filters, dateError }) {
 
   if (!dateError) {
     if (startDate && endDate) {
-      // console.log("fil : ",inputData);
       inputData = inputData.filter((order) => isBetween(order.joining_date, startDate, endDate));
     }
   }

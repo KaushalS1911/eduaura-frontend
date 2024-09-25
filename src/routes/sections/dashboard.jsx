@@ -98,6 +98,7 @@ const CalendarPage = lazy(() => import('src/pages/dashboard/calendar'));
 
 // ACCOUNT
 const AccountListPage = lazy(() => import('src/pages/dashboard/account/account'));
+const KanbanPage = lazy(() => import('src/pages/dashboard/kanban'));
 
 // TEST RENDER PAGE BY ROLE
 
@@ -118,6 +119,7 @@ export const dashboardRoutes = [
     children: [
       { element: <IndexPage />, index: true },
       { path: 'complain', element: <ComplainListView /> },
+      // { path: 'kanban', element: <KanbanPage /> },
       {
         path: 'fees',
         children: [
@@ -134,13 +136,13 @@ export const dashboardRoutes = [
           { path: ':id/edit', element: <InquiryEditPage /> },
         ],
       },
-      {
-        path: 'profile',
-        children: [
-          { element: <UserProfileView />, index: true },
-          { path: 'new', element: <UserEditProfile /> },
-        ],
-      },
+      // {
+      //   path: 'profile',
+      //   children: [
+      //     { element: <UserProfileView />, index: true },
+      //     { path: 'new', element: <UserEditProfile /> },
+      //   ],
+      // },
       {
         path: 'student',
         children: [
@@ -180,10 +182,10 @@ export const dashboardRoutes = [
           { path: 'list', element: <DemoListPage /> },
         ],
       },
-      {
-        path: 'profile',
-        element: <UserProfile />,
-      },
+      // {
+      //   path: 'profile',
+      //   element: <UserProfile />,
+      // },
       {
         path: 'expenses',
         children: [
@@ -248,16 +250,16 @@ export const dashboardRoutes = [
           { path: 'new', element: <AttendanceCreatePage /> },
         ],
       },
-      {
-        path: 'invoice',
-        children: [
-          { element: <InvoiceListPage />, index: true },
-          { path: 'list', element: <InvoiceListPage /> },
-          { path: ':id', element: <InvoiceDetailsPage /> },
-          { path: ':id/edit', element: <InvoiceEditPage /> },
-          { path: 'new', element: <InvoiceCreatePage /> },
-        ],
-      },
+      // {
+      //   path: 'invoice',
+      //   children: [
+      //     { element: <InvoiceListPage />, index: true },
+      //     { path: 'list', element: <InvoiceListPage /> },
+      //     { path: ':id', element: <InvoiceDetailsPage /> },
+      //     { path: ':id/edit', element: <InvoiceEditPage /> },
+      //     { path: 'new', element: <InvoiceCreatePage /> },
+      //   ],
+      // },
       { path: 'calendar', element: <CalendarPage /> },
       { path: 'setting', element: <SettingsPage /> },
     ],

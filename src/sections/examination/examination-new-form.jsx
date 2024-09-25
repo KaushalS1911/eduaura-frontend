@@ -17,12 +17,11 @@ import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, { RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
 import axios from 'axios';
 import { useAuthContext } from 'src/auth/hooks';
-import RHFAutocomplete1 from 'src/components/hook-form/batch-autocomplete';
 import { useGetStudentsList } from 'src/api/student';
 import { useGetFaculty } from 'src/api/faculty';
-import { programmingLanguages } from '../../_mock/_inquiry';
 import { paths } from '../../routes/paths';
 import { useGetConfigs } from '../../api/config';
+import { useGetBatches } from '../../api/batch';
 
 const ExaminationNewForm = () => {
   const router = useRouter();
@@ -33,16 +32,14 @@ const ExaminationNewForm = () => {
   const { faculty } = useGetFaculty();
   const { configs } = useGetConfigs();
   const { students } = useGetStudentsList(user?.company_id);
-  const [studentName, setStudentName] = useState([]);
+  const { batch } = useGetBatches();
   const [facultyName, setFacultyName] = useState([]);
+
   useEffect(() => {
-    if (students) {
-      setStudentName(students);
-    }
     if (faculty) {
       setFacultyName(faculty);
     }
-  }, [students, faculty]);
+  }, [faculty]);
 
   const NewBlogSchema = Yup.object().shape({
     title: Yup.object().required('Title is required'),
@@ -50,7 +47,7 @@ const ExaminationNewForm = () => {
     date: Yup.date().required('Date is required'),
     total_marks: Yup.number().required('Total marks is required'),
     conducted_by: Yup.object().required('Faculty is required'),
-    students: Yup.array().min(1, 'Select at least one student').required('Students are required'),
+    batch: Yup.object().required('Batch is required'), // Add validation for batch
   });
 
   const methods = useForm({
@@ -61,40 +58,44 @@ const ExaminationNewForm = () => {
       date: null,
       total_marks: '',
       conducted_by: null,
-      students: [],
+      batch: null,
     },
   });
 
   const {
-    reset,
     setValue,
     handleSubmit,
     control,
     formState: { isSubmitting },
   } = methods;
+
   const onSubmit = handleSubmit(async (data) => {
-    const studentId = [];
-    data?.students.map((member) => studentId.push({ student_id: member._id }));
+    const selectedBatch = data.batch;
+
+    const studentIds = students
+      .filter(student => student.batch_id === selectedBatch._id)
+      .map(student => ({ student_id: student._id }));
 
     try {
       const URL = `${import.meta.env.VITE_AUTH_API}/api/company/exam`;
-      await axios
-        .post(URL, {
-          ...data,
-          students: studentId,
-          title: data?.title.label,
-          conducted_by: data?.conducted_by?._id,
-          company_id: user?.company_id,
-        })
-        .then((res) => {
-          enqueueSnackbar('Create success!');
-        })
-        .catch((err) => console.log(err));
+      await axios.post(URL, {
+        ...data,
+        students: studentIds,
+        title: data?.title.label,
+        conducted_by: data?.conducted_by?._id,
+        company_id: user?.company_id,
+        batch: {
+          name: selectedBatch.name,
+          members: studentIds,
+        },
+      });
 
+      enqueueSnackbar('Create success!');
       router.push(paths.dashboard.examination.list);
       preview.onFalse();
     } catch (error) {
       console.error(error);
+      enqueueSnackbar('An error occurred. Please try again.', { variant: 'error' });
     }
   });
 
@@ -114,7 +115,6 @@ const ExaminationNewForm = () => {
       <Grid xs={12} md={8}>
         <Card>
           {!mdUp && <CardHeader title='Details' />}
-
           <Stack spacing={3} sx={{ p: 3 }}>
             <RHFAutocomplete
               name='title'
@@ -123,7 +123,7 @@ const ExaminationNewForm = () => {
               fullWidth
               options={configs?.courses?.flatMap(course => [
                 { label: course.name, value: course.name },
-                ...course.subcategories.flatMap(sub => ({ label: sub, value: sub }))
+                ...course.subcategories.flatMap(sub => ({ label: sub, value: sub })),
               ])}
               isOptionEqualToValue={(option, value) => option.value === value.value}
               getOptionLabel={(option) => option.label}
@@ -157,19 +157,21 @@ const ExaminationNewForm = () => {
             <RHFAutocomplete
               name='conducted_by'
               type='faculty'
-              label='Facult Name'
+              label='Faculty Name'
               placeholder='Choose a faculty'
               fullWidth
               options={facultyName.map((option) => option)}
               getOptionLabel={(option) => `${option?.firstName} ${option?.lastName}`}
             />
-            <RHFAutocomplete1
-              name='students'
-              control={control}
-              studentName={studentName}
-              labelName='Select students'
+            <RHFAutocomplete
+              name='batch'
+              label='Batch'
+              placeholder='Choose a batch'
+              fullWidth
+              options={batch.map((option) => ({ label: option.batch_name, value: option }))}
+              isOptionEqualToValue={(option, value) => option.value._id === value.value._id}
+              getOptionLabel={(option) => option.label}
             />
-
             <RHFTextField name='desc' label='Description' multiline rows={3} />
           </Stack>
         </Card>

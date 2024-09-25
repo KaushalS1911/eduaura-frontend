@@ -51,13 +51,13 @@ const modules = [
       { action: 'update Inquiry', key: 'update_inquiry' },
       { action: 'delete Inquiry', key: 'delete_inquiry' },
       { action: 'print Inquiry', key: 'print_inquiry_detail' },
+      { action: 'create Demo', key: 'create_demo' },
     ],
   },
   {
     label: 'Demo',
     value: 'Demo',
     permissions: [
-      { action: 'create Demo', key: 'create_demo' },
       { action: 'update Demo', key: 'update_demo' },
       { action: 'delete Demo', key: 'delete_demo' },
     ],

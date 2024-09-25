@@ -14,16 +14,6 @@ const FeesDetailsPage = () => {
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
-        {/* <CustomBreadcrumbs
-          heading="Fees"
-          links={[
-            { name: 'Dashboard', href: paths.dashboard.root },
-            { name: 'Fees', href: paths.dashboard.general.fees },
-          ]}
-          sx={{
-            mb: { xs: 3, md: 5 },
-          }}
-              /> */}
         <FeesListView />
       </Container>
     </>

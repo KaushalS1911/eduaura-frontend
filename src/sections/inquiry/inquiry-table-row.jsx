@@ -56,13 +56,14 @@ export default function InquiryTableRow({
         <TableCell> {email} </TableCell>
 
         <TableCell>{moment(dob).format('DD/MM/YYYY')}</TableCell>
-        <TableCell>
+        {getResponsibilityValue('create_demo', configs, user) && <TableCell>
           <Tooltip title='Add a new Demo' placement='top' arrow>
             <Button variant='outlined' onClick={quickEdit.onTrue}>
               + Demo
             </Button>
           </Tooltip>
-        </TableCell>
+        </TableCell>}
+
         <TableCell>
           <Label
             variant='soft'
@@ -113,9 +114,7 @@ export default function InquiryTableRow({
         </MenuItem>}
       </CustomPopover>
 
-
-      {getResponsibilityValue('create_demo', configs, user)
-      && <DemoNewEditForm currentId={row} open={quickEdit.value} onClose={quickEdit.onFalse} />}
+      <DemoNewEditForm currentId={row} open={quickEdit.value} onClose={quickEdit.onFalse} />
 
       <ConfirmDialog
         open={confirm.value}

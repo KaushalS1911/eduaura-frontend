@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import PropTypes from 'prop-types';
 import { Controller, useForm } from 'react-hook-form';
@@ -22,6 +22,7 @@ import { useAuthContext } from 'src/auth/hooks';
 import { useGetStudentsList } from 'src/api/student';
 import RHFAutocomplete1 from 'src/components/hook-form/batch-autocomplete';
 import { useGetFaculty } from 'src/api/faculty';
+import { useGetBatches } from 'src/api/batch'; // Import the useGetBatches hook
 import { mutate } from 'swr';
 import { programmingLanguages } from '../../_mock/_inquiry';
 import { useGetConfigs } from '../../api/config';
@@ -37,6 +38,7 @@ export default function ExaminationNewEditForm({ examinationId }) {
   const { configs } = useGetConfigs();
   const { faculty } = useGetFaculty();
   const { students } = useGetStudentsList(user?.company_id);
+  const { batch } = useGetBatches(); // Fetch a single batch
   const [studentName, setStudentName] = useState([]);
   const [facultyName, setFacultyName] = useState([]);
   const [exam, setExam] = useState([]);
@@ -55,6 +57,7 @@ export default function ExaminationNewEditForm({ examinationId }) {
     desc: Yup.string().required('Description is required'),
     date: Yup.date().required('Date is required'),
     total_marks: Yup.string().required('Total marks is required'),
+    conducted_by: Yup.object().required('Faculty is required'), // Ensure this is validated
   });
 
   const methods = useForm({
@@ -87,13 +90,15 @@ export default function ExaminationNewEditForm({ examinationId }) {
           const { exam } = response?.data?.data;
           const stu = exam.students.map((data) => data?.student_id);
           reset({
-            title: programmingLanguages.find((data) => data.label === exam?.title),
+            title: {
+              label: exam?.title || 'Select Title', // Set a default label to avoid undefined
+              value: exam?.title, // Ensure the value matches the expected format
+            },
             total_marks: exam?.total_marks,
             desc: exam?.desc,
             conducted_by: exam?.conducted_by,
             students: stu,
             date: exam.date ? new Date(exam.date) : null,
-            // amount: data.amount,
           });
         }
       } catch (error) {
@@ -104,21 +109,19 @@ export default function ExaminationNewEditForm({ examinationId }) {
   }, [examinationId, reset]);
 
   const onSubmit = handleSubmit(async (data) => {
-    const payload = data.students.map((student) => {
-      return {
-        obtained_marks: null,
-        student_id: student,
-      };
-    });
-    // const payload = data.students.map((student) =>  student_id: student,);
+    const payload = data.students.map((student) => ({
+      obtained_marks: null,
+      student_id: student,
+    }));
+
     try {
       if (data) {
         const URL = `${import.meta.env.VITE_AUTH_API}/api/company/exam/${examinationId}`;
-        await axios
-          .put(URL, { ...data, title: data?.title.label, students: payload })
-          .then((res) => router.push(paths.dashboard.examination.list))
-          .catch((err) => console.log(err));
-        mutate();
+        await axios.put(URL, { ...data, title: data?.title.label, students: payload })
+          .then((res) => {
+            mutate();
+            router.push(paths.dashboard.examination.list);
+          });
       }
       preview.onFalse();
       enqueueSnackbar(examinationId ? 'Update success!' : 'Create success!');
@@ -185,7 +188,7 @@ export default function ExaminationNewEditForm({ examinationId }) {
             <RHFAutocomplete
               name='conducted_by'
               type='faculty'
-              label='Facult Name'
+              label='Faculty Name'
               placeholder='Choose a faculty'
               fullWidth
               options={facultyName.map((option) => option)}

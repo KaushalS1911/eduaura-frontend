@@ -1,6 +1,4 @@
-import sumBy from 'lodash/sumBy';
-import { useState, useCallback } from 'react';
-
+import React, { useState, useCallback } from 'react';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
@@ -8,13 +6,11 @@ import Table from '@mui/material/Table';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import { alpha, useTheme } from '@mui/material/styles';
-import { Button, TableContainer } from '@mui/material';
+import { Box, Button, CircularProgress, Stack, TableContainer, Tooltip } from '@mui/material';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
-
 import { isAfter, isBetween } from 'src/utils/format-time';
-
 import { INVOICE_SERVICE_OPTIONS } from 'src/_mock';
 
 import Label from 'src/components/label';
@@ -42,6 +38,17 @@ import { LoadingScreen } from '../../../components/loading-screen';
 import { useAuthContext } from '../../../auth/hooks';
 import { useGetConfigs } from '../../../api/config';
 import { getResponsibilityValue } from '../../../permission/permission';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import AttendanceRegisterPDF from '../attendance-register-pdf';
+import { useGetStudents } from '../../../api/student';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import MenuItem from '@mui/material/MenuItem';
+import Checkbox from '@mui/material/Checkbox';
+import FormControl from '@mui/material/FormControl';
+import { useGetBatches } from '../../../api/batch';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const TABLE_HEAD = [
   { id: 'srNo', label: '#', align: 'center' },
@@ -66,26 +73,26 @@ const defaultFilters = {
 
 export default function AttendanceListView() {
   const { enqueueSnackbar } = useSnackbar();
-
+  const { students } = useGetStudents();
   const { configs } = useGetConfigs();
+  const { batch } = useGetBatches();
   const { user } = useAuthContext();
-
   const theme = useTheme();
-
+  const [field, setField] = useState([]);
   const { attendance, attendanceLoading, mutate } = useGetAllAttendance();
-
   const settings = useSettingsContext();
-
   const router = useRouter();
-
   const table = useTable({ defaultOrderBy: 'createDate' });
-
   const [tableData, setTableData] = useState(attendance);
-
   const [filters, setFilters] = useState(defaultFilters);
-
   const dateError = isAfter(filters.startDate, filters.endDate);
   const dayError = isAfter(filters.startDay, filters.endDay);
+
+  const [monthYear, setMonthYear] = useState({
+    month: new Date().getMonth() + 1, // current month (1-12)
+    year: new Date().getFullYear(),    // current year
+  });
+
   const dataFiltered = applyFilter({
     inputData: attendance,
     comparator: getComparator(table.order, table.orderBy),
@@ -110,14 +117,6 @@ export default function AttendanceListView() {
   const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
 
   const getInvoiceLength = (status) => attendance.filter((item) => item.status === status).length;
-
-  const getTotalAmount = (status) =>
-    sumBy(
-      tableData.filter((item) => item.status === status),
-      'totalAmount',
-    );
-
-  const getPercentByStatus = (status) => (getInvoiceLength(status) / tableData.length) * 100;
 
   const TABS = [
     { value: 'all', label: 'All', color: 'default', count: attendance.length },
@@ -159,28 +158,12 @@ export default function AttendanceListView() {
   const handleDeleteRow = useCallback(
     (id) => {
       const deleteRow = tableData.filter((row) => row.id !== id);
-
       enqueueSnackbar('Delete success!');
-
       setTableData(deleteRow);
-
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
     [dataInPage.length, enqueueSnackbar, table, tableData],
   );
-
-  const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
-
-    enqueueSnackbar('Delete success!');
-
-    setTableData(deleteRows);
-
-    table.onUpdatePageDeleteRows({
-      totalRowsInPage: dataInPage.length,
-      totalRowsFiltered: dataFiltered.length,
-    });
-  }, [dataFiltered.length, dataInPage.length, enqueueSnackbar, table, tableData]);
 
   const handleEditRow = useCallback(
     (id) => {
@@ -203,6 +186,74 @@ export default function AttendanceListView() {
     [handleFilters],
   );
 
+  const handleFilterField1 = (event) => {
+    const { value } = event.target;
+    if (value.length > 2) {
+      enqueueSnackbar('You can only select up to 3 options!', { variant: 'error' });
+      return;
+    }
+    setField(value);
+  };
+
+  const getStudentsByBatch = () => {
+    if (!Array.isArray(batch)) {
+      console.error('batch is not an array or is undefined');
+      return [];
+    }
+    let allbatch;
+    if (Array.isArray(field) && field.length > 0) {
+      allbatch = batch.filter((data) => field.includes(data?.batch_name));
+    }
+    const allBatchMembers = field && allbatch
+      ? allbatch.reduce((acc, curr) => acc.concat(curr.batch_members || []), [])
+      : batch.reduce((acc, curr) => acc.concat(curr.batch_members || []), []);
+    return allBatchMembers;
+  };
+
+  const handleReset = () => {
+    setField([]);
+    setMonthYear({
+      month: new Date().getMonth() + 1, // Reset to current month
+      year: new Date().getFullYear(),    // Reset to current year
+    });
+  };
+
+  const handleMonthYearChange = (newValue) => {
+    if (newValue) {
+      setMonthYear({
+        month: newValue.getMonth() + 1,
+        year: newValue.getFullYear(),
+      });
+    }
+  };
+
+  const getAttendanceForMonth = (students, attendanceRecords, selectedMonth, selectedYear) => {
+    const currentMonthAttendance = students.map((student) => {
+      const studentAttendance = attendanceRecords.filter((record) => {
+        const attendanceDate = new Date(record.date);
+        return (
+          record.student_id._id === student._id &&
+          attendanceDate.getMonth() === selectedMonth - 1 &&
+          attendanceDate.getFullYear() === selectedYear
+        );
+      });
+
+      return {
+        student,
+        attendance: studentAttendance,
+      };
+    });
+
+    return currentMonthAttendance;
+  };
+
+  const currentMonthAttendanceData = getAttendanceForMonth(
+    getStudentsByBatch(),
+    attendance,
+    monthYear.month,
+    monthYear.year,
+  );
+
   return (
     <>
       {attendanceLoading ? <LoadingScreen /> : <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -219,6 +270,48 @@ export default function AttendanceListView() {
           ]}
           action={
             <div>
+              <DatePicker
+                label='Select Month'
+                views={['year', 'month']}
+                value={monthYear.month ? new Date(monthYear.year, monthYear.month - 1) : null}
+                onChange={handleMonthYearChange}
+                renderInput={(params) => (
+                  <OutlinedInput {...params} sx={{ width: { xs: '100%', md: 200 }, ml: 2 }} />
+                )}
+              />
+
+              <FormControl
+                sx={{
+                  flexShrink: 0,
+                  width: { xs: '100%', md: 200 },
+                  margin: '0px 10px',
+                }}
+              >
+                <InputLabel>Select Batch</InputLabel>
+                <Select
+                  multiple
+                  value={field}
+                  onChange={handleFilterField1}
+                  input={<OutlinedInput label='Select Batch' />}
+                  renderValue={(selected) => selected.join(', ')}
+                  MenuProps={{
+                    PaperProps: {
+                      sx: { maxHeight: 240 },
+                    },
+                  }}
+                >
+                  {batch.map((option) => (
+                    <MenuItem key={option.batch_name} value={option.batch_name}>
+                      <Checkbox
+                        disableRipple
+                        size='small'
+                        checked={field?.includes(option.batch_name)}
+                      />
+                      {option.batch_name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
               {getResponsibilityValue('create_attendance', configs, user) && <Button
                 component={RouterLink}
                 href={paths.dashboard.attendance.new}
@@ -250,9 +343,7 @@ export default function AttendanceListView() {
                 iconPosition='end'
                 icon={
                   <Label
-                    variant={
-                      ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'
-                    }
+                    variant={((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'}
                     color={tab.color}
                   >
                     {tab.count}
@@ -260,12 +351,42 @@ export default function AttendanceListView() {
                 }
               />
             ))}
+            <Box display='flex' justifyContent='flex-end' alignItems='center' width='100%'>
+              {getResponsibilityValue('print_attendance_detail', configs, user) && (
+                <Stack direction='row' spacing={1} mx={1}>
+                  <PDFDownloadLink
+                    document={
+                      <AttendanceRegisterPDF
+                        configs={configs}
+                        students={getStudentsByBatch()}
+                        attendance={currentMonthAttendanceData}
+                        field={field}
+                        monthYear={monthYear}
+                      />
+                    }
+                  >
+                    {({ loading }) => (
+                      <Tooltip title='Export to PDF'>
+                        {loading ? (
+                          <CircularProgress size={24} />
+                        ) : (
+                          <Iconify
+                            icon='eva:cloud-download-fill'
+                            sx={{ width: 30, height: 30, color: '#637381', mt: 1 }}
+                            onClick={handleReset}
+                          />
+                        )}
+                      </Tooltip>
+                    )}
+                  </PDFDownloadLink>
+                </Stack>
+              )}
+            </Box>
           </Tabs>
 
           <AttendanceTableToolbar
             filters={filters}
             onFilters={handleFilters}
-            //
             dateError={dateError}
             serviceOptions={INVOICE_SERVICE_OPTIONS.map((option) => option.name)}
           />
@@ -274,9 +395,7 @@ export default function AttendanceListView() {
             <AttendanceTableFiltersResult
               filters={filters}
               onFilters={handleFilters}
-              //
               onResetFilters={handleResetFilters}
-              //
               results={dataFiltered.length}
               sx={{ p: 2.5, pt: 0 }}
             />
@@ -293,7 +412,6 @@ export default function AttendanceListView() {
                   numSelected={table.selected.length}
                   onSort={table.onSort}
                 />
-
                 <TableBody>
                   {dataFiltered
                     ?.slice(
@@ -312,12 +430,10 @@ export default function AttendanceListView() {
                         mutate={mutate}
                       />
                     ))}
-
                   <TableEmptyRows
                     height={denseHeight}
                     emptyRows={emptyRows(table.page, table.rowsPerPage, dataFiltered.length)}
                   />
-
                   <TableNoData notFound={notFound} />
                 </TableBody>
               </Table>
@@ -330,7 +446,6 @@ export default function AttendanceListView() {
             rowsPerPage={table.rowsPerPage}
             onPageChange={table.onChangePage}
             onRowsPerPageChange={table.onChangeRowsPerPage}
-            //
             dense={table.dense}
             onChangeDense={table.onChangeDense}
           />
@@ -343,7 +458,11 @@ export default function AttendanceListView() {
 
 // ----------------------------------------------------------------------
 
-function applyFilter({ inputData, comparator, filters, dateError, dayError }) {
+function applyFilter(
+  {
+    inputData, comparator, filters, dateError, dayError,
+  },
+) {
   const { name, status, service, startDate, endDate, startDay, endDay } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);

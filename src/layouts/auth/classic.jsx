@@ -126,15 +126,12 @@ const router = useRouter()
     </>
   );
 
-
-
   return (
     <Stack
       component='main'
       direction='row'
 
     >
-
       {renderContent}
     </Stack>
   );
