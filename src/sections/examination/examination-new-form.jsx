@@ -71,11 +71,7 @@ const ExaminationNewForm = () => {
 
   const onSubmit = handleSubmit(async (data) => {
     const selectedBatch = data.batch;
-
-    const studentIds = students
-      .filter(student => student.batch_id === selectedBatch._id)
-      .map(student => ({ student_id: student._id }));
-
+    const studentIds = selectedBatch?.value?.batch_members?.map(member => ({ student_id: member._id }));
     try {
       const URL = `${import.meta.env.VITE_AUTH_API}/api/company/exam`;
       await axios.post(URL, {
