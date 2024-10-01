@@ -24,12 +24,15 @@ import axios from 'axios';
 import { useSnackbar } from 'src/components/snackbar';
 import { paths } from 'src/routes/paths';
 import { useGetConfigs } from '../../api/config';
+import { useGetBatches } from '../../api/batch';
 
 export default function SeminarNewEditForm({ SeminarId }) {
   const { user } = useAuthContext();
+  const { batch } = useGetBatches();
   const [users, setUsers] = useState([]);
   const mdUp = useResponsive('up', 'md');
   const [selectedRole, setSelectedRole] = useState('');
+  const [role, setRole] = useState('');
   const router = useRouter();
   const [allUser, setAllUser] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
@@ -39,11 +42,10 @@ export default function SeminarNewEditForm({ SeminarId }) {
     title: Yup.string().required('Title is required'),
     schedule_by: Yup.string().required('Schedule by is required'),
     date_time: Yup.date().required('Date and Time are required'),
-    role: Yup.string().required('Role is required'),
-    users: Yup.array().min(1, 'At least one user must be selected').required('Users are required'),
+    role: Yup.mixed().required('Role is required'),
+    // users: Yup.array().min(1, 'At least one user must be selected').required('Users are required'),
     desc: Yup.string().required('Description is required'),
   });
-
   const methods = useForm({
     resolver: yupResolver(NewUserSchema),
     defaultValues: {
@@ -53,6 +55,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
       role: '',
       desc: '',
       users: [],
+      batch:null
     },
   });
 
@@ -64,7 +67,21 @@ export default function SeminarNewEditForm({ SeminarId }) {
     watch,
     formState: { isSubmitting, errors },
   } = methods;
+  const fetchUsers = async (role) => {
+    try {
+      const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/role/${role}`;
+      const response = await axios.get(URL);
+      setUsers(response.data.data);
+    } catch (error) {
+      console.error('Failed to fetch users:', error);
+    }
+  };
 
+  useEffect(() => {
+    if (selectedRole) {
+      fetchUsers(selectedRole);
+    }
+  }, [selectedRole]);
   useEffect(() => {
     const getUsers = async () => {
       try {
@@ -88,7 +105,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
           const URL = `${import.meta.env.VITE_AUTH_API}/api/company/seminar/${SeminarId}`;
           const response = await axios.get(URL);
           const data = response.data.data;
-          console.log(data);
+          setRole(data.role)
           reset({
             title: data.title,
             desc: data.desc,
@@ -134,19 +151,18 @@ export default function SeminarNewEditForm({ SeminarId }) {
   };
 
   const onSubmit = handleSubmit(async (data) => {
+    console.log(data,"rrrrrrrrrrrrrrram");
     const assignObject = allUser.find(
       (item) => `${item.firstName} ${item.lastName}` === data.schedule_by
     );
+    const idsArray = data.role === "Student" ?  data?.batch?.value?.batch_members?.map(item => (item.user_id)) : data?.users?.map(item => (item._id));
     const payload = {
       title: data.title,
       desc: data.desc,
       company_id: user?.company_id,
       date_time: data.date_time,
       schedule_by: assignObject?._id,
-      attended_by: data.users.map((attended_by) => ({
-        _id: attended_by._id,
-        selectedTime: attended_by.selectedTime,
-      })),
+      attended_by:idsArray,
     };
     try {
       let response;
@@ -167,21 +183,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
     }
   });
 
-  const fetchUsers = async (role) => {
-    try {
-      const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/role/${role}`;
-      const response = await axios.get(URL);
-      setUsers(response.data.data);
-    } catch (error) {
-      console.error('Failed to fetch users:', error);
-    }
-  };
 
-  useEffect(() => {
-    if (selectedRole) {
-      fetchUsers(selectedRole);
-    }
-  }, [selectedRole]);
 
   useEffect(() => {
     const subscription = watch((value, { name }) => {
@@ -246,51 +248,71 @@ export default function SeminarNewEditForm({ SeminarId }) {
                   />
                 )}
               />
-              <RHFAutocomplete
-                name="role"
-                label="Role"
-                placeholder="Choose a role"
-                fullWidth
-                options={configs?.roles}
-                getOptionLabel={(option) => option}
-                error={!!errors.role}
-              />
-
               <Controller
-                name="users"
+                name="role"
                 control={control}
                 render={({ field }) => (
-                  <Autocomplete
+                  <RHFAutocomplete
                     {...field}
-                    multiple
-                    options={users}
-                    value={field.value || []}
-                    disableCloseOnSelect
-                    getOptionLabel={(option) => `${option.firstName} ${option.lastName}`}
-                    onChange={(event, newValue) => field.onChange(newValue)}
-                    isOptionEqualToValue={(option, value) => option._id === value._id}
-                    renderOption={(props, option, { selected }) => (
-                      <li {...props}>
-                        <Checkbox style={{ marginRight: 8 }} checked={selected} />
-                        {option.firstName} {option.lastName}
-                      </li>
-                    )}
-                    renderTags={(selected, getTagProps) =>
-                      selected.map((option, index) => (
-                        <Chip
-                          {...getTagProps({ index })}
-                          key={option?._id}
-                          label={`${option?.firstName} ${option?.lastName}`}
-                          size="small"
-                          variant="soft"
-                        />
-                      ))
-                    }
-                    renderInput={(params) => <TextField {...params} label="Users" />}
-                    error={!!errors?.users}
+                    label="Role"
+                    placeholder="Choose a role"
+                    fullWidth
+                    options={configs?.roles}
+                    getOptionLabel={(option) => option}
+                    error={!!errors.role}
+                    onChange={(event, value) => {
+                      setRole(value);
+                      field.onChange(value)
+                    }}
+                  />)} />
+              {
+                role === "Student" ?
+                  <RHFAutocomplete
+                    name='batch'
+                    label='Batch'
+                    placeholder='Choose a batch'
+                    fullWidth
+                    options={batch.map((option) => ({ label: option?.batch_name, value: option }))}
+                    isOptionEqualToValue={(option, value) => option?.value?._id === value?.value?._id}
+                    getOptionLabel={(option) => option?.label}
                   />
-                )}
-              />
+                  :
+                  <Controller
+                    name="users"
+                    control={control}
+                    render={({ field }) => (
+                      <Autocomplete
+                        {...field}
+                        multiple
+                        options={allUser}
+                        value={field.value || []}
+                        disableCloseOnSelect
+                        getOptionLabel={(option) => `${option.firstName} ${option.lastName}`}
+                        onChange={(event, newValue) => field.onChange(newValue)}
+                        isOptionEqualToValue={(option, value) => option._id === value._id}
+                        renderOption={(props, option, { selected }) => (
+                          <li {...props}>
+                            <Checkbox style={{ marginRight: 8 }} checked={selected} />
+                            {option.firstName} {option.lastName}
+                          </li>
+                        )}
+                        renderTags={(selected, getTagProps) =>
+                          selected.map((option, index) => (
+                            <Chip
+                              {...getTagProps({ index })}
+                              key={option?._id}
+                              label={`${option?.firstName} ${option?.lastName}`}
+                              size="small"
+                              variant="soft"
+                            />
+                          ))
+                        }
+                        renderInput={(params) => <TextField {...params} label="Users" />}
+                        error={!!errors?.users}
+                      />
+                    )}
+                  />
+              }
 
               <RHFTextField
                 name="desc"
