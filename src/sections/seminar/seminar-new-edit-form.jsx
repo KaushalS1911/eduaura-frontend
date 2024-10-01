@@ -151,7 +151,6 @@ export default function SeminarNewEditForm({ SeminarId }) {
   };
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data,"rrrrrrrrrrrrrrram");
     const assignObject = allUser.find(
       (item) => `${item.firstName} ${item.lastName}` === data.schedule_by
     );
