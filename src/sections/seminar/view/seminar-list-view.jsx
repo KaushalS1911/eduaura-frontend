@@ -90,7 +90,6 @@ export default function SeminarListView() {
   const [filters, setFilters] = useState(defaultFilters);
   const [field, setField] = useState([]);
   const { seminars, SeminarError, mutate } = useGetSeminar();
-
   useEffect(() => {
     if (SeminarError) {
       enqueueSnackbar('Failed to fetch Seminar', { variant: 'error' });
