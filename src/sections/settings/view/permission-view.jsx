@@ -111,6 +111,14 @@ const modules = [
       { action: 'delete Exam', key: 'delete_exam' },
       { action: 'print Exam', key: 'print_exam_detail' },
     ],
+  },{
+    label: 'Assignment',
+    value: 'assignment',
+    permissions: [
+      { action: 'create Assignment', key: 'create_assignment' },
+      { action: 'update Assignment', key: 'update_assignment' },
+      { action: 'delete Assignment', key: 'delete_assignment' },
+    ],
   },
   {
     label: 'Seminar',

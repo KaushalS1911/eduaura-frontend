@@ -28,6 +28,7 @@ const ICONS = {
   task: <Iconify icon='fluent:task-list-square-person-20-filled' sx={{ width: 1, height: 1 }} />,
   visit: <Iconify icon='material-symbols:nest-doorbell-visitor' sx={{ width: 1, height: 1 }} />,
   exam: <Iconify icon='healthicons:i-exam-multiple-choice-negative' sx={{ width: 1, height: 1 }} />,
+  assignment: <Iconify icon='material-symbols:assignment-turned-in' sx={{ width: 1, height: 1 }} />,
   file: icon('ic_file'),
   lock: icon('ic_lock'),
   tour: icon('ic_tour'),
@@ -121,6 +122,11 @@ export function useNavData() {
             title: t('exam'),
             path: paths.dashboard.examination.list,
             icon: ICONS.exam,
+          },
+          {
+            title: t('assignment'),
+            path: paths.dashboard.assignment.list,
+            icon: ICONS.assignment,
           },
           {
             title: t('seminar'),

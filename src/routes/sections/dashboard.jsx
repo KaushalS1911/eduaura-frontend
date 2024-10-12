@@ -16,6 +16,10 @@ import InviteUserView from '../../layouts/common/Invite-user';
 import AuthClassicLayout from '../../layouts/auth/classic';
 import RegisterView from '../../pages/dashboard/batches/view';
 import { ComplainListView } from '../../sections/complain/view';
+import { AssignmentCreateView, AssignmentEditView, AssignmentListView } from '../../sections/assignment/view';
+import AssignmentListPage from '../../pages/dashboard/assignment/list';
+import AssignmentCreatePage from '../../pages/dashboard/assignment/create';
+import AssignmentEditPage from '../../pages/dashboard/assignment/edit';
 
 // BATCH
 const BatchListPage = lazy(() => import('src/pages/dashboard/batches/list'));
@@ -221,6 +225,16 @@ export const dashboardRoutes = [
           { path: 'new', element: <ExaminationCreatePage /> },
           { path: ':id/edit', element: <ExaminationEditPage /> },
           { path: ':batchExamId/examoverview', element: <ExamOverviewPage /> },
+        ],
+      },
+      {
+        path: 'assignment',
+        children: [
+          { element: <AssignmentListPage />, index: true },
+          { path: 'list', element: <AssignmentListPage /> },
+          { path: 'new', element: <AssignmentCreatePage /> },
+          { path: ':id/edit', element: <AssignmentEditPage /> },
+          // { path: ':batchExamId/examoverview', element: <Assign /> },
         ],
       },
       {

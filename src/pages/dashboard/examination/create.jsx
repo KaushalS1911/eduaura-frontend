@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 
 import { useParams } from 'src/routes/hooks';
 import { ExaminationCreateView } from 'src/sections/examination/view';
-// import ExaminationCreateView from 'src/sections/examination/view/examination-create-view';
+// import AssignmentCreateView from 'src/sections/examination/view/examination-create-view';
 
 // import { ExpenseEditView } from 'src/sections/expenses/view';
 

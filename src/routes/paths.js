@@ -164,6 +164,13 @@ export const paths = {
       new: `${ROOTS.DASHBOARD}/examination/new`,
       examoverview: (batchExamId) => `${ROOTS.DASHBOARD}/examination/${batchExamId}/examoverview`,
     },
+    assignment: {
+      root: `${ROOTS.DASHBOARD}/assignment`,
+      list: `${ROOTS.DASHBOARD}/assignment/list`,
+      edit: (id) => `${ROOTS.DASHBOARD}/assignment/${id}/edit`,
+      new: `${ROOTS.DASHBOARD}/assignment/new`,
+      examoverview: (batchExamId) => `${ROOTS.DASHBOARD}/assignment/${batchExamId}/examoverview`,
+    },
 
     task: {
       root: `${ROOTS.DASHBOARD}/task`,

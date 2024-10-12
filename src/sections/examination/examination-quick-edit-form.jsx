@@ -22,7 +22,7 @@
 
 // // ----------------------------------------------------------------------
 
-// export default function ExaminationQuickEditForm({ currentUser, open, onClose }) {
+// export default function AssignmentQuickEditForm({ currentUser, open, onClose }) {
 //   const { enqueueSnackbar } = useSnackbar();
 
 //   const NewUserSchema = Yup.object().shape({
@@ -122,7 +122,7 @@
 //   );
 // }
 
-// ExaminationQuickEditForm.propTypes = {
+// AssignmentQuickEditForm.propTypes = {
 //   open: PropTypes.bool,
 //   onClose: PropTypes.func,
 //   currentUser: PropTypes.object,
