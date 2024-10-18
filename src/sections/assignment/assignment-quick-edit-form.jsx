@@ -97,7 +97,7 @@ export default function AssignmentQuickEditForm({ currentUser, open, onClose, mu
   const OPTIONS = [
     { value: 'completed', label: 'Completed' },
     { value: 'pending', label: 'Pending' },
-    { value: 'overdue', label: 'Overdue' },
+    { value: 'not_completed', label: 'Not Completed' },
   ];
   return (
     <Dialog

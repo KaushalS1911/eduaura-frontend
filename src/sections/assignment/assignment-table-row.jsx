@@ -89,12 +89,12 @@ export default function AssignmentTableRow({
         </TableCell>
       </TableRow>
 
-      {/*{getResponsibilityValue('create_batch', configs, user) && <AssignmentQuickEditForm*/}
-      {/*  mutate={mutate}*/}
-      {/*  currentUser={row}*/}
-      {/*  open={quickEdit.value}*/}
-      {/*  onClose={quickEdit.onFalse}*/}
-      {/*/>}*/}
+      {getResponsibilityValue('update_assignment', configs, user) && <AssignmentQuickEditForm
+        mutate={mutate}
+        currentUser={row}
+        open={quickEdit.value}
+        onClose={quickEdit.onFalse}
+      />}
 
       <CustomPopover
         open={popover.open}
