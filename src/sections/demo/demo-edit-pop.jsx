@@ -13,15 +13,18 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Box, Stack } from '@mui/system';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
+import { useAuthContext } from '../../auth/hooks';
 
 export default function DemoEditPop({ open, onClose, currentId }) {
   const { enqueueSnackbar } = useSnackbar();
+  const { user } = useAuthContext();
   const NewUserSchema = Yup.object().shape({
     faculty_name: Yup.string().required('Faculty name is required'),
     note: Yup.string().required('Note is required'),
     date: Yup.date().required('Date is required'),
     time: Yup.date().required('Time is required'),
   });
+
   function formatDate(inputDate) {
     const originalDate = new Date(inputDate);
     const day = originalDate.getDate();
@@ -31,6 +34,7 @@ export default function DemoEditPop({ open, onClose, currentId }) {
     const formattedMonth = month < 10 ? `0${month}` : month;
     return `${year}-${formattedMonth}-${formattedDay}`;
   }
+
   function formatTime(inputTime) {
     const originalTime = new Date(inputTime);
     const hours = originalTime.getHours();
@@ -40,6 +44,7 @@ export default function DemoEditPop({ open, onClose, currentId }) {
     const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
     return `${formattedHours}:${formattedMinutes} ${amPM}`;
   }
+
   const methods = useForm({
     resolver: yupResolver(NewUserSchema),
     defaultValues: {
@@ -54,10 +59,10 @@ export default function DemoEditPop({ open, onClose, currentId }) {
     formState: { isSubmitting },
     control,
   } = methods;
-  // Create Demo
+
   const createDemo = async (newDemo) => {
     try {
-      const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/company/664ec7b3671bf9a7f5366599/demo`;
+      const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user.company_id}/demo`;
       const response = await axios.post(URL, newDemo);
       return response.data;
     } catch (error) {
@@ -65,6 +70,7 @@ export default function DemoEditPop({ open, onClose, currentId }) {
       throw error;
     }
   };
+
   const onSubmit = async (data) => {
     try {
       const payload = {
@@ -91,17 +97,18 @@ export default function DemoEditPop({ open, onClose, currentId }) {
       });
     }
   };
+
   return (
     <Dialog
       fullWidth
-      maxWidth="sm"
+      maxWidth='sm'
       open={open}
       onClose={onClose}
       PaperProps={{
         sx: { maxWidth: 420 },
       }}
     >
-      <DialogTitle >Add Demo</DialogTitle>
+      <DialogTitle>Add Demo</DialogTitle>
       <DialogContent>
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -109,14 +116,14 @@ export default function DemoEditPop({ open, onClose, currentId }) {
               <Box
                 columnGap={2}
                 rowGap={3}
-                display="grid"
+                display='grid'
                 gridTemplateColumns={{
                   xs: 'repeat(1, 1fr)',
                   md: 'repeat(1, 1fr)',
                 }}
               >
                 <Controller
-                  name="faculty_name"
+                  name='faculty_name'
                   control={control}
                   render={({ field, fieldState: { error } }) => (
                     <RHFAutocomplete
@@ -126,8 +133,8 @@ export default function DemoEditPop({ open, onClose, currentId }) {
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Faculty Name"
-                          placeholder="Faculty Name"
+                          label='Faculty Name'
+                          placeholder='Faculty Name'
                           error={!!error}
                           helperText={error ? error.message : null}
                           fullWidth
@@ -139,11 +146,11 @@ export default function DemoEditPop({ open, onClose, currentId }) {
                 />
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <Controller
-                    name="date"
+                    name='date'
                     control={control}
                     render={({ field: { onChange, value }, fieldState: { error } }) => (
                       <DatePicker
-                        label="Date"
+                        label='Date'
                         value={value}
                         onChange={onChange}
                         renderInput={(params) => (
@@ -160,11 +167,11 @@ export default function DemoEditPop({ open, onClose, currentId }) {
 
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <Controller
-                    name="time"
+                    name='time'
                     control={control}
                     render={({ field: { onChange, value }, fieldState: { error } }) => (
                       <TimePicker
-                        label="Time"
+                        label='Time'
                         value={value}
                         onChange={onChange}
                         renderInput={(params) => (
@@ -179,23 +186,23 @@ export default function DemoEditPop({ open, onClose, currentId }) {
                   />
                 </LocalizationProvider>
                 <Controller
-                  name="note"
+                  name='note'
                   control={control}
                   render={({ field }) => (
                     <TextField
                       {...field}
-                      label="Notes"
+                      label='Notes'
                       multiline
                       rows={4}
                       cols={10}
-                      placeholder="Notes"
-                      variant="outlined"
+                      placeholder='Notes'
+                      variant='outlined'
                       fullWidth
                     />
                   )}
                 />
               </Box>
-              <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+              <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
                 Add Demo
               </LoadingButton>
             </Stack>

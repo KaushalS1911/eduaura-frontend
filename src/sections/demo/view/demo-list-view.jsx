@@ -46,8 +46,6 @@ import DemoPDF from '../../generate-pdf/demo-overview-pdf';
 
 // ----------------------------------------------------------------------
 
-// const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...ORDER_STATUS_OPTIONS];
-
 const TABLE_HEAD = [
   { id: 'srNo', label: '#', align: 'center' },
   { id: 'name', label: 'Name' },

@@ -26,7 +26,17 @@ const modules = [
   {
     label: 'Dashboard',
     value: 'dashboard',
-    permissions: [],
+    permissions: [
+      { action: 'View Student', key: 'view_student' },
+      { action: 'View Developers', key: 'view_developers' },
+      { action: 'View Faculties', key: 'view_faculties' },
+      { action: 'View Labs', key: 'view_labs' },
+      { action: 'View Visit-inquiry', key: 'view_visit-inquiry' },
+      { action: 'View Attendance', key: 'view_attendance' },
+      { action: 'View Course', key: 'view_course' },
+      { action: 'View Demos', key: 'view_demos' },
+      { action: 'View Inquirys', key: 'view_inquirys' },
+    ],
   },
   {
     label: 'Account',
@@ -111,7 +121,7 @@ const modules = [
       { action: 'delete Exam', key: 'delete_exam' },
       { action: 'print Exam', key: 'print_exam_detail' },
     ],
-  },{
+  }, {
     label: 'Assignment',
     value: 'assignment',
     permissions: [
@@ -210,9 +220,14 @@ export default function PermissionView() {
 
       modules.forEach((module) => {
         const hasPermissions = rolePermissions.sections?.includes(module.value) || false;
-        moduleStates[module.value] = hasPermissions;
 
-        if (hasPermissions) {
+        if (module.value === 'dashboard') {
+          moduleStates[module.value] = true;
+        } else {
+          moduleStates[module.value] = hasPermissions;
+        }
+
+        if (hasPermissions || module.value === 'dashboard') {
           module.permissions.forEach((permission) => {
             permissionsStates[`${module.value}.${permission.key}`] = rolePermissions.responsibilities?.[permission.key] || false;
           });
@@ -223,6 +238,7 @@ export default function PermissionView() {
       setPermissionsState(permissionsStates);
     }
   }, [selectedRole, configs]);
+
 
   const handleRoleChange = (event, value) => {
     setSelectedRole(value);
@@ -253,10 +269,15 @@ export default function PermissionView() {
   };
 
   const handleSwitchChange = (moduleValue, checked) => {
+    if (moduleValue === 'dashboard') {
+      checked = true;
+    }
+
     setModuleSwitchState((prevState) => ({
       ...prevState,
       [moduleValue]: checked,
     }));
+
     if (!checked) {
       const updatedPermissions = { ...permissionsState };
       modules
@@ -267,6 +288,7 @@ export default function PermissionView() {
       setPermissionsState(updatedPermissions);
     }
   };
+
 
   const handleCheckboxChange = (moduleValue, actionKey, checked) => {
     setPermissionsState((prevState) => ({

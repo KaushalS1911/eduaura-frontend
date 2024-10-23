@@ -55,7 +55,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
       role: '',
       desc: '',
       users: [],
-      batch:null
+      batch: null,
     },
   });
 
@@ -86,7 +86,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
     const getUsers = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/user/list`
+          `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/user/list`,
         );
         setAllUser(response.data);
       } catch (err) {
@@ -105,7 +105,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
           const URL = `${import.meta.env.VITE_AUTH_API}/api/company/seminar/${SeminarId}`;
           const response = await axios.get(URL);
           const data = response.data.data;
-          setRole(data.role)
+          setRole(data.role);
           reset({
             title: data.title,
             desc: data.desc,
@@ -152,16 +152,16 @@ export default function SeminarNewEditForm({ SeminarId }) {
 
   const onSubmit = handleSubmit(async (data) => {
     const assignObject = allUser.find(
-      (item) => `${item.firstName} ${item.lastName}` === data.schedule_by
+      (item) => `${item.firstName} ${item.lastName}` === data.schedule_by,
     );
-    const idsArray = data.role === "Student" ?  data?.batch?.value?.batch_members?.map(item => (item.user_id)) : data?.users?.map(item => (item._id));
+    const idsArray = data.role === 'Student' ? data?.batch?.value?.batch_members?.map(item => (item.user_id)) : data?.users?.map(item => (item._id));
     const payload = {
       title: data.title,
       desc: data.desc,
       company_id: user?.company_id,
       date_time: data.date_time,
       schedule_by: assignObject?._id,
-      attended_by:idsArray,
+      attended_by: idsArray,
     };
     try {
       let response;
@@ -183,7 +183,6 @@ export default function SeminarNewEditForm({ SeminarId }) {
   });
 
 
-
   useEffect(() => {
     const subscription = watch((value, { name }) => {
       if (name === 'role') {
@@ -198,10 +197,10 @@ export default function SeminarNewEditForm({ SeminarId }) {
     <>
       {mdUp && (
         <Grid item md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
+          <Typography variant='h6' sx={{ mb: 0.5 }}>
             Seminar Details
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
             Seminar, role, Schedule by...
           </Typography>
         </Grid>
@@ -212,25 +211,26 @@ export default function SeminarNewEditForm({ SeminarId }) {
             <Box
               columnGap={2}
               rowGap={3}
-              display="grid"
+              display='grid'
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
                 md: 'repeat(1, 1fr)',
               }}
             >
-              <RHFTextField name="title" label="Title" error={!!errors.title} />
-
+              <RHFTextField name='title' label='Title' error={!!errors.title} onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }} />
               <RHFAutocomplete
-                name="schedule_by"
-                label="Schedule By"
-                placeholder="Choose a contact person"
+                name='schedule_by'
+                label='Schedule By'
+                placeholder='Choose a contact person'
                 fullWidth
                 options={filter}
                 getOptionLabel={(option) => option}
                 error={!!errors.schedule_by}
               />
               <Controller
-                name="date_time"
+                name='date_time'
                 control={control}
                 render={({ field }) => (
                   <MobileDateTimePicker
@@ -248,24 +248,24 @@ export default function SeminarNewEditForm({ SeminarId }) {
                 )}
               />
               <Controller
-                name="role"
+                name='role'
                 control={control}
                 render={({ field }) => (
                   <RHFAutocomplete
                     {...field}
-                    label="Role"
-                    placeholder="Choose a role"
+                    label='Role'
+                    placeholder='Choose a role'
                     fullWidth
                     options={configs?.roles}
                     getOptionLabel={(option) => option}
                     error={!!errors.role}
                     onChange={(event, value) => {
                       setRole(value);
-                      field.onChange(value)
+                      field.onChange(value);
                     }}
                   />)} />
               {
-                role === "Student" ?
+                role === 'Student' ?
                   <RHFAutocomplete
                     name='batch'
                     label='Batch'
@@ -277,7 +277,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
                   />
                   :
                   <Controller
-                    name="users"
+                    name='users'
                     control={control}
                     render={({ field }) => (
                       <Autocomplete
@@ -301,12 +301,12 @@ export default function SeminarNewEditForm({ SeminarId }) {
                               {...getTagProps({ index })}
                               key={option?._id}
                               label={`${option?.firstName} ${option?.lastName}`}
-                              size="small"
-                              variant="soft"
+                              size='small'
+                              variant='soft'
                             />
                           ))
                         }
-                        renderInput={(params) => <TextField {...params} label="Users" />}
+                        renderInput={(params) => <TextField {...params} label='Users' />}
                         error={!!errors?.users}
                       />
                     )}
@@ -314,8 +314,8 @@ export default function SeminarNewEditForm({ SeminarId }) {
               }
 
               <RHFTextField
-                name="desc"
-                label="Description"
+                name='desc'
+                label='Description'
                 multiline
                 rows={4}
                 error={!!errors?.desc}
@@ -331,7 +331,7 @@ export default function SeminarNewEditForm({ SeminarId }) {
     <>
       {mdUp && <Grid item md={8} />}
       <Grid item xs={12} md={10} sx={{ display: 'flex', justifyContent: 'end' }}>
-        <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
+        <LoadingButton type='submit' variant='contained' size='large' loading={isSubmitting}>
           {!SeminarId ? 'Add Seminar' : 'Save Changes'}
         </LoadingButton>
       </Grid>

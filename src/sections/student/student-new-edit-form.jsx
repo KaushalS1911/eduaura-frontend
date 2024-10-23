@@ -10,18 +10,13 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import { Autocomplete, TextField } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { STUDENT_GENDER, courses } from 'src/_mock/_student';
 import countrystatecity from '../../_mock/map/csc.json';
-import { countries } from 'src/assets/data';
-import Label from 'src/components/label';
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, {
-  RHFSwitch,
   RHFTextField,
   RHFUploadAvatar,
   RHFAutocomplete,
@@ -31,7 +26,9 @@ import { useAuthContext } from 'src/auth/hooks';
 import axios from 'axios';
 import CardHeader from '@mui/material/CardHeader';
 import { useGetConfigs } from '../../api/config';
+
 // ----------------------------------------------------------------------
+
 export default function StudentNewEditForm({ currentStudent, mutate }) {
   const router = useRouter();
   const mdUp = useResponsive('up', 'md');
@@ -39,6 +36,7 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
   const { user } = useAuthContext();
   const [profilePic, setProfilePic] = useState(null);
   const { configs } = useGetConfigs();
+
   useEffect(() => {
     if (currentStudent) {
       setProfilePic(currentStudent?.profile_pic);
@@ -63,10 +61,10 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
     city: Yup.string().required('City is required'),
     zipcode: Yup.string().required('Zip/Code is required'),
     enrollment_no: Yup.number().required('Enrollment No is required'),
-    // total_amount: Yup.number().required('Total Amount is required'),
     amount_paid: Yup.number().required('Amount Paid is required'),
     profile_pic: Yup.mixed().required('Profile Picture is required'),
   });
+
   const defaultValues = useMemo(
     () => ({
       profile_pic: currentStudent?.profile_pic || '',
@@ -87,16 +85,16 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
       state: currentStudent?.address_detail?.state || 'Gujarat',
       city: currentStudent?.address_detail?.city || 'Surat',
       zipcode: currentStudent?.address_detail?.zipcode || '',
-      enrollment_no: currentStudent?.enrollment_no || '',
-      total_amount: currentStudent?.fee_detail?.total_amount || 0,
-      discount: currentStudent?.fee_detail?.discount || 0,
-      amount_paid: currentStudent?.fee_detail?.amount_paid || 0,
-      no_of_installments: currentStudent?.fee_detail?.no_of_installments || 0,
+      enrollment_no: currentStudent?.enrollment_no || null,
+      total_amount: currentStudent?.fee_detail?.total_amount || null,
+      discount: currentStudent?.fee_detail?.discount || null,
+      amount_paid: currentStudent?.fee_detail?.amount_paid || null,
+      no_of_installments: currentStudent?.fee_detail?.no_of_installments || null,
       upcoming_installment_date: currentStudent?.fee_detail?.upcoming_installment_date
         ? new Date(currentStudent?.fee_detail?.upcoming_installment_date)
         : new Date(),
     }),
-    [currentStudent]
+    [currentStudent],
   );
 
   const methods = useForm({
@@ -112,7 +110,6 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
     formState: { isSubmitting, errors },
   } = methods;
 
-  const values = watch();
   const createStudent = async (studentPayload) => {
     const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/v2/${user?.company_id}/student`;
     const formData = new FormData();
@@ -207,35 +204,35 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
   const uploadStudentImage = (
     <>
       <Grid item md={4} xs={12}>
-        <Typography variant="h6" sx={{ mb: 0.5 }}>
+        <Typography variant='h6' sx={{ mb: 0.5 }}>
           Personal Details
         </Typography>
-        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+        <Typography variant='body2' sx={{ color: 'text.secondary' }}>
           Basic info, profile pic, Name, Course, Enrollment no...
         </Typography>
         <Card sx={{ pt: 5, px: 3, mt: 5 }}>
           <Box sx={{ mb: 5 }}>
-            <RHFUploadAvatar name="profile_pic" onDrop={handleDrop} />
+            <RHFUploadAvatar name='profile_pic' onDrop={handleDrop} />
           </Box>
         </Card>
       </Grid>
 
       <Grid item xs={12} md={8}>
         <Card>
-          {!mdUp && <CardHeader title="Personal Details" />}
+          {!mdUp && <CardHeader title='Personal Details' />}
           <Stack spacing={3} sx={{ p: 3 }}>
             <Box
               columnGap={2}
               rowGap={3}
-              display="grid"
+              display='grid'
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
                 md: 'repeat(2, 1fr)',
               }}
             >
               <RHFTextField
-                name="firstName"
-                label="First Name"
+                name='firstName'
+                label='First Name'
                 inputProps={{ style: { textTransform: 'uppercase' } }}
                 onChange={(e) => {
                   const value = e.target.value.toUpperCase();
@@ -243,33 +240,37 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
                 }}
               />
               <RHFTextField
-                name="lastName"
-                label="Last Name"
+                name='lastName'
+                label='Last Name'
                 inputProps={{ style: { textTransform: 'uppercase' } }}
                 onChange={(e) => {
                   const value = e.target.value.toUpperCase();
                   methods.setValue('lastName', value, { shouldValidate: true });
                 }}
               />
-              <RHFTextField name="email" label="Email Address" />
-              <RHFTextField name="contact" label="Phone Number" />
+              <RHFTextField name='email' label='Email Address' />
+              <RHFTextField name='contact' label='Phone Number'
+                            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', maxLength: 10 }}
+                            onInput={(e) => {
+                              e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                            }} />
               <RHFAutocomplete
-                name="gender"
-                label="Gender"
-                placeholder="Choose a gender"
+                name='gender'
+                label='Gender'
+                placeholder='Choose a gender'
                 options={STUDENT_GENDER}
                 getOptionLabel={(option) => option}
                 isOptionEqualToValue={(option, value) => option === value}
               />
               <Stack spacing={1.5}>
                 <Controller
-                  name="dob"
+                  name='dob'
                   control={control}
                   render={({ field, fieldState: { error } }) => (
                     <DatePicker
                       {...field}
-                      label="Date of Birth"
-                      format="dd/MM/yyyy"
+                      label='Date of Birth'
+                      format='dd/MM/yyyy'
                       slotProps={{
                         textField: {
                           fullWidth: true,
@@ -281,24 +282,24 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
                   )}
                 />
               </Stack>
-              <RHFTextField name="education" label="Education" />
-              <RHFTextField name="school_college" label="School/College" />
+              <RHFTextField name='education' label='Education' />
+              <RHFTextField name='school_college' label='School/College' />
               <RHFAutocomplete
-                name="course"
-                label="Course"
-                placeholder="Choose a course"
+                name='course'
+                label='Course'
+                placeholder='Choose a course'
                 options={configs?.courses?.map((course) => course?.name)}
                 isOptionEqualToValue={(option, value) => option === value}
               />
               <Stack spacing={1.5}>
                 <Controller
-                  name="joining_date"
+                  name='joining_date'
                   control={control}
                   render={({ field, fieldState: { error } }) => (
                     <DatePicker
                       {...field}
-                      label="Joining Date"
-                      format="dd/MM/yyyy"
+                      label='Joining Date'
+                      format='dd/MM/yyyy'
                       slotProps={{
                         textField: {
                           fullWidth: true,
@@ -310,8 +311,10 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
                   )}
                 />
               </Stack>
-              <RHFTextField name="blood_group" label="Blood Group" />
-              <RHFTextField name="enrollment_no" label="Enrollment No" />
+              <RHFTextField name='blood_group' label='Blood Group' />
+              <RHFTextField name='enrollment_no' label='Enrollment No' onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }} />
             </Box>
           </Stack>
         </Card>
@@ -322,64 +325,68 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
     <>
       {mdUp && (
         <Grid item md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
+          <Typography variant='h6' sx={{ mb: 0.5 }}>
             Address Details
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
             Address info, country, state, city...
           </Typography>
         </Grid>
       )}
       <Grid item xs={12} md={8}>
         <Card>
-          {!mdUp && <CardHeader title="Address Details" />}
+          {!mdUp && <CardHeader title='Address Details' />}
           <Stack spacing={3} sx={{ p: 3 }}>
             <Box
               columnGap={2}
               rowGap={3}
-              display="grid"
+              display='grid'
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
                 md: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField name="address_1" label="Address Line 1" />
-              <RHFTextField name="address_2" label="Address Line 2" />
+              <RHFTextField name='address_1' label='Address Line 1' />
+              <RHFTextField name='address_2' label='Address Line 2' />
               <RHFAutocomplete
-                name="country"
-                label="Country"
-                placeholder="Choose a country"
+                name='country'
+                label='Country'
+                placeholder='Choose a country'
                 options={countrystatecity.map((country) => country.name)}
                 isOptionEqualToValue={(option, value) => option === value}
               />
               <RHFAutocomplete
-                name="state"
-                label="State"
-                placeholder="Choose a State"
+                name='state'
+                label='State'
+                placeholder='Choose a State'
                 options={
                   watch('country')
                     ? countrystatecity
-                        .find((country) => country.name === watch('country'))
-                        ?.states.map((state) => state.name) || []
+                    .find((country) => country.name === watch('country'))
+                    ?.states.map((state) => state.name) || []
                     : []
                 }
                 isOptionEqualToValue={(option, value) => option === value}
               />
               <RHFAutocomplete
-                name="city"
-                label="City"
-                placeholder="Choose a City"
+                name='city'
+                label='City'
+                placeholder='Choose a City'
                 options={
                   watch('state')
                     ? countrystatecity
-                        .find((country) => country.name === watch('country'))
-                        ?.states.find((state) => state.name === watch('state'))
-                        ?.cities.map((city) => city.name) || []
+                    .find((country) => country.name === watch('country'))
+                    ?.states.find((state) => state.name === watch('state'))
+                    ?.cities.map((city) => city.name) || []
                     : []
                 }
                 isOptionEqualToValue={(option, value) => option === value}
               />
-              <RHFTextField name="zipcode" label="Zip/Code" />
+              <RHFTextField name='zipcode' label='Zip/Code'
+                            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', maxLength: 6 }}
+                            onInput={(e) => {
+                              e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                            }} />
             </Box>
           </Stack>
         </Card>
@@ -390,52 +397,64 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
     <>
       {mdUp && (
         <Grid item md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
+          <Typography variant='h6' sx={{ mb: 0.5 }}>
             Fee Details
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
             Fee info, total amount, discount, amount paid...
           </Typography>
         </Grid>
       )}
       <Grid item xs={12} md={8}>
         <Card>
-          {!mdUp && <CardHeader title="Fee Details" />}
+          {!mdUp && <CardHeader title='Fee Details' />}
           <Stack spacing={3} sx={{ p: 3 }}>
             <Box
               columnGap={2}
               rowGap={3}
-              display="grid"
+              display='grid'
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
                 md: 'repeat(2, 1fr)',
               }}
             >
               <RHFTextField
-                name="total_amount"
-                label="Total Amount"
+                name='total_amount'
+                label='Total Amount'
+                disabled={currentStudent ? true : false}
+                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                onInput={(e) => {
+                  e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                }}
+              />
+              <RHFTextField
+                name='amount_paid'
+                label='Amount Paid'
+                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                onInput={(e) => {
+                  e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                }}
                 disabled={currentStudent ? true : false}
               />
               <RHFTextField
-                name="amount_paid"
-                label="Amount Paid"
-                disabled={currentStudent ? true : false}
-              />
-              <RHFTextField
-                name="discount"
-                label="Discount"
+                name='discount'
+                label='Discount'
+                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                onInput={(e) => {
+                  e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                }}
                 disabled={currentStudent ? true : false}
               />
               <Stack spacing={1.5}>
                 <Controller
-                  name="upcoming_installment_date"
+                  name='upcoming_installment_date'
                   control={control}
                   disabled={currentStudent ? true : false}
                   render={({ field, fieldState: { error } }) => (
                     <DatePicker
                       {...field}
-                      label="Upcoming Installment Date"
-                      format="dd/MM/yyyy"
+                      label='Upcoming Installment Date'
+                      format='dd/MM/yyyy'
                       slotProps={{
                         textField: {
                           fullWidth: true,
@@ -448,8 +467,12 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
                 />
               </Stack>
               <RHFTextField
-                name="no_of_installments"
-                label="Number of Installment"
+                name='no_of_installments'
+                label='Number of Installment'
+                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                onInput={(e) => {
+                  e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                }}
                 disabled={currentStudent ? true : false}
               />
             </Box>
@@ -465,15 +488,15 @@ export default function StudentNewEditForm({ currentStudent, mutate }) {
         {renderAddress}
         {renderAmount}
         <Grid item xs={12}>
-          <Stack direction="row" spacing={1.5} justifyContent="flex-end">
+          <Stack direction='row' spacing={1.5} justifyContent='flex-end'>
             <Button
-              color="inherit"
-              variant="outlined"
+              color='inherit'
+              variant='outlined'
               onClick={() => router.push(paths.dashboard.student.list)}
             >
               Cancel
             </Button>
-            <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+            <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
               {!currentStudent ? 'Create Student' : 'Save Changes'}
             </LoadingButton>
           </Stack>

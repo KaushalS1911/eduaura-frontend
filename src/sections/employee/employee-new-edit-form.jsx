@@ -26,8 +26,6 @@ import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import countrystatecity from '../../_mock/map/csc.json';
 import FormProvider from 'src/components/hook-form/form-provider';
-import { cond } from 'lodash';
-import { useGetSingleEmployee } from 'src/api/employee';
 
 export default function EmployeeNewEditForm({ employee }) {
   const { user } = useAuthContext();
@@ -198,18 +196,15 @@ export default function EmployeeNewEditForm({ employee }) {
         <Typography variant='body2' sx={{ color: 'text.secondary' }}>
           Basic info, profile pic, role, qualification...
         </Typography>
-
         <Card sx={{ pt: 5, px: 3, mt: 5 }}>
           <Box sx={{ mb: 5 }}>
             <RHFUploadAvatar name='avatar_url' onDrop={handleDrop} />
           </Box>
         </Card>
       </Grid>
-
       <Grid item xs={12} md={8}>
         <Card>
           {!mdUp && <CardHeader title='Personal Details' />}
-
           <Stack spacing={3} sx={{ p: 3 }}>
             <Box
               columnGap={2}
@@ -225,16 +220,17 @@ export default function EmployeeNewEditForm({ employee }) {
                 label='First Name'
                 onChange={handleUppercase('firstName')}
               />
-
               <RHFTextField
                 name='lastName'
                 label='Last Name'
                 onChange={handleUppercase('lastName')}
               />
-
               <RHFTextField name='email' label='Email Address' />
-
-              <RHFTextField name='contact' label='Phone Number' />
+              <RHFTextField name='contact' label='Phone Number'
+                            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', maxLength: 10 }}
+                            onInput={(e) => {
+                              e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                            }} />
               <RHFAutocomplete
                 name='gender'
                 type='gender'
@@ -244,7 +240,6 @@ export default function EmployeeNewEditForm({ employee }) {
                 options={EMPLOYEE_GENDER.map((option) => option)}
                 getOptionLabel={(option) => option}
               />
-
               <Stack spacing={1.5}>
                 <Controller
                   name='dob'
@@ -265,7 +260,6 @@ export default function EmployeeNewEditForm({ employee }) {
                   )}
                 />
               </Stack>
-
               {configs?.emp_type && (
                 <RHFAutocomplete
                   name='role'
@@ -277,7 +271,6 @@ export default function EmployeeNewEditForm({ employee }) {
                   getOptionLabel={(option) => option}
                 />
               )}
-
               <RHFTextField
                 name='experience'
                 label='Experience'
@@ -285,9 +278,7 @@ export default function EmployeeNewEditForm({ employee }) {
                 type='number'
                 InputLabelProps={{ shrink: true }}
               />
-
               <RHFTextField name='qualification' label='Qualification' />
-
               {configs?.developer_type && (
                 <RHFAutocomplete
                   name='technology'
@@ -299,7 +290,6 @@ export default function EmployeeNewEditForm({ employee }) {
                   getOptionLabel={(option) => option}
                 />
               )}
-
               <Stack spacing={1.5}>
                 <Controller
                   name='joining_date'
@@ -343,12 +333,9 @@ export default function EmployeeNewEditForm({ employee }) {
       <Grid item xs={12} md={8}>
         <Card>
           {!mdUp && <CardHeader title='Address Details' />}
-
           <Stack spacing={3} sx={{ p: 3 }}>
             <RHFTextField name='address_1' label='Address line 1' />
-
             <RHFTextField name='address_2' label='Address line 2' />
-
             <Box
               columnGap={2}
               rowGap={3}
@@ -404,7 +391,6 @@ export default function EmployeeNewEditForm({ employee }) {
                   />
                 )}
               />
-
               <Controller
                 name='city'
                 control={control}
@@ -432,7 +418,11 @@ export default function EmployeeNewEditForm({ employee }) {
                   />
                 )}
               />
-              <RHFTextField name='zipcode' label='Zip code' />
+              <RHFTextField name='zipcode' label='Zip code'
+                            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', maxLength: 6 }}
+                            onInput={(e) => {
+                              e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                            }} />
             </Box>
           </Stack>
         </Card>

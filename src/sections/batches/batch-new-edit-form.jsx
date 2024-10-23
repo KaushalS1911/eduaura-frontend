@@ -13,7 +13,6 @@ import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook
 import axios from 'axios';
 import { paths } from 'src/routes/paths';
 import RHFAutocomplete1 from 'src/components/hook-form/batch-autocomplete';
-import moment from 'moment';
 import { useGetStudentsList } from 'src/api/student';
 import { useAuthContext } from 'src/auth/hooks';
 import { useGetFaculty } from 'src/api/faculty';
@@ -28,9 +27,9 @@ export default function BatchNewEditForm({ batchId }) {
   const { students } = useGetStudentsList(user?.company_id);
   const { faculty } = useGetFaculty();
   const { configs } = useGetConfigs();
-
   const [studentName, setStudentName] = useState([]);
   const [facultyName, setFacultyName] = useState([]);
+
   useEffect(() => {
     if (students) {
       setStudentName(students);
@@ -126,7 +125,6 @@ export default function BatchNewEditForm({ batchId }) {
         <Card>
           {!mdUp && <CardHeader title='Details' />}
           <Stack spacing={3} sx={{ p: 3 }}>
-            {/* <RHFTextField name="technology" label="Technology" /> */}
             <RHFAutocomplete
               name='technology'
               type='technology'
@@ -139,7 +137,9 @@ export default function BatchNewEditForm({ batchId }) {
               ])}
               isOptionEqualToValue={(option, value) => option === value}
             />
-            <RHFTextField name='batch_name' label='Batch Name' />
+            <RHFTextField name='batch_name' label='Batch Name' onInput={(e) => {
+              e.target.value = e.target.value.toUpperCase();
+            }} />
             <Controller
               name='batch_time'
               control={control}

@@ -12,7 +12,7 @@ import { useRouter } from 'src/routes/hooks';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, { RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
+import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
 import axios from 'axios';
 import { paths } from 'src/routes/paths';
 import { useAuthContext } from 'src/auth/hooks';
@@ -70,7 +70,7 @@ const VisitNewForm = () => {
     const assignObject = allUser.find((item) =>
       data.contact_person.includes(item?.firstName) && data.contact_person.includes(item?.lastName)
         ? item._id
-        : null
+        : null,
     );
     try {
       const formattedData = {
@@ -88,7 +88,7 @@ const VisitNewForm = () => {
           preview.onFalse();
         })
         .catch((err) => {
-          console.log(err)
+          console.log(err);
           enqueueSnackbar('Something want wrong!', { variant: 'error' });
         });
 
@@ -100,10 +100,10 @@ const VisitNewForm = () => {
     <>
       {mdUp && (
         <Grid md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
+          <Typography variant='h6' sx={{ mb: 0.5 }}>
             Details
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
             Name, short address, contact...
           </Typography>
         </Grid>
@@ -111,27 +111,46 @@ const VisitNewForm = () => {
 
       <Grid xs={12} md={8}>
         <Card>
-          {!mdUp && <CardHeader title="Details" />}
+          {!mdUp && <CardHeader title='Details' />}
 
           <Stack spacing={3} sx={{ p: 3 }}>
-            <RHFTextField name="firstName" label="First Name" />
-            <RHFTextField name="lastName" label="Last Name" />
-            <RHFTextField name="address" label="Address" />
-            <RHFTextField name="contact" label="Contact" />
+            <RHFTextField
+              name='firstName'
+              label='First Name'
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
+            />
+            <RHFTextField
+              name='lastName'
+              label='Last Name'
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
+            />
+            <RHFTextField name='address' label='Address' />
+            <RHFTextField
+              name='contact'
+              label='Contact'
+              inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', maxLength: 10 }}
+              onInput={(e) => {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+              }}
+            />
             <RHFAutocomplete
-              name="contact_person"
-              label="Contact Person"
-              placeholder="Choose a contact person"
+              name='contact_person'
+              label='Contact Person'
+              placeholder='Choose a contact person'
               fullWidth
               options={filter}
               getOptionLabel={(option) => option}
             />
-            <RHFTextField name="reference" label="Reference" />
-            <RHFTextField name="notes" label="Notes" multiline rows={3} />
+            <RHFTextField name='reference' label='Reference' />
+            <RHFTextField name='notes' label='Notes' multiline rows={3} />
           </Stack>
         </Card>
         <Stack sx={{ my: '30px', alignItems: 'flex-end' }}>
-          <Button type="submit" variant="contained">
+          <Button type='submit' variant='contained'>
             Submit
           </Button>
         </Stack>

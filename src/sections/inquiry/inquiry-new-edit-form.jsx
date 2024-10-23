@@ -220,10 +220,29 @@ export default function InquiryNewEditForm({ inquiryId }) {
                 md: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField name='firstName' label='First Name' />
-              <RHFTextField name='lastName' label='Last Name' />
+              <RHFTextField
+                name='firstName'
+                label='First Name'
+                onInput={(e) => {
+                  e.target.value = e.target.value.toUpperCase();
+                }}
+              />
+              <RHFTextField
+                name='lastName'
+                label='Last Name'
+                onInput={(e) => {
+                  e.target.value = e.target.value.toUpperCase();
+                }}
+              />
               <RHFTextField name='email' label='Email Address' />
-              <RHFTextField name='contact' label='Phone Number' />
+              <RHFTextField
+                name='contact'
+                label='Contact'
+                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', maxLength: 10 }}
+                onInput={(e) => {
+                  e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                }}
+              />
               <RHFTextField name='occupation' label='Occupation' />
               <RHFTextField name='education' label='Education' />
               <Stack spacing={1.5}>
@@ -335,7 +354,11 @@ export default function InquiryNewEditForm({ inquiryId }) {
                   />
                 )}
               />
-              <RHFTextField name='address.zip_code' label='Zip Code' />
+              <RHFTextField name='address.zip_code' label='Zip Code'
+                            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', maxLength: 6 }}
+                            onInput={(e) => {
+                              e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                            }} />
             </Box>
           </Stack>
         </Card>
@@ -368,8 +391,17 @@ export default function InquiryNewEditForm({ inquiryId }) {
                 md: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField name='fatherName' label='Father Name' />
-              <RHFTextField name='father_contact' label='Father Phone Number' />
+              <RHFTextField name='fatherName' label='Father Name'
+                            onInput={(e) => {
+                              e.target.value = e.target.value.toUpperCase();
+                            }} />
+              <RHFTextField
+                name='father_contact'
+                label='Father Phone Number'
+                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', maxLength: 10 }}
+                onInput={(e) => {
+                  e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                }} />
               <RHFTextField name='father_occupation' label='Father Occupation' />
             </Box>
           </Stack>

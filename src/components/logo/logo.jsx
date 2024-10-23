@@ -36,6 +36,7 @@ const Logo = forwardRef(({ disabledLink = false, navWidth, sx, ...other }, ref) 
           borderRadius: '50%',
           width: navWidth ? '75px' : '124px',
           height: navWidth ? '75px' : '124px',
+          objectFit:"contain"
         }}
       />
     </Box>

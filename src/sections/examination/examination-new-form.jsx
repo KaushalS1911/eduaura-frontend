@@ -124,7 +124,11 @@ const ExaminationNewForm = () => {
               isOptionEqualToValue={(option, value) => option.value === value.value}
               getOptionLabel={(option) => option.label}
             />
-            <RHFTextField name='total_marks' label='Total Marks' />
+            <RHFTextField name='total_marks' label='Total Marks'
+                          inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                          onInput={(e) => {
+                            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                          }} />
             <Stack spacing={1.5}>
               <Controller
                 name='date'

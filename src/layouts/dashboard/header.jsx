@@ -22,6 +22,7 @@ import { NAV, HEADER } from '../config-layout';
 import SettingsButton from '../common/settings-button';
 import AccountPopover from '../common/account-popover';
 import { useGetConfigs } from '../../api/config';
+import { Box } from '@mui/system';
 
 // ----------------------------------------------------------------------
 
@@ -80,7 +81,7 @@ export default function Header({ onOpenNav }) {
 
   const renderContent = (
     <>
-      {lgUp && isNavHorizontal && <Logo sx={{ mr: 2.5 }} />}
+      {lgUp && isNavHorizontal && <Box sx={{width:"50px",height:"50px",mb:17}}> <Logo sx={{ mr: 2.5 }} /></Box>}
       {!lgUp && (
         <IconButton onClick={onOpenNav}>
           <SvgColor src='/assets/icons/navbar/ic_menu_item.svg' />

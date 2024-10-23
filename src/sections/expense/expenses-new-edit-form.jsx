@@ -107,10 +107,10 @@ export default function PostNewEditForm({ expensesId }) {
     <>
       {mdUp && (
         <Grid md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
+          <Typography variant='h6' sx={{ mb: 0.5 }}>
             Details
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
             Type, short description, Amount...
           </Typography>
         </Grid>
@@ -118,22 +118,25 @@ export default function PostNewEditForm({ expensesId }) {
 
       <Grid xs={12} md={8}>
         <Card>
-          {!mdUp && <CardHeader title="Details" />}
+          {!mdUp && <CardHeader title='Details' />}
 
           <Stack spacing={3} sx={{ p: 3 }}>
             <RHFAutocomplete
-              name="type"
-              label="Type"
-              placeholder="Choose a Type"
+              name='type'
+              label='Type'
+              placeholder='Choose a Type'
               fullWidth
               options={configs?.expenses || types}
               getOptionLabel={(option) => option}
             />
-            <RHFTextField name="desc" label="Description" multiline rows={3} />
-            <RHFTextField name="amount" label="Amount" />
+            <RHFTextField name='desc' label='Description' multiline rows={3} />
+            <RHFTextField name='amount' label='Amount' inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                          onInput={(e) => {
+                            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                          }} />
             <Stack spacing={1.5}>
               <Controller
-                name="date"
+                name='date'
                 control={control}
                 render={({ field, fieldState: { error } }) => {
                   return (
@@ -159,7 +162,7 @@ export default function PostNewEditForm({ expensesId }) {
           </Stack>
         </Card>
         <Stack sx={{ my: '30px', alignItems: 'flex-end' }}>
-          <Button type="submit" variant="contained" disabled={isSubmitting}>
+          <Button type='submit' variant='contained' disabled={isSubmitting}>
             Submit
           </Button>
         </Stack>

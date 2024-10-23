@@ -22,7 +22,6 @@ import { useAuthContext } from 'src/auth/hooks';
 import { useGetStudentsList } from 'src/api/student';
 import RHFAutocomplete1 from 'src/components/hook-form/batch-autocomplete';
 import { useGetFaculty } from 'src/api/faculty';
-import { useGetBatches } from 'src/api/batch'; // Import the useGetBatches hook
 import { mutate } from 'swr';
 import { programmingLanguages } from '../../_mock/_inquiry';
 import { useGetConfigs } from '../../api/config';

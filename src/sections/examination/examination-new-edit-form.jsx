@@ -22,9 +22,8 @@ import { useAuthContext } from 'src/auth/hooks';
 import { useGetStudentsList } from 'src/api/student';
 import RHFAutocomplete1 from 'src/components/hook-form/batch-autocomplete';
 import { useGetFaculty } from 'src/api/faculty';
-import { useGetBatches } from 'src/api/batch'; // Import the useGetBatches hook
+import { useGetBatches } from 'src/api/batch';
 import { mutate } from 'swr';
-import { programmingLanguages } from '../../_mock/_inquiry';
 import { useGetConfigs } from '../../api/config';
 
 // ----------------------------------------------------------------------
@@ -38,7 +37,7 @@ export default function ExaminationNewEditForm({ examinationId }) {
   const { configs } = useGetConfigs();
   const { faculty } = useGetFaculty();
   const { students } = useGetStudentsList(user?.company_id);
-  const { batch } = useGetBatches(); // Fetch a single batch
+  const { batch } = useGetBatches();
   const [studentName, setStudentName] = useState([]);
   const [facultyName, setFacultyName] = useState([]);
   const [exam, setExam] = useState([]);
@@ -57,7 +56,7 @@ export default function ExaminationNewEditForm({ examinationId }) {
     desc: Yup.string().required('Description is required'),
     date: Yup.date().required('Date is required'),
     total_marks: Yup.string().required('Total marks is required'),
-    conducted_by: Yup.object().required('Faculty is required'), // Ensure this is validated
+    conducted_by: Yup.object().required('Faculty is required'),
   });
 
   const methods = useForm({
@@ -91,8 +90,8 @@ export default function ExaminationNewEditForm({ examinationId }) {
           const stu = exam.students.map((data) => data?.student_id);
           reset({
             title: {
-              label: exam?.title || 'Select Title', // Set a default label to avoid undefined
-              value: exam?.title, // Ensure the value matches the expected format
+              label: exam?.title || 'Select Title',
+              value: exam?.title,
             },
             total_marks: exam?.total_marks,
             desc: exam?.desc,
@@ -159,7 +158,11 @@ export default function ExaminationNewEditForm({ examinationId }) {
               isOptionEqualToValue={(option, value) => option.value === value.value}
               getOptionLabel={(option) => option.label}
             />
-            <RHFTextField name='total_marks' label='Total Marks' />
+            <RHFTextField name='total_marks' label='Total Marks'
+                          inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                          onInput={(e) => {
+                            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                          }} />
             <Stack spacing={1.5}>
               <Controller
                 name='date'

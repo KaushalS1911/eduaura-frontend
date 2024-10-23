@@ -67,7 +67,7 @@ export default function DemoFormDialog({ open, setOpen, demosID, demoID, mutate 
 
   const fetchDemoDetails = async () => {
     try {
-      const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/v2/demo/${demoID}`;
+      const URL = `${import.meta.env.VITE_AUTH_API}/api/v2/demo/${demoID}`;
       const response = await axios.get(URL);
       if (response) {
         const { faculty, detail, date, technology, status } = response.data.data;
@@ -97,7 +97,7 @@ export default function DemoFormDialog({ open, setOpen, demosID, demoID, mutate 
 
   const fetchFacultyNames = async () => {
     try {
-      const URL = `https://admin-panel-dmawv.ondigitalocean.app/api/company/${company_id}/faculty`;
+      const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${company_id}/faculty`;
       const response = await axios.get(URL);
       if (response.status === 200) {
         const fetchedOptions = response.data.data.map((e) => ({
@@ -173,16 +173,16 @@ export default function DemoFormDialog({ open, setOpen, demosID, demoID, mutate 
                 <Box
                   columnGap={2}
                   rowGap={3}
-                  display="grid"
+                  display='grid'
                   gridTemplateColumns={{
                     xs: 'repeat(1, 1fr)',
                     md: 'repeat(1, 1fr)',
                   }}
                 >
                   <RHFAutocomplete
-                    name="faculty_name"
-                    label="Faculty Name"
-                    placeholder="Faculty Name"
+                    name='faculty_name'
+                    label='Faculty Name'
+                    placeholder='Faculty Name'
                     fullWidth
                     options={options}
                     getOptionLabel={(option) => option.label}
@@ -191,11 +191,11 @@ export default function DemoFormDialog({ open, setOpen, demosID, demoID, mutate 
                   />
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <Controller
-                      name="date"
+                      name='date'
                       control={control}
                       render={({ field: { onChange, value }, fieldState: { error } }) => (
                         <DatePicker
-                          label="Date"
+                          label='Date'
                           value={value}
                           onChange={(date) => onChange(date)}
                           renderInput={(params) => (
@@ -212,11 +212,11 @@ export default function DemoFormDialog({ open, setOpen, demosID, demoID, mutate 
                   </LocalizationProvider>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <Controller
-                      name="time"
+                      name='time'
                       control={control}
                       render={({ field: { onChange, value }, fieldState: { error } }) => (
                         <MobileTimePicker
-                          label="Time"
+                          label='Time'
                           value={value}
                           onChange={(time) => onChange(time)}
                           renderInput={(params) => (
@@ -233,33 +233,33 @@ export default function DemoFormDialog({ open, setOpen, demosID, demoID, mutate 
                   </LocalizationProvider>
                   {configs?.developer_type && (
                     <RHFAutocomplete
-                      name="technology"
-                      type="technology"
-                      label="Technology"
-                      placeholder="Choose a Technology"
+                      name='technology'
+                      type='technology'
+                      label='Technology'
+                      placeholder='Choose a Technology'
                       fullWidth
                       options={uniqueSubcategories}
                     />
                   )}
                   <RHFAutocomplete
-                    name="status"
-                    label="Choose a status"
-                    placeholder="Choose a status"
+                    name='status'
+                    label='Choose a status'
+                    placeholder='Choose a status'
                     fullWidth
                     options={status}
                     getOptionLabel={(option) => option}
                   />
                   <Controller
-                    name="details"
+                    name='details'
                     control={control}
                     render={({ field, fieldState: { error } }) => (
                       <TextField
                         {...field}
-                        label="Details"
+                        label='Details'
                         multiline
                         rows={4}
-                        placeholder="Details"
-                        variant="outlined"
+                        placeholder='Details'
+                        variant='outlined'
                         fullWidth
                         error={!!error}
                         helperText={error ? error.message : null}
@@ -268,10 +268,10 @@ export default function DemoFormDialog({ open, setOpen, demosID, demoID, mutate 
                   />
                 </Box>
                 <DialogActions sx={{ p: 0, my: 1 }}>
-                  <Button onClick={() => setOpen(false)} variant="outlined" color="inherit">
+                  <Button onClick={() => setOpen(false)} variant='outlined' color='inherit'>
                     Cancel
                   </Button>
-                  <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+                  <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
                     Save
                   </LoadingButton>
                 </DialogActions>

@@ -1,4 +1,3 @@
-
 import * as Yup from 'yup';
 import React, { useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
@@ -30,7 +29,7 @@ export default function AssignmentQuickEditForm({ currentUser, open, onClose, mu
       Yup.object().shape({
         student_id: Yup.string().required('Student ID is required'),
         status: Yup.string().required('Status are required'),
-      })
+      }),
     ),
   });
 
@@ -39,11 +38,11 @@ export default function AssignmentQuickEditForm({ currentUser, open, onClose, mu
       students:
         currentUser?.students?.map((student) => ({
           student_id: student?.student_id?._id || '',
-          status: student?.status  || '',
+          status: student?.status || '',
           remarks: student?.remarks || '',
         })) || [],
     }),
-    [currentUser]
+    [currentUser],
   );
 
   const methods = useForm({
@@ -121,7 +120,7 @@ export default function AssignmentQuickEditForm({ currentUser, open, onClose, mu
           <Box
             rowGap={3}
             columnGap={2}
-            display="grid"
+            display='grid'
             gridTemplateColumns={{
               xs: 'repeat(1, 1fr)',
               sm: '2fr 2fr 2fr',
@@ -137,7 +136,6 @@ export default function AssignmentQuickEditForm({ currentUser, open, onClose, mu
                   name={`students[${index}].student_id`}
                   value={`${currentUser?.students[index]?.student_id?.firstName} ${currentUser?.students[index]?.student_id?.lastName}`}
                 />
-                {/*<RHFTextField name={`students[${index}].status`} label="Status" />*/}
                 <RHFAutocomplete
                   name={`students[${index}].status`}
                   label='Status'
@@ -145,18 +143,18 @@ export default function AssignmentQuickEditForm({ currentUser, open, onClose, mu
                   options={OPTIONS.map((option) => option.label)}
                   getOptionLabel={(option) => option}
                 />
-                <RHFTextField name={`students[${index}].remarks`} label="Remark" />
+                <RHFTextField name={`students[${index}].remarks`} label='Remark' />
               </Box>
             ))}
           </Box>
         </DialogContent>
 
         <DialogActions>
-          <Button variant="outlined" onClick={onClose}>
+          <Button variant='outlined' onClick={onClose}>
             Cancel
           </Button>
 
-          <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+          <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
             Update
           </LoadingButton>
         </DialogActions>

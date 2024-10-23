@@ -117,7 +117,9 @@ const BatchNewForm = () => {
               ])}
               isOptionEqualToValue={(option, value) => option === value}
             />
-            <RHFTextField name='batch_name' label='Batch Name' />
+            <RHFTextField name='batch_name' label='Batch Name' onInput={(e) => {
+              e.target.value = e.target.value.toUpperCase();
+            }} />
             <Controller
               name='batch_time'
               control={control}

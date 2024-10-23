@@ -41,7 +41,6 @@ const ExpenseNewForm = () => {
   const NewBlogSchema = Yup.object().shape({
     type: Yup.string().required('Type is required'),
     desc: Yup.string().required('Description is required'),
-    // date: Yup.date().required('Date is required'),
     amount: Yup.number().required('Amount is required'),
   });
 
@@ -67,7 +66,6 @@ const ExpenseNewForm = () => {
     try {
       const formattedData = {
         ...data,
-        // date: moment(data.date, 'DD/MM/YYYY').format('DD-MM-YYYY'),
         company_id: `${user?.company_id}`,
         created_by: `${user?._id}`,
       };
@@ -114,32 +112,10 @@ const ExpenseNewForm = () => {
               getOptionLabel={(option) => option}
             />
             <RHFTextField name='desc' label='Description' multiline rows={3} />
-            <RHFTextField name='amount' label='Amount' />
-            {/* <Stack spacing={1.5}>
-              <Controller
-                name="date"
-                control={control}
-                render={({ field, fieldState: { error } }) => (
-                  <DatePicker
-                    {...field}
-                    value={field.value ? moment(field.value).toDate() : null}
-                    onChange={(newDate) => {
-                      const formattedDate = newDate ? moment(newDate).format('DD/MM/YYYY') : null;
-                      setValue('date', formattedDate);
-                      field.onChange(formattedDate);
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        fullWidth
-                        error={!!error}
-                        helperText={error?.message}
-                      />
-                    )}
-                  />
-                )}
-              />
-            </Stack> */}
+            <RHFTextField name='amount' label='Amount' inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                          onInput={(e) => {
+                            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                          }} />
             <Stack spacing={1.5}>
               <Controller
                 name='date'

@@ -1,133 +1,3 @@
-// import * as Yup from 'yup';
-// import { useMemo } from 'react';
-// import PropTypes from 'prop-types';
-// import { useForm } from 'react-hook-form';
-// import { yupResolver } from '@hookform/resolvers/yup';
-
-// import Box from '@mui/material/Box';
-// import Alert from '@mui/material/Alert';
-// import Button from '@mui/material/Button';
-// import Dialog from '@mui/material/Dialog';
-// import MenuItem from '@mui/material/MenuItem';
-// import LoadingButton from '@mui/lab/LoadingButton';
-// import DialogTitle from '@mui/material/DialogTitle';
-// import DialogActions from '@mui/material/DialogActions';
-// import DialogContent from '@mui/material/DialogContent';
-
-// import { countries } from 'src/assets/data';
-// import { USER_STATUS_OPTIONS } from 'src/_mock';
-
-// import { useSnackbar } from 'src/components/snackbar';
-// import FormProvider, { RHFSelect, RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
-
-// // ----------------------------------------------------------------------
-
-// export default function AssignmentQuickEditForm({ currentUser, open, onClose }) {
-//   const { enqueueSnackbar } = useSnackbar();
-
-//   const NewUserSchema = Yup.object().shape({
-//     name: Yup.string().required('Name is required'),
-//     obtained_marks: Yup.string().required('Marks is required'),
-
-//   });
-//   console.log(currentUser, 'ffffff');
-//   const defaultValues = useMemo(
-//     () => ({
-//       name: currentUser?.name || '',
-//       obtained_marks: currentUser?.students?.obtained_marks || '',
-//     }),
-//     [currentUser]
-//   );
-
-//   const methods = useForm({
-//     resolver: yupResolver(NewUserSchema),
-//     defaultValues,
-//   });
-
-//   const {
-//     reset,
-//     handleSubmit,
-//     formState: { isSubmitting },
-//   } = methods;
-
-//   const onSubmit = handleSubmit(async (data) => {
-//     try {
-//       await new Promise((resolve) => setTimeout(resolve, 500));
-//       reset();
-//       onClose();
-//       enqueueSnackbar('Update success!');
-//       console.info('DATA', data);
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   });
-
-//   return (
-//     <Dialog
-//       fullWidth
-//       maxWidth={false}
-//       open={open}
-//       onClose={onClose}
-//       PaperProps={{
-//         sx: { maxWidth: 720 },
-//       }}
-//     >
-//       <FormProvider methods={methods} onSubmit={onSubmit}>
-//         <DialogTitle sx={{ textAlign: 'center', fontSize: '25px !important' }}>
-//           Student Marks
-//         </DialogTitle>
-
-//         <DialogContent>
-//           <Alert variant="outlined" severity="info" sx={{ mb: 3 }}>
-//             Please send all student marks
-//           </Alert>
-//           <Box
-//             rowGap={3}
-//             columnGap={2}
-//             display="grid"
-//             gridTemplateColumns={{
-//               xs: 'repeat(1, 1fr)',
-//               sm: '2fr 1fr',
-//             }}
-//           >
-//             <Box sx={{ textAlign: 'center', fontWeight: 'bold' }}>Student Name</Box>
-//             <Box sx={{ textAlign: 'center', fontWeight: 'bold' }}>Obtained Marks</Box>
-//             {currentUser?.students?.map((student) => (
-//               <>
-//                 <RHFTextField
-//                   disabled
-//                   name="name"
-//                   label={`${student?.student_id?.firstName} ${student?.student_id?.lastName}`}
-//                 />
-//                 <RHFTextField
-//                   name="obtained_marks"
-//                   label="Marks"
-//                 />
-//               </>
-//             ))}
-//           </Box>
-//         </DialogContent>
-
-//         <DialogActions>
-//           <Button variant="outlined" onClick={onClose}>
-//             Cancel
-//           </Button>
-
-//           <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-//             Update
-//           </LoadingButton>
-//         </DialogActions>
-//       </FormProvider>
-//     </Dialog>
-//   );
-// }
-
-// AssignmentQuickEditForm.propTypes = {
-//   open: PropTypes.bool,
-//   onClose: PropTypes.func,
-//   currentUser: PropTypes.object,
-// };
-
 import * as Yup from 'yup';
 import { useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
@@ -159,7 +29,7 @@ export default function ExaminationQuickEditForm({ currentUser, open, onClose, m
       Yup.object().shape({
         student_id: Yup.string().required('Student ID is required'),
         obtained_marks: Yup.string().required('Marks are required'),
-      })
+      }),
     ),
   });
 
@@ -171,7 +41,7 @@ export default function ExaminationQuickEditForm({ currentUser, open, onClose, m
           obtained_marks: student?.obtained_marks == '' ? 0 : student?.obtained_marks || '',
         })) || [],
     }),
-    [currentUser]
+    [currentUser],
   );
 
   const methods = useForm({
@@ -239,13 +109,13 @@ export default function ExaminationQuickEditForm({ currentUser, open, onClose, m
         </DialogTitle>
 
         <DialogContent>
-          <Alert variant="outlined" severity="info" sx={{ mb: 3 }}>
+          <Alert variant='outlined' severity='info' sx={{ mb: 3 }}>
             Please send all student marks
           </Alert>
           <Box
             rowGap={3}
             columnGap={2}
-            display="grid"
+            display='grid'
             gridTemplateColumns={{
               xs: 'repeat(1, 1fr)',
               sm: '2fr 1fr',
@@ -260,18 +130,22 @@ export default function ExaminationQuickEditForm({ currentUser, open, onClose, m
                   name={`students[${index}].student_id`}
                   value={`${currentUser?.students[index]?.student_id?.firstName} ${currentUser?.students[index]?.student_id?.lastName}`}
                 />
-                <RHFTextField name={`students[${index}].obtained_marks`} label="Marks" />
+                <RHFTextField name={`students[${index}].obtained_marks`} label='Marks'
+                              inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                              onInput={(e) => {
+                                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                              }} />
               </Box>
             ))}
           </Box>
         </DialogContent>
 
         <DialogActions>
-          <Button variant="outlined" onClick={onClose}>
+          <Button variant='outlined' onClick={onClose}>
             Cancel
           </Button>
 
-          <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+          <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
             Update
           </LoadingButton>
         </DialogActions>

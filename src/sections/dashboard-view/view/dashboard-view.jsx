@@ -21,6 +21,7 @@ import { useGetVisitsOverview } from '../../../api/visit_overview';
 import { useGetInquiryOverview } from '../../../api/inquiry_overview';
 import { useGetInquiry } from '../../../api/inquiry';
 import DashboardUpcomingInquiry from '../dashboard-upcoming-inquiry';
+import { getResponsibilityValue } from '../../../permission/permission';
 
 export default function DashboardView() {
   const theme = useTheme();
@@ -40,7 +41,6 @@ export default function DashboardView() {
   const { visit } = useGetVisitsOverview();
   const { inquiryOverview } = useGetInquiryOverview();
   const { inquiry } = useGetInquiry();
-  console.log(inquiry);
 
   useEffect(() => {
     if (demos) {
@@ -83,37 +83,37 @@ export default function DashboardView() {
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <Grid container spacing={3}>
         <Grid xs={12} sm={6} md={3}>
-          <DashboardCount
+          {getResponsibilityValue('view_student', configs, user) && <DashboardCount
             title='Students'
             total={dashboardData?.students}
             icon={<img alt='icon' src='/assets/icons/glass/ic_glass_bag.png' />}
-          />
+          />}
         </Grid>
         <Grid xs={12} sm={6} md={3}>
-          <DashboardCount
+          {getResponsibilityValue('view_developers', configs, user) && <DashboardCount
             title='Developers'
             total={dashboardData?.developers}
             color='info'
             icon={<img alt='icon' src='/assets/icons/glass/ic_glass_users.png' />}
-          />
+          />}
         </Grid>
         <Grid xs={12} sm={6} md={3}>
-          <DashboardCount
+          {getResponsibilityValue('view_faculties', configs, user) && <DashboardCount
             title='Faculties'
             total={dashboardData?.faculties}
             color='warning'
             icon={<img alt='icon' src='/assets/icons/glass/ic_glass_buy.png' />}
-          />
+          />}
         </Grid>
         <Grid xs={12} sm={6} md={3}>
-          <DashboardCount
+          {getResponsibilityValue('view_labs', configs, user) && <DashboardCount
             title='Labs'
             total={labs}
             color='error'
             icon={<img alt='icon' src='/assets/icons/glass/ic_glass_message.png' />}
-          />
+          />}
         </Grid>
-        <Grid xs={12} md={8}>
+        {getResponsibilityValue('view_visit-inquiry', configs, user) && <Grid xs={12} md={8}>
           <Stack spacing={3}>
             <DashboardDemoInquiryChart
               title='Visits & Inquiry'
@@ -165,8 +165,8 @@ export default function DashboardView() {
               }}
             />
           </Stack>
-        </Grid>
-        <Grid xs={12} md={4}>
+        </Grid>}
+        {getResponsibilityValue('view_attendance', configs, user) && <Grid xs={12} md={4}>
           <Stack spacing={3}>
             <DashboardAttendenceChart
               title="Today's Attendance"
@@ -183,8 +183,8 @@ export default function DashboardView() {
               }}
             />
           </Stack>
-        </Grid>
-        <Grid xs={12} md={8}>
+        </Grid>}
+        {getResponsibilityValue('view_course', configs, user) && <Grid xs={12} md={8}>
           <Stack spacing={3}>
             <DashboardCourseChart
               title='Courses analytics'
@@ -204,8 +204,8 @@ export default function DashboardView() {
               }}
             />
           </Stack>
-        </Grid>
-        <Grid xs={12} md={4}>
+        </Grid>}
+        {getResponsibilityValue('view_demos', configs, user) && <Grid xs={12} md={4}>
           <Stack spacing={3}>
             <DashboardUpcomingDemo
               title='Upcoming Demos'
@@ -213,8 +213,8 @@ export default function DashboardView() {
               list={demo.slice(-5)}
             />
           </Stack>
-        </Grid>
-        <Grid xs={12} md={4}>
+        </Grid>}
+        {getResponsibilityValue('view_inquirys', configs, user) && <Grid xs={12} md={4}>
           <Stack spacing={3}>
             <DashboardUpcomingInquiry
               title='Upcoming Inquiry'
@@ -222,8 +222,7 @@ export default function DashboardView() {
               list={inquiryList.slice(-5)}
             />
           </Stack>
-        </Grid>
-
+        </Grid>}
       </Grid>
     </Container>
   );
