@@ -25,18 +25,18 @@ export default function ProfileFollowers({ followers }) {
 
       setFollowed(selected);
     },
-    [followed]
+    [followed],
   );
 
   return (
     <>
-      <Typography variant="h4" sx={{ my: 5 }}>
+      <Typography variant='h4' sx={{ my: 5 }}>
         Followers
       </Typography>
 
       <Box
         gap={3}
-        display="grid"
+        display='grid'
         gridTemplateColumns={{
           xs: 'repeat(1, 1fr)',
           sm: 'repeat(2, 1fr)',
@@ -79,7 +79,7 @@ function FollowerItem({ follower, selected, onSelected }) {
         primary={name}
         secondary={
           <>
-            <Iconify icon="mingcute:location-fill" width={16} sx={{ flexShrink: 0, mr: 0.5 }} />
+            <Iconify icon='mingcute:location-fill' width={16} sx={{ flexShrink: 0, mr: 0.5 }} />
             {country} country country country country country country country country country
           </>
         }
@@ -99,11 +99,11 @@ function FollowerItem({ follower, selected, onSelected }) {
       />
 
       <Button
-        size="small"
+        size='small'
         variant={selected ? 'text' : 'outlined'}
         color={selected ? 'success' : 'inherit'}
         startIcon={
-          selected ? <Iconify width={18} icon="eva:checkmark-fill" sx={{ mr: -0.75 }} /> : null
+          selected ? <Iconify width={18} icon='eva:checkmark-fill' sx={{ mr: -0.75 }} /> : null
         }
         onClick={onSelected}
         sx={{ flexShrink: 0, ml: 1.5 }}

@@ -12,7 +12,7 @@ import { shortDateLabel } from 'src/components/custom-date-range-picker';
 
 // ----------------------------------------------------------------------
 
-export default function StudentAttendanceTableFiltersResult({
+export default function StudentAssignmentTableFiltersResult({
                                                               filters,
                                                               onFilters,
                                                               onResetFilters,
@@ -28,7 +28,6 @@ export default function StudentAttendanceTableFiltersResult({
   const handleRemoveService = useCallback(
     (inputValue) => {
       const newValue = filters.service.filter((item) => item !== inputValue);
-
       onFilters('service', newValue);
     },
     [filters.service, onFilters],
@@ -91,7 +90,7 @@ export default function StudentAttendanceTableFiltersResult({
   );
 }
 
-StudentAttendanceTableFiltersResult.propTypes = {
+StudentAssignmentTableFiltersResult.propTypes = {
   filters: PropTypes.object,
   onFilters: PropTypes.func,
   onResetFilters: PropTypes.func,

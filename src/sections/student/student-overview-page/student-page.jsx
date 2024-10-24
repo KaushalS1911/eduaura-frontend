@@ -22,7 +22,7 @@ export default function StudentPage() {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Student View"
+        heading='Student View'
         links={[
           {
             name: 'Dashboard',

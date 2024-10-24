@@ -17,13 +17,13 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 // ----------------------------------------------------------------------
 
 export default function StudentProgressDetailsToolbar({
-  status,
-  backLink,
-  createdAt,
-  orderNumber,
-  statusOptions,
-  onChangeStatus,
-}) {
+                                                        status,
+                                                        backLink,
+                                                        createdAt,
+                                                        orderNumber,
+                                                        statusOptions,
+                                                        onChangeStatus,
+                                                      }) {
   const popover = usePopover();
 
   return (
@@ -35,29 +35,15 @@ export default function StudentProgressDetailsToolbar({
           mb: { xs: 3, md: 5 },
         }}
       >
-        <Stack spacing={1} direction="row" alignItems="flex-start">
+        <Stack spacing={1} direction='row' alignItems='flex-start'>
           <IconButton component={RouterLink}>
-            <Iconify icon="eva:arrow-ios-back-fill" />
+            <Iconify icon='eva:arrow-ios-back-fill' />
           </IconButton>
 
           <Stack spacing={0.5}>
-            <Stack spacing={1} direction="row" alignItems="center">
-              {/* <Typography variant="h4"> Order {orderNumber} </Typography> */}
-              {/* <Label
-                variant="soft"
-                color={
-                  (status === 'completed' && 'success') ||
-                  (status === 'pending' && 'warning') ||
-                  (status === 'cancelled' && 'error') ||
-                  'default'
-                }
-              >
-                {status}
-              </Label> */}
+            <Stack spacing={1} direction='row' alignItems='center'>
             </Stack>
-
-            <Typography variant="body2" sx={{ color: 'text.disabled' }}>
-              {/* {fDateTime(createdAt)} */}
+            <Typography variant='body2' sx={{ color: 'text.disabled' }}>
             </Typography>
           </Stack>
         </Stack>
@@ -65,29 +51,26 @@ export default function StudentProgressDetailsToolbar({
         <Stack
           flexGrow={1}
           spacing={1.5}
-          direction="row"
-          alignItems="center"
-          justifyContent="flex-end"
+          direction='row'
+          alignItems='center'
+          justifyContent='flex-end'
         >
           <Button
-            color="inherit"
-            variant="outlined"
-            endIcon={<Iconify icon="eva:arrow-ios-downward-fill" />}
+            color='inherit'
+            variant='outlined'
+            endIcon={<Iconify icon='eva:arrow-ios-downward-fill' />}
             onClick={popover.onOpen}
             sx={{ textTransform: 'capitalize' }}
           >
-            {/* {status} */}
           </Button>
-
           <Button
-            color="inherit"
-            variant="outlined"
-            startIcon={<Iconify icon="solar:printer-minimalistic-bold" />}
+            color='inherit'
+            variant='outlined'
+            startIcon={<Iconify icon='solar:printer-minimalistic-bold' />}
           >
             Print
           </Button>
-
-          <Button color="inherit" variant="contained" startIcon={<Iconify icon="solar:pen-bold" />}>
+          <Button color='inherit' variant='contained' startIcon={<Iconify icon='solar:pen-bold' />}>
             Edit
           </Button>
         </Stack>
@@ -96,21 +79,9 @@ export default function StudentProgressDetailsToolbar({
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
-        arrow="top-right"
+        arrow='top-right'
         sx={{ width: 140 }}
       >
-        {/* {statusOptions.map((option) => (
-          <MenuItem
-            key={option.value}
-            selected={option.value === status}
-            onClick={() => {
-              popover.onClose();
-              onChangeStatus(option.value);
-            }}
-          >
-            {option.label}
-          </MenuItem>
-        ))} */}
       </CustomPopover>
     </>
   );

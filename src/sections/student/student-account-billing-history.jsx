@@ -23,11 +23,11 @@ export default function StudentAccountBillingHistory({ invoices }) {
 
   return (
     <Card>
-      <CardHeader title="Fee Details" />
+      <CardHeader title='Fee Details' />
 
       <Stack spacing={1.5} sx={{ px: 3, pt: 3 }}>
         {(showMore.value ? invoices : invoices.slice(0, 8)).map((invoice) => (
-          <Stack key={invoice.id} direction="row" alignItems="center">
+          <Stack key={invoice.id} direction='row' alignItems='center'>
             <ListItemText
               primary={invoice.invoiceNumber}
               secondary={fDate(invoice.createdAt)}
@@ -42,11 +42,11 @@ export default function StudentAccountBillingHistory({ invoices }) {
               }}
             />
 
-            <Typography variant="body2" sx={{ textAlign: 'right', mr: 5 }}>
+            <Typography variant='body2' sx={{ textAlign: 'right', mr: 5 }}>
               {fCurrency(invoice.price)}
             </Typography>
 
-            <Link color="inherit" underline="always" variant="body2" href="#">
+            <Link color='inherit' underline='always' variant='body2' href='#'>
               PDF
             </Link>
           </Stack>
@@ -55,10 +55,10 @@ export default function StudentAccountBillingHistory({ invoices }) {
         <Divider sx={{ borderStyle: 'dashed' }} />
       </Stack>
 
-      <Stack alignItems="flex-start" sx={{ p: 2 }}>
+      <Stack alignItems='flex-start' sx={{ p: 2 }}>
         <Button
-          size="small"
-          color="inherit"
+          size='small'
+          color='inherit'
           startIcon={
             <Iconify
               icon={showMore.value ? 'eva:arrow-ios-upward-fill' : 'eva:arrow-ios-downward-fill'}

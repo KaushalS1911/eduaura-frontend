@@ -1,9 +1,9 @@
 import { Container } from '@mui/system';
-import React from 'react'
+import React from 'react';
 import { useSettingsContext } from 'src/components/settings';
 import RemarkListView from '../../remark/remark-list-view';
 
-const RemarkView = ({ currentStudent , mutate}) => {
+const RemarkView = ({ currentStudent, mutate }) => {
   const settings = useSettingsContext();
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -12,4 +12,4 @@ const RemarkView = ({ currentStudent , mutate}) => {
   );
 };
 
-export default RemarkView
+export default RemarkView;

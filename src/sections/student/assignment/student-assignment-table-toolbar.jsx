@@ -1,13 +1,15 @@
 import PropTypes from 'prop-types';
 import { useCallback } from 'react';
+
 import Stack from '@mui/material/Stack';
 import MenuItem from '@mui/material/MenuItem';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { formHelperTextClasses } from '@mui/material/FormHelperText';
+
 import Iconify from 'src/components/iconify';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
-export default function StudentAttendanceTableToolbar({
+export default function StudentAssignmentTableToolbar({
                                                         filters,
                                                         onFilters,
                                                         dateError,
@@ -71,6 +73,7 @@ export default function StudentAttendanceTableToolbar({
           }}
         />
       </Stack>
+
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
@@ -106,7 +109,7 @@ export default function StudentAttendanceTableToolbar({
   );
 }
 
-StudentAttendanceTableToolbar.propTypes = {
+StudentAssignmentTableToolbar.propTypes = {
   dateError: PropTypes.bool,
   filters: PropTypes.object,
   onFilters: PropTypes.func,

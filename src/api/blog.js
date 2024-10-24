@@ -17,7 +17,7 @@ export function useGetPosts() {
       postsValidating: isValidating,
       postsEmpty: !isLoading && !data?.posts.length,
     }),
-    [data?.posts, error, isLoading, isValidating]
+    [data?.posts, error, isLoading, isValidating],
   );
 
   return memoizedValue;
@@ -37,7 +37,7 @@ export function useGetPost(title) {
       postError: error,
       postValidating: isValidating,
     }),
-    [data?.post, error, isLoading, isValidating]
+    [data?.post, error, isLoading, isValidating],
   );
 
   return memoizedValue;
@@ -58,7 +58,7 @@ export function useGetLatestPosts(title) {
       latestPostsValidating: isValidating,
       latestPostsEmpty: !isLoading && !data?.latestPosts.length,
     }),
-    [data?.latestPosts, error, isLoading, isValidating]
+    [data?.latestPosts, error, isLoading, isValidating],
   );
 
   return memoizedValue;
@@ -81,7 +81,7 @@ export function useSearchPosts(query) {
       searchValidating: isValidating,
       searchEmpty: !isLoading && !data?.results.length,
     }),
-    [data?.results, error, isLoading, isValidating]
+    [data?.results, error, isLoading, isValidating],
   );
 
   return memoizedValue;

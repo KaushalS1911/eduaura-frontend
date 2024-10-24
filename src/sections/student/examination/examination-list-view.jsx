@@ -1,22 +1,14 @@
 import orderBy from 'lodash/orderBy';
 import isEqual from 'lodash/isEqual';
 import { useState, useCallback, useMemo } from 'react';
-
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import { InputAdornment, TextField } from '@mui/material';
-
-import { paths } from 'src/routes/paths';
-
 import { useBoolean } from 'src/hooks/use-boolean';
-
 import EmptyContent from 'src/components/empty-content';
 import { useSettingsContext } from 'src/components/settings';
-import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import Iconify from 'src/components/iconify';
-
 import ExaminationList from './examination-list';
-import ExaminationSearch from './examination-search';
 import ExaminationFiltersResult from './examination-filters-result';
 import { useGetExam } from 'src/api/examination';
 
@@ -34,21 +26,15 @@ const defaultFilters = {
 
 export default function ExaminationListView({ currentStudent }) {
   const settings = useSettingsContext();
-
-  const openFilters = useBoolean();
-
   const [sortBy, setSortBy] = useState('latest');
-
   const [search, setSearch] = useState({
     query: '',
     results: [],
   });
-
   const { exam } = useGetExam(currentStudent?.company_id);
 
   const currentStudentExams = useMemo(() => {
     if (!exam) return [];
-
     return exam.flatMap((examItem) =>
       examItem.students
         .filter((student) => student.student_id._id === currentStudent._id)
@@ -58,12 +44,11 @@ export default function ExaminationListView({ currentStudent }) {
           totalMarks: examItem.total_marks,
           examDate: examItem.date,
           examId: examItem._id,
-        }))
+        })),
     );
   }, [exam, currentStudent._id]);
 
   const [filters, setFilters] = useState(defaultFilters);
-
   const dataFiltered = applyFilter({
     inputData: currentStudentExams,
     filters,
@@ -72,7 +57,6 @@ export default function ExaminationListView({ currentStudent }) {
   });
 
   const canReset = !isEqual(defaultFilters, filters);
-
   const notFound = !dataFiltered.length && canReset;
 
   const handleFilters = useCallback((name, value) => {
@@ -100,7 +84,7 @@ export default function ExaminationListView({ currentStudent }) {
   const renderFilters = (
     <Stack
       spacing={3}
-      justifyContent="space-between"
+      justifyContent='space-between'
       alignItems={{ xs: 'flex-end', sm: 'center' }}
       direction={{ xs: 'column', sm: 'row' }}
     >
@@ -108,11 +92,11 @@ export default function ExaminationListView({ currentStudent }) {
         fullWidth
         value={search.query}
         onChange={(e) => handleSearch(e.target.value)}
-        placeholder="Search exam title..."
+        placeholder='Search exam title...'
         InputProps={{
           startAdornment: (
-            <InputAdornment position="start">
-              <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
+            <InputAdornment position='start'>
+              <Iconify icon='eva:search-fill' sx={{ color: 'text.disabled' }} />
             </InputAdornment>
           ),
         }}
@@ -124,10 +108,8 @@ export default function ExaminationListView({ currentStudent }) {
     <ExaminationFiltersResult
       filters={filters}
       onResetFilters={handleResetFilters}
-      //
       canReset={canReset}
       onFilters={handleFilters}
-      //
       results={dataFiltered.length}
     />
   );
@@ -141,12 +123,9 @@ export default function ExaminationListView({ currentStudent }) {
         }}
       >
         {renderFilters}
-
         {canReset && renderResults}
       </Stack>
-
-      {notFound && <EmptyContent filled title="No Data" sx={{ py: 10 }} />}
-
+      {notFound && <EmptyContent filled title='No Data' sx={{ py: 10 }} />}
       <ExaminationList currentStudentExams={dataFiltered} />
     </Container>
   );

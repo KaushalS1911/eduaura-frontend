@@ -1,21 +1,15 @@
 import PropTypes from 'prop-types';
 import { useState, useCallback } from 'react';
-
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import CardHeader from '@mui/material/CardHeader';
-
 import { useBoolean } from 'src/hooks/use-boolean';
-
 import Iconify from 'src/components/iconify';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
-
-// import { AddressNewForm } from '../address';
 import GuardianAddForm from './guardian-add-form';
-
 import GuardianItem from './guardian-item';
 import axios from 'axios';
 
@@ -35,7 +29,6 @@ export default function StudentGuardianDetails({ currentStudent, mutate }) {
 
   const handleSelectedId = useCallback(
     (id) => {
-      // handleClose();
       setAddressId(id);
       const filteredGuardian = currentStudent?.guardian_detail?.filter((item) => item._id !== id);
       const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/v2/student/${currentStudent?._id}`;
@@ -48,7 +41,7 @@ export default function StudentGuardianDetails({ currentStudent, mutate }) {
         console.error(error);
       }
     },
-    [popover]
+    [popover],
   );
 
   const handleClose = useCallback(() => {
@@ -66,12 +59,12 @@ export default function StudentGuardianDetails({ currentStudent, mutate }) {
     <>
       <Card>
         <CardHeader
-          title="Guardian Details"
+          title='Guardian Details'
           action={
             <Button
-              size="small"
-              color="primary"
-              startIcon={<Iconify icon="mingcute:add-line" />}
+              size='small'
+              color='primary'
+              startIcon={<Iconify icon='mingcute:add-line' />}
               onClick={() => {
                 setUpdateGuardian(undefined);
                 setEditAddressId(null);
@@ -82,11 +75,10 @@ export default function StudentGuardianDetails({ currentStudent, mutate }) {
             </Button>
           }
         />
-
         <Stack spacing={2.5} sx={{ p: 3 }}>
           {currentStudent?.guardian_detail?.map((item) => (
             <GuardianItem
-              variant="outlined"
+              variant='outlined'
               key={item.id}
               guardian={item}
               action={
@@ -99,7 +91,7 @@ export default function StudentGuardianDetails({ currentStudent, mutate }) {
                     }}
                     sx={{ position: 'absolute', top: 8, right: 8 }}
                   >
-                    <Iconify icon="eva:more-vertical-fill" />
+                    <Iconify icon='eva:more-vertical-fill' />
                   </IconButton>
                 </>
               }
@@ -111,13 +103,11 @@ export default function StudentGuardianDetails({ currentStudent, mutate }) {
           ))}
         </Stack>
       </Card>
-
       <CustomPopover open={popover.open} onClose={handleClose}>
         <MenuItem onClick={handleEdit}>
-          <Iconify icon="solar:pen-bold" />
+          <Iconify icon='solar:pen-bold' />
           Edit
         </MenuItem>
-
         <MenuItem
           onClick={() => {
             handleSelectedId(deletedGuardian);
@@ -125,11 +115,10 @@ export default function StudentGuardianDetails({ currentStudent, mutate }) {
           }}
           sx={{ color: 'error.main' }}
         >
-          <Iconify icon="solar:trash-bin-trash-bold" />
+          <Iconify icon='solar:trash-bin-trash-bold' />
           Delete
         </MenuItem>
       </CustomPopover>
-
       <GuardianAddForm
         mutate={mutate}
         open={GuardianNewForm.value}

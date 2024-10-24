@@ -30,7 +30,6 @@ export function useGetAllAttendance() {
 export function useGetSingleStudentAttendance(studentId) {
   const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/company/attendance/student/${studentId}`;
   const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
-  console.log('data ', data);
   return data;
 }
 

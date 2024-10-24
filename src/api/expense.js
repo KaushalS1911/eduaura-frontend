@@ -16,7 +16,7 @@ export function useGetExpense(user) {
       expenseEmpty: !isLoading && !data?.data?.length,
       mutate,
     }),
-    [data?.data, error, isLoading, isValidating, mutate]
+    [data?.data, error, isLoading, isValidating, mutate],
   );
 
   return memoizedValue;

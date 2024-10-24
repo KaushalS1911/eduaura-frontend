@@ -11,7 +11,6 @@ import Label from 'src/components/label';
 
 export default function GuardianItem({ guardian, action, sx, ...other }) {
   const { firstName, lastName, contact, relation_type } = guardian;
-  
   let currentUrl = window.location.href;
 
   return (
@@ -29,19 +28,18 @@ export default function GuardianItem({ guardian, action, sx, ...other }) {
           {...other}
         >
           <Stack flexGrow={1} spacing={1}>
-            <Stack direction="row" alignItems="center">
-              <Typography variant="subtitle2">
+            <Stack direction='row' alignItems='center'>
+              <Typography variant='subtitle2'>
                 {firstName} {lastName}
                 <Box
-                  component="span"
+                  component='span'
                   sx={{ ml: 0.5, typography: 'body2', color: 'text.secondary' }}
                 >
                   {relation_type}
                 </Box>
               </Typography>
             </Stack>
-
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            <Typography variant='body2' sx={{ color: 'text.secondary' }}>
               {contact}
             </Typography>
           </Stack>
@@ -59,19 +57,18 @@ export default function GuardianItem({ guardian, action, sx, ...other }) {
           {...other}
         >
           <Stack flexGrow={1} spacing={1}>
-            <Stack direction="row" alignItems="center">
-              <Typography variant="subtitle2">
+            <Stack direction='row' alignItems='center'>
+              <Typography variant='subtitle2'>
                 {firstName} {lastName}
                 <Box
-                  component="span"
+                  component='span'
                   sx={{ ml: 0.5, typography: 'body2', color: 'text.secondary' }}
                 >
                   {relation_type}
                 </Box>
               </Typography>
             </Stack>
-
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            <Typography variant='body2' sx={{ color: 'text.secondary' }}>
               {contact}
             </Typography>
           </Stack>

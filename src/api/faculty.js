@@ -1,7 +1,7 @@
-import { useMemo } from "react";
-import { useAuthContext } from "src/auth/hooks";
-import { fetcher } from "src/utils/axios";
-import useSWR from "swr";
+import { useMemo } from 'react';
+import { useAuthContext } from 'src/auth/hooks';
+import { fetcher } from 'src/utils/axios';
+import useSWR from 'swr';
 
 export function useGetFaculty() {
   const { user } = useAuthContext();
@@ -19,7 +19,7 @@ export function useGetFaculty() {
       facultyEmpty: !isLoading && !data.data.length,
       mutate,
     }),
-    [data?.data, error, isLoading, isValidating, mutate]
+    [data?.data, error, isLoading, isValidating, mutate],
   );
 
   return memoizedValue;

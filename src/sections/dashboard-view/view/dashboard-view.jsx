@@ -44,7 +44,6 @@ export default function DashboardView() {
   const { visit } = useGetVisitsOverview();
   const { inquiryOverview } = useGetInquiryOverview();
   const { inquiry } = useGetInquiry();
-  console.log(students);
 
   useEffect(() => {
     if (demos) {
@@ -195,11 +194,11 @@ export default function DashboardView() {
             />
           </Stack>
         </Grid>}
-        {getResponsibilityValue('view_attendance', configs, user) &&
-        <Grid xs={12} md={4}>
+        {getResponsibilityValue('view_student', configs, user) && <Grid xs={12} md={4}>
           <Stack spacing={3}>
-            <AnalyticsCurrentVisits
-              title="Student's Status"
+            <DashboardAttendenceChart
+              title="Student's Status "
+              total={parseInt(dashboardData?.students)}
               chart={{
                 series: [
                   {

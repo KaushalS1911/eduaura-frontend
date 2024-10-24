@@ -1,16 +1,10 @@
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
-
-
 import Iconify from 'src/components/iconify';
-
 import { useSettingsContext } from 'src/components/settings';
-
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-
 import StudentCardList from '../student-card-list';
 
 // ----------------------------------------------------------------------
@@ -21,7 +15,7 @@ export default function StudentCardsView() {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <CustomBreadcrumbs
-        heading="Student Cards"
+        heading='Student Cards'
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
           { name: 'Students', href: paths.dashboard.student.list },
@@ -31,15 +25,14 @@ export default function StudentCardsView() {
           <Button
             component={RouterLink}
             href={paths.dashboard.student.new}
-            variant="contained"
-            startIcon={<Iconify icon="mingcute:add-line" />}
+            variant='contained'
+            startIcon={<Iconify icon='mingcute:add-line' />}
           >
             New Stdent
           </Button>
         }
         sx={{ mb: { xs: 3, md: 5 } }}
       />
-
       <StudentCardList />
     </Container>
   );

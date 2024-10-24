@@ -9,7 +9,7 @@ export function useGetTasks() {
 
   const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/company/task/${user?._id}`;
 
-  const { data, isLoading, error, isValidating,mutate } = useSWR(URL, fetcher);
+  const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
   const memoizedValue = useMemo(
     () => ({
       tasks: data?.data || [],
@@ -19,7 +19,7 @@ export function useGetTasks() {
       tasksEmpty: !isLoading && !data?.data.length,
       mutate,
     }),
-    [data?.data, error, isLoading, isValidating]
+    [data?.data, error, isLoading, isValidating],
   );
 
   return memoizedValue;

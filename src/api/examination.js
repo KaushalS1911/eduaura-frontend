@@ -15,11 +15,12 @@ export function useGetExam(company_id) {
       examEmpty: !isLoading && !data?.data?.exams?.length,
       mutate,
     }),
-    [data?.data?.exams, error, isLoading, isValidating, mutate]
+    [data?.data?.exams, error, isLoading, isValidating, mutate],
   );
 
   return memoizedValue;
 }
+
 export function useGetSingleExam(BactchExamID) {
   const URL = `${import.meta.env.VITE_AUTH_API}/api/company/exam/${BactchExamID}`;
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
@@ -32,7 +33,7 @@ export function useGetSingleExam(BactchExamID) {
       batchExamDataEmpty: !isLoading && !data?.data?.exams?.length,
       mutate,
     }),
-    [data?.data?.exams, error, isLoading, isValidating, mutate]
+    [data?.data?.exams, error, isLoading, isValidating, mutate],
   );
 
   return memoizedValue;

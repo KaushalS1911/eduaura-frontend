@@ -14,6 +14,11 @@ export default function EmployeeRolecreatepage({ setTab }) {
   const { enqueueSnackbar } = useSnackbar();
 
   const handleClick = () => {
+    if (!inputVal.trim()) {
+      enqueueSnackbar('Role name cannot be empty', { variant: 'error' });
+      return;
+    }
+
     const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/configs/${configs?._id}`;
     const payload = { ...configs, emp_type: [...configs.emp_type, inputVal] };
     axios
@@ -21,15 +26,16 @@ export default function EmployeeRolecreatepage({ setTab }) {
       .then((res) => {
         if (res.status === 200) {
           setInputVal('');
-          enqueueSnackbar('EmployeeRole Add Successfully', {
+          enqueueSnackbar('EmployeeRole added successfully', {
             variant: 'success',
           });
-          setTab('Permission')
+          setTab('Permission');
           mutate();
         }
       })
       .catch((err) => console.log(err));
   };
+
 
   const handleDelete = (item) => {
     const filteredDeveloper = configs.emp_type.filter((e) => e !== item);
@@ -134,7 +140,6 @@ export default function EmployeeRolecreatepage({ setTab }) {
           </Grid>
         </Grid>
       </Box>
-
     </>
   );
 }

@@ -25,7 +25,7 @@ export function useGetContacts() {
       contactsValidating: isValidating,
       contactsEmpty: !isLoading && !data?.contacts.length,
     }),
-    [data?.contacts, error, isLoading, isValidating]
+    [data?.contacts, error, isLoading, isValidating],
   );
 
   return memoizedValue;
@@ -73,7 +73,7 @@ export function useGetConversation(conversationId) {
       conversationError: error,
       conversationValidating: isValidating,
     }),
-    [data?.conversation, error, isLoading, isValidating]
+    [data?.conversation, error, isLoading, isValidating],
   );
 
   return memoizedValue;
@@ -114,7 +114,7 @@ export async function sendMessage(conversationId, messageData) {
         conversation,
       };
     },
-    false
+    false,
   );
 
   /**
@@ -128,17 +128,17 @@ export async function sendMessage(conversationId, messageData) {
       const conversations = currentConversations.map((conversation) =>
         conversation.id === conversationId
           ? {
-              ...conversation,
-              messages: [...conversation.messages, messageData],
-            }
-          : conversation
+            ...conversation,
+            messages: [...conversation.messages, messageData],
+          }
+          : conversation,
       );
 
       return {
         conversations,
       };
     },
-    false
+    false,
   );
 }
 
@@ -165,7 +165,7 @@ export async function createConversation(conversationData) {
         conversations,
       };
     },
-    false
+    false,
   );
 
   return res.data;
@@ -193,7 +193,7 @@ export async function clickConversation(conversationId) {
     ],
     (currentData) => {
       const conversations = currentData.conversations.map((conversation) =>
-        conversation.id === conversationId ? { ...conversation, unreadCount: 0 } : conversation
+        conversation.id === conversationId ? { ...conversation, unreadCount: 0 } : conversation,
       );
 
       return {
@@ -201,6 +201,6 @@ export async function clickConversation(conversationId) {
         conversations,
       };
     },
-    false
+    false,
   );
 }

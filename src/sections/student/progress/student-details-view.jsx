@@ -1,14 +1,8 @@
 import PropTypes from 'prop-types';
-import { useState, useCallback } from 'react';
-
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
-
-import { _orders } from 'src/_mock';
-
 import { useSettingsContext } from 'src/components/settings';
-
 import StudentProgressDetailsHistory from '../student-progrss-details-history';
 import { useGetConfigs } from 'src/api/config';
 
@@ -175,7 +169,7 @@ export default function StudentDetailsView({ currentStudent, mutate }) {
   ];
 
   const courseDetails = configs?.courses?.find(
-    (e) => e?.name.toLowerCase() === currentStudent?.course.toLowerCase()
+    (e) => e?.name.toLowerCase() === currentStudent?.course.toLowerCase(),
   );
   const language = courseDetails ? courseDetails?.subcategories : [];
 

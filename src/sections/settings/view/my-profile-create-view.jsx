@@ -175,7 +175,11 @@ export default function MyProfile() {
                 <RHFTextField label='First Name' name='firstName' onClick={handleDisable} />
                 <RHFTextField label='Last Name' name='lastName' onClick={handleDisable} />
                 <RHFTextField label='Email' name='email' onClick={handleDisable} />
-                <RHFTextField label='Contact' name='contact' onClick={handleDisable} />
+                <RHFTextField label='Contact' name='contact' onClick={handleDisable}
+                              inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', maxLength: 10 }}
+                              onInput={(e) => {
+                                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                              }} />
               </Box>
               <Stack direction='row' justifyContent='flex-end'>
                 <LoadingButton

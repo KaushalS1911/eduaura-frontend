@@ -51,7 +51,7 @@ export default function StudentQuickEditForm({ currentUser, open, onClose }) {
       company: currentUser?.company || '',
       role: currentUser?.role || '',
     }),
-    [currentUser]
+    [currentUser],
   );
 
   const methods = useForm({
@@ -91,20 +91,20 @@ export default function StudentQuickEditForm({ currentUser, open, onClose }) {
         <DialogTitle>Quick Update</DialogTitle>
 
         <DialogContent>
-          <Alert variant="outlined" severity="info" sx={{ mb: 3 }}>
+          <Alert variant='outlined' severity='info' sx={{ mb: 3 }}>
             Account is waiting for confirmation
           </Alert>
 
           <Box
             rowGap={3}
             columnGap={2}
-            display="grid"
+            display='grid'
             gridTemplateColumns={{
               xs: 'repeat(1, 1fr)',
               sm: 'repeat(2, 1fr)',
             }}
           >
-            <RHFSelect name="status" label="Status">
+            <RHFSelect name='status' label='Status'>
               {USER_STATUS_OPTIONS.map((status) => (
                 <MenuItem key={status.value} value={status.value}>
                   {status.label}
@@ -114,35 +114,35 @@ export default function StudentQuickEditForm({ currentUser, open, onClose }) {
 
             <Box sx={{ display: { xs: 'none', sm: 'block' } }} />
 
-            <RHFTextField name="name" label="Full Name" />
-            <RHFTextField name="email" label="Email Address" />
-            <RHFTextField name="phoneNumber" label="Phone Number" />
+            <RHFTextField name='name' label='Full Name' />
+            <RHFTextField name='email' label='Email Address' />
+            <RHFTextField name='phoneNumber' label='Phone Number' />
 
             <RHFAutocomplete
-              name="country"
-              type="country"
-              label="Country"
-              placeholder="Choose a country"
+              name='country'
+              type='country'
+              label='Country'
+              placeholder='Choose a country'
               fullWidth
               options={countries.map((option) => option.label)}
               getOptionLabel={(option) => option}
             />
 
-            <RHFTextField name="state" label="State/Region" />
-            <RHFTextField name="city" label="City" />
-            <RHFTextField name="address" label="Address" />
-            <RHFTextField name="zipCode" label="Zip/Code" />
-            <RHFTextField name="company" label="Company" />
-            <RHFTextField name="role" label="Role" />
+            <RHFTextField name='state' label='State/Region' />
+            <RHFTextField name='city' label='City' />
+            <RHFTextField name='address' label='Address' />
+            <RHFTextField name='zipCode' label='Zip/Code' />
+            <RHFTextField name='company' label='Company' />
+            <RHFTextField name='role' label='Role' />
           </Box>
         </DialogContent>
 
         <DialogActions>
-          <Button variant="outlined" onClick={onClose}>
+          <Button variant='outlined' onClick={onClose}>
             Cancel
           </Button>
 
-          <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+          <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
             Update
           </LoadingButton>
         </DialogActions>

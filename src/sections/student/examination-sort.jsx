@@ -16,7 +16,7 @@ export default function ExaminationSort({ sort, onSort, sortOptions }) {
     <>
       <Button
         disableRipple
-        color="inherit"
+        color='inherit'
         onClick={popover.onOpen}
         endIcon={
           <Iconify
@@ -27,7 +27,7 @@ export default function ExaminationSort({ sort, onSort, sortOptions }) {
       >
         Sort By:
         <Box
-          component="span"
+          component='span'
           sx={{
             ml: 0.5,
             fontWeight: 'fontWeightBold',

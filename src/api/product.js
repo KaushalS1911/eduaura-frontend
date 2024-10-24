@@ -18,7 +18,7 @@ export function useGetProducts() {
       productsValidating: isValidating,
       productsEmpty: !isLoading && !data?.products.length,
     }),
-    [data?.products, error, isLoading, isValidating]
+    [data?.products, error, isLoading, isValidating],
   );
 
   return memoizedValue;
@@ -38,7 +38,7 @@ export function useGetProduct(productId) {
       productError: error,
       productValidating: isValidating,
     }),
-    [data?.product, error, isLoading, isValidating]
+    [data?.product, error, isLoading, isValidating],
   );
 
   return memoizedValue;
@@ -61,7 +61,7 @@ export function useSearchProducts(query) {
       searchValidating: isValidating,
       searchEmpty: !isLoading && !data?.results.length,
     }),
-    [data?.results, error, isLoading, isValidating]
+    [data?.results, error, isLoading, isValidating],
   );
 
   return memoizedValue;

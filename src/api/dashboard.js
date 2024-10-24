@@ -23,6 +23,7 @@ export function useGetDemos() {
 
   return memoizedValue;
 }
+
 export function useGetDashboardData() {
   const { user } = useAuthContext();
   const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/company/${user?.company_id}/dashboard`;
@@ -42,6 +43,7 @@ export function useGetDashboardData() {
 
   return memoizedValue;
 }
+
 export function useGetCourses() {
   const { user } = useAuthContext();
   const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/company/${user?.company_id}/student/course`;
@@ -61,6 +63,7 @@ export function useGetCourses() {
 
   return memoizedValue;
 }
+
 export function useGetAttendance() {
   const { user } = useAuthContext();
   const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/company/${user?.company_id}/attendance/logs`;

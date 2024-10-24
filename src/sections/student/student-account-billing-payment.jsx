@@ -21,12 +21,12 @@ export default function StudentAccountBillingPayment({ cards }) {
     <>
       <Card sx={{ my: 3 }}>
         <CardHeader
-          title="Payment Method"
+          title='Payment Method'
           action={
             <Button
-              size="small"
-              color="primary"
-              startIcon={<Iconify icon="mingcute:add-line" />}
+              size='small'
+              color='primary'
+              startIcon={<Iconify icon='mingcute:add-line' />}
               onClick={newCard.onTrue}
             >
               New Card
@@ -37,7 +37,7 @@ export default function StudentAccountBillingPayment({ cards }) {
         <Box
           rowGap={2.5}
           columnGap={2}
-          display="grid"
+          display='grid'
           gridTemplateColumns={{
             xs: 'repeat(1, 1fr)',
             md: 'repeat(2, 1fr)',

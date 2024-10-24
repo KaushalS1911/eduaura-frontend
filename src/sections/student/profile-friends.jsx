@@ -32,20 +32,20 @@ export default function ProfileFriends({ friends, searchFriends, onSearchFriends
     <>
       <Stack
         spacing={2}
-        justifyContent="space-between"
+        justifyContent='space-between'
         direction={{ xs: 'column', sm: 'row' }}
         sx={{ my: 5 }}
       >
-        <Typography variant="h4">Friends</Typography>
+        <Typography variant='h4'>Friends</Typography>
 
         <TextField
           value={searchFriends}
           onChange={onSearchFriends}
-          placeholder="Search friends..."
+          placeholder='Search friends...'
           InputProps={{
             startAdornment: (
-              <InputAdornment position="start">
-                <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
+              <InputAdornment position='start'>
+                <Iconify icon='eva:search-fill' sx={{ color: 'text.disabled' }} />
               </InputAdornment>
             ),
           }}
@@ -58,7 +58,7 @@ export default function ProfileFriends({ friends, searchFriends, onSearchFriends
       ) : (
         <Box
           gap={3}
-          display="grid"
+          display='grid'
           gridTemplateColumns={{
             xs: 'repeat(1, 1fr)',
             sm: 'repeat(2, 1fr)',
@@ -110,15 +110,15 @@ function FriendCard({ friend }) {
       >
         <Avatar alt={name} src={avatarUrl} sx={{ width: 64, height: 64, mb: 3 }} />
 
-        <Link variant="subtitle1" color="text.primary">
+        <Link variant='subtitle1' color='text.primary'>
           {name}
         </Link>
 
-        <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1, mt: 0.5 }}>
+        <Typography variant='body2' sx={{ color: 'text.secondary', mb: 1, mt: 0.5 }}>
           {role}
         </Typography>
 
-        <Stack alignItems="center" justifyContent="center" direction="row">
+        <Stack alignItems='center' justifyContent='center' direction='row'>
           {_socials.map((social) => (
             <IconButton
               key={social.name}
@@ -139,23 +139,23 @@ function FriendCard({ friend }) {
           onClick={popover.onOpen}
           sx={{ top: 8, right: 8, position: 'absolute' }}
         >
-          <Iconify icon="eva:more-vertical-fill" />
+          <Iconify icon='eva:more-vertical-fill' />
         </IconButton>
       </Card>
 
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
-        arrow="right-top"
+        arrow='right-top'
         sx={{ width: 140 }}
       >
         <MenuItem onClick={handleDelete} sx={{ color: 'error.main' }}>
-          <Iconify icon="solar:trash-bin-trash-bold" />
+          <Iconify icon='solar:trash-bin-trash-bold' />
           Delete
         </MenuItem>
 
         <MenuItem onClick={handleEdit}>
-          <Iconify icon="solar:pen-bold" />
+          <Iconify icon='solar:pen-bold' />
           Edit
         </MenuItem>
       </CustomPopover>
@@ -172,7 +172,7 @@ FriendCard.propTypes = {
 function applyFilter({ inputData, query }) {
   if (query) {
     return inputData.filter(
-      (friend) => friend.name.toLowerCase().indexOf(query.toLowerCase()) !== -1
+      (friend) => friend.name.toLowerCase().indexOf(query.toLowerCase()) !== -1,
     );
   }
 

@@ -16,16 +16,16 @@ export default function StudentAttendanceAnalytic({ title, total, icon, color, p
   return (
     <Stack
       spacing={2.5}
-      direction="row"
-      alignItems="center"
-      justifyContent="center"
+      direction='row'
+      alignItems='center'
+      justifyContent='center'
       sx={{ width: 1, minWidth: 200 }}
     >
-      <Stack alignItems="center" justifyContent="center" sx={{ position: 'relative' }}>
+      <Stack alignItems='center' justifyContent='center' sx={{ position: 'relative' }}>
         <Iconify icon={icon} width={32} sx={{ color, position: 'absolute' }} />
 
         <CircularProgress
-          variant="determinate"
+          variant='determinate'
           value={percent}
           size={56}
           thickness={2}
@@ -33,7 +33,7 @@ export default function StudentAttendanceAnalytic({ title, total, icon, color, p
         />
 
         <CircularProgress
-          variant="determinate"
+          variant='determinate'
           value={100}
           size={56}
           thickness={3}
@@ -48,13 +48,13 @@ export default function StudentAttendanceAnalytic({ title, total, icon, color, p
       </Stack>
 
       <Stack spacing={0.5}>
-        <Typography variant="subtitle1">{title}</Typography>
+        <Typography variant='subtitle1'>{title}</Typography>
 
-        <Box component="span" sx={{ color: 'text.disabled', typography: 'body2' }}>
+        <Box component='span' sx={{ color: 'text.disabled', typography: 'body2' }}>
           {fShortenNumber(total)} invoices
         </Box>
 
-        <Typography variant="subtitle2">{fCurrency(price)}</Typography>
+        <Typography variant='subtitle2'>{fCurrency(price)}</Typography>
       </Stack>
     </Stack>
   );

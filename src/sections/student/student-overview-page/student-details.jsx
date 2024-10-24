@@ -44,7 +44,7 @@ export default function StudentDetails({ studentData }) {
         counts.total += 1;
         return counts;
       },
-      { present: 0, absent: 0, total: 0 }
+      { present: 0, absent: 0, total: 0 },
     );
   }, [attendance]);
 
@@ -61,7 +61,7 @@ export default function StudentDetails({ studentData }) {
           totalMarks: examItem.total_marks,
           examDate: examItem.date,
           examId: examItem._id,
-        }))
+        })),
     );
   }, [exam, studentData?._id]);
 
@@ -69,7 +69,7 @@ export default function StudentDetails({ studentData }) {
     <>
       <Box>
         <Box>
-          <Typography variant="h4">Personal Details</Typography>
+          <Typography variant='h4'>Personal Details</Typography>
         </Box>
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} mt={2}>
           <Box width={'100%'}>
@@ -115,14 +115,14 @@ export default function StudentDetails({ studentData }) {
                     }}
                   >
                     {studentData?.address_detail?.address_1 +
-                      ' ' +
-                      studentData?.address_detail?.address_2 +
-                      ' ' +
-                      studentData?.address_detail?.city +
-                      ' ' +
-                      studentData?.address_detail?.state +
-                      ' ' +
-                      studentData?.address_detail?.country}
+                    ' ' +
+                    studentData?.address_detail?.address_2 +
+                    ' ' +
+                    studentData?.address_detail?.city +
+                    ' ' +
+                    studentData?.address_detail?.state +
+                    ' ' +
+                    studentData?.address_detail?.country}
                   </Typography>
                 </Grid>
               </Grid>
@@ -200,7 +200,7 @@ export default function StudentDetails({ studentData }) {
     <>
       <Box>
         <Box>
-          <Typography variant="h4">Guardian Details</Typography>
+          <Typography variant='h4'>Guardian Details</Typography>
         </Box>
         <Box mt={2}>
           <TableContainer component={Paper}>
@@ -263,7 +263,7 @@ export default function StudentDetails({ studentData }) {
     <>
       <Box>
         <Box>
-          <Typography variant="h4">Fees Details</Typography>
+          <Typography variant='h4'>Fees Details</Typography>
         </Box>
         <Box mt={2}>
           <TableContainer component={Paper}>
@@ -343,7 +343,7 @@ export default function StudentDetails({ studentData }) {
     <>
       <Box>
         <Box>
-          <Typography variant="h4">Attendance Details</Typography>
+          <Typography variant='h4'>Attendance Details</Typography>
         </Box>
         <Box mt={2}>
           <TableContainer component={Paper}>
@@ -353,7 +353,7 @@ export default function StudentDetails({ studentData }) {
                   sx={{ borderTop: '3px solid #E6E6E6', borderBottom: '3px solid #E6E6E6' }}
                 >
                   <TableCell
-                    align="center"
+                    align='center'
                     sx={{
                       color: 'black',
                       backgroundColor: 'transparent',
@@ -363,7 +363,7 @@ export default function StudentDetails({ studentData }) {
                     Total Days
                   </TableCell>
                   <TableCell
-                    align="center"
+                    align='center'
                     sx={{
                       color: 'black',
                       backgroundColor: 'transparent',
@@ -373,7 +373,7 @@ export default function StudentDetails({ studentData }) {
                     Present
                   </TableCell>
                   <TableCell
-                    align="center"
+                    align='center'
                     sx={{
                       color: 'black',
                       backgroundColor: 'transparent',
@@ -386,13 +386,13 @@ export default function StudentDetails({ studentData }) {
               </TableHead>
               <TableBody>
                 <TableRow sx={{ borderBottom: '3px solid #E6E6E6' }}>
-                  <TableCell align="center" sx={{ fontWeight: '600', fontSize: '40px' }}>
+                  <TableCell align='center' sx={{ fontWeight: '600', fontSize: '40px' }}>
                     {attendanceCounts?.total}
                   </TableCell>
-                  <TableCell align="center" sx={{ fontWeight: '600', fontSize: '40px' }}>
+                  <TableCell align='center' sx={{ fontWeight: '600', fontSize: '40px' }}>
                     {attendanceCounts?.present}
                   </TableCell>
-                  <TableCell align="center" sx={{ fontWeight: '600', fontSize: '40px' }}>
+                  <TableCell align='center' sx={{ fontWeight: '600', fontSize: '40px' }}>
                     {attendanceCounts?.absent}
                   </TableCell>
                 </TableRow>
@@ -408,7 +408,7 @@ export default function StudentDetails({ studentData }) {
     <>
       <Box>
         <Box>
-          <Typography variant="h4">Exam Details</Typography>
+          <Typography variant='h4'>Exam Details</Typography>
         </Box>
         <Box mt={2}>
           <TableContainer component={Paper}>
@@ -478,7 +478,7 @@ export default function StudentDetails({ studentData }) {
     <>
       <Box>
         <Box>
-          <Typography variant="h4">Remark</Typography>
+          <Typography variant='h4'>Remark</Typography>
         </Box>
         <Box mt={2}>
           {studentData?.remarks?.map((e) => (
@@ -497,7 +497,7 @@ export default function StudentDetails({ studentData }) {
     <>
       <Box>
         <Box>
-          <Typography variant="h4">Course Details</Typography>
+          <Typography variant='h4'>Course Details</Typography>
         </Box>
         <Box mt={2}>
           <TableContainer component={Paper}>
@@ -586,7 +586,7 @@ export default function StudentDetails({ studentData }) {
               )}
             </Box>
             <Box textAlign={'center'}>
-              <Typography variant="h4" sx={{ fontSize: '16px', fontWeight: '700' }}>
+              <Typography variant='h4' sx={{ fontSize: '16px', fontWeight: '700' }}>
                 {configs?.company_details?.name}
               </Typography>
               <Typography>{configs?.company_details?.address_1}</Typography>

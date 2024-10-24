@@ -1,5 +1,5 @@
 import isEqual from 'lodash/isEqual';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState, Suspense, useMemo } from 'react';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
@@ -37,6 +37,7 @@ import {
 import StudentTableRow from '../student-table-row';
 import StudentTableToolbar from '../student-table-toolbar';
 import StudentTableFiltersResult from '../student-table-filters-result';
+import GenerateOverviewPDF from '../../generate-pdf/generate-overview-pdf';
 import { useGetStudents } from '../../../api/student';
 import axios from 'axios';
 import { LoadingScreen } from '../../../components/loading-screen';
@@ -45,7 +46,6 @@ import { useAuthContext } from '../../../auth/hooks';
 import { useGetBatches } from '../../../api/batch';
 import Swal from 'sweetalert2';
 import { Box, Stack } from '@mui/material';
-import GenerateOverviewPDF from '../../generate-pdf/generate-overview-pdf';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useGetConfigs } from '../../../api/config';
 import * as XLSX from 'xlsx';
@@ -71,6 +71,7 @@ const TABLE_HEAD = [
   { id: 'course', label: 'Course' },
   { id: 'joining_date', label: 'Joining date' },
   { id: 'status', label: 'Status' },
+  { id: 'fee Status', label: 'Fee Status' },
   { id: '' },
 ];
 
@@ -101,6 +102,7 @@ export default function StudentListView() {
   const [field, setField] = useState([]);
   const [tableData, setTableData] = useState(students);
   const [filters, setFilters] = useState(defaultFilters);
+
   const dataFiltered = applyFilter({
     inputData: students,
     comparator: getComparator(table.order, table.orderBy),

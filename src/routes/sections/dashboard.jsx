@@ -123,7 +123,7 @@ export const dashboardRoutes = [
     children: [
       { element: <IndexPage />, index: true },
       { path: 'complain', element: <ComplainListView /> },
-      // { path: 'kanban', element: <KanbanPage /> },
+      { path: 'kanban', element: <KanbanPage /> },
       {
         path: 'fees',
         children: [

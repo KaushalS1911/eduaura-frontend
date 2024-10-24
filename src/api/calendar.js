@@ -27,7 +27,7 @@ export function useGetCalendar(page, limit) {
       calendarEmpty: !isLoading && !data?.length,
       mutate,
     }),
-    [data, error, isLoading, isValidating, mutate]
+    [data, error, isLoading, isValidating, mutate],
   );
   return memoizedValue;
 }
@@ -70,7 +70,7 @@ export async function createEvent(eventData) {
           events,
         };
       },
-      false
+      false,
     );
   } catch (error) {
     console.error('Failed to create event:', error);
@@ -84,21 +84,21 @@ export async function updateEvent(eventData) {
   try {
     const response = await axios.put(
       `https://server-eduaura-pyjuy.ondigitalocean.app/api/v2/event/${eventData._id}`,
-      eventData
+      eventData,
     );
     const updatedEvent = response.data;
     mutate(
       URL,
       (currentData) => {
         const events = currentData.events.map((event) =>
-          event.id === eventData._id ? updatedEvent : event
+          event.id === eventData._id ? updatedEvent : event,
         );
         return {
           ...currentData,
           events,
         };
       },
-      false
+      false,
     );
   } catch (error) {
     console.error('Failed to update event:', error);
@@ -119,7 +119,7 @@ export async function deleteEvent(eventId) {
         const updatedEvents = currentData?.events?.filter((event) => event.id !== eventId);
         return { ...currentData, events: updatedEvents };
       },
-      false
+      false,
     );
   } catch (error) {
     console.error('Error deleting event:', error);

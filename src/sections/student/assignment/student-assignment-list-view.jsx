@@ -1,4 +1,3 @@
-import sumBy from 'lodash/sumBy';
 import { useState, useCallback } from 'react';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -10,7 +9,6 @@ import { alpha, useTheme } from '@mui/material/styles';
 import TableContainer from '@mui/material/TableContainer';
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
-import { useBoolean } from 'src/hooks/use-boolean';
 import { isAfter, isBetween } from 'src/utils/format-time';
 import { INVOICE_SERVICE_OPTIONS } from 'src/_mock';
 import Label from 'src/components/label';
@@ -28,15 +26,18 @@ import {
 } from 'src/components/table';
 
 // ----------------------------------------------------------------------
-import StudentAttendanceTableRow from './student-attendance-table-row';
-import StudentAttendanceTableToolbar from './student-attendance-table-toolbar';
 
-import StudentAttendanceTableFiltersResult from './student-attendance-table-filters-result';
+import StudentAssignmentTableRow from './student-assignment-table-row';
+import StudentAssignmentTableToolbar from './student-assignment-table-toolbar';
+import StudentAssignmentTableFiltersResult from './student-assignment-table-filters-result';
 
 const TABLE_HEAD = [
   { id: '', label: 'Sr no.' },
+  { id: 'Title', label: 'Title' },
+  { id: 'Description', label: 'Description' },
   { id: 'Date', label: 'Date' },
   { id: 'status', label: 'Status' },
+  { id: 'remarks', label: 'remarks' },
 ];
 
 const defaultFilters = {
@@ -49,19 +50,18 @@ const defaultFilters = {
 
 // ----------------------------------------------------------------------
 
-export default function StudentAttendanceListView({ attendance }) {
+export default function StudentAssignmentListView({ assignmentData }) {
   const { enqueueSnackbar } = useSnackbar();
   const theme = useTheme();
   const settings = useSettingsContext();
   const router = useRouter();
   const table = useTable({ defaultOrderBy: 'createDate' });
-  const confirm = useBoolean();
-  const [tableData, setTableData] = useState(attendance);
+  const [tableData, setTableData] = useState(assignmentData);
   const [filters, setFilters] = useState(defaultFilters);
   const dateError = isAfter(filters.startDate, filters.endDate);
 
   const dataFiltered = applyFilter({
-    inputData: attendance,
+    inputData: assignmentData,
     comparator: getComparator(table.order, table.orderBy),
     filters,
     dateError,
@@ -82,33 +82,26 @@ export default function StudentAttendanceListView({ attendance }) {
 
   const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
   const getInvoiceLength = (status) => tableData.filter((item) => item.status === status).length;
-  const getTotalAmount = (status) =>
-    sumBy(
-      tableData.filter((item) => item.status === status),
-      'totalAmount',
-    );
-
-  const getPercentByStatus = (status) => (getInvoiceLength(status) / tableData.length) * 100;
 
   const TABS = [
     { value: 'all', label: 'All', color: 'default', count: tableData.length },
     {
-      value: 'present',
-      label: 'Present',
+      value: 'Completed',
+      label: 'Completed',
       color: 'success',
-      count: getInvoiceLength('present'),
+      count: getInvoiceLength('Completed'),
     },
     {
-      value: 'late',
-      label: 'Late',
+      value: 'Pending',
+      label: 'Pending',
       color: 'warning',
-      count: getInvoiceLength('late'),
+      count: getInvoiceLength('Pending'),
     },
     {
-      value: 'absent',
-      label: 'Absent',
+      value: 'Not Completed',
+      label: 'Not Completed',
       color: 'error',
-      count: getInvoiceLength('absent'),
+      count: getInvoiceLength('Not Completed'),
     },
   ];
 
@@ -130,28 +123,12 @@ export default function StudentAttendanceListView({ attendance }) {
   const handleDeleteRow = useCallback(
     (id) => {
       const deleteRow = tableData.filter((row) => row.id !== id);
-
       enqueueSnackbar('Delete success!');
-
       setTableData(deleteRow);
-
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
     [dataInPage.length, enqueueSnackbar, table, tableData],
   );
-
-  const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
-
-    enqueueSnackbar('Delete success!');
-
-    setTableData(deleteRows);
-
-    table.onUpdatePageDeleteRows({
-      totalRowsInPage: dataInPage.length,
-      totalRowsFiltered: dataFiltered.length,
-    });
-  }, [dataFiltered.length, dataInPage.length, enqueueSnackbar, table, tableData]);
 
   const handleEditRow = useCallback(
     (id) => {
@@ -199,20 +176,22 @@ export default function StudentAttendanceListView({ attendance }) {
                     }
                     color={tab.color}
                   >
-                    {tab.count}
+                    {['Completed', 'Pending', 'Not Completed'].includes(tab.value)
+                      ? assignmentData.filter((user) => user.status === tab.value).length
+                      : assignmentData.length}
                   </Label>
                 }
               />
             ))}
           </Tabs>
-          <StudentAttendanceTableToolbar
+          <StudentAssignmentTableToolbar
             filters={filters}
             onFilters={handleFilters}
             dateError={dateError}
             serviceOptions={INVOICE_SERVICE_OPTIONS.map((option) => option.name)}
           />
           {canReset && (
-            <StudentAttendanceTableFiltersResult
+            <StudentAssignmentTableFiltersResult
               filters={filters}
               onFilters={handleFilters}
               onResetFilters={handleResetFilters}
@@ -238,7 +217,7 @@ export default function StudentAttendanceListView({ attendance }) {
                       table.page * table.rowsPerPage + table.rowsPerPage,
                     )
                     .map((row, index) => (
-                      <StudentAttendanceTableRow
+                      <StudentAssignmentTableRow
                         key={row._id}
                         index={index}
                         row={row}
@@ -280,8 +259,7 @@ function applyFilter({ inputData, comparator, filters, dateError }) {
 
   if (!dateError) {
     if (startDate && endDate) {
-      inputData = inputData.filter((invoice) => isBetween(invoice.date, startDate, endDate));
-      console.log('res ', inputData);
+      inputData = inputData.filter((invoice) => isBetween(invoice.assignmentdata.date, startDate, endDate));
     }
   }
   if (status !== 'all') {

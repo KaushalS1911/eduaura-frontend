@@ -24,7 +24,7 @@ export function useGetBoard() {
       boardValidating: isValidating,
       boardEmpty: !isLoading && !data?.board.ordered.length,
     }),
-    [data?.board, error, isLoading, isValidating]
+    [data?.board, error, isLoading, isValidating],
   );
 
   return memoizedValue;
@@ -65,7 +65,7 @@ export async function createColumn(columnData) {
         },
       };
     },
-    false
+    false,
   );
 }
 
@@ -106,7 +106,7 @@ export async function updateColumn(columnId, columnName) {
         },
       };
     },
-    false
+    false,
   );
 }
 
@@ -132,7 +132,7 @@ export async function moveColumn(newOrdered) {
         },
       };
     },
-    false
+    false,
   );
 
   /**
@@ -187,7 +187,7 @@ export async function clearColumn(columnId) {
         },
       };
     },
-    false
+    false,
   );
 }
 
@@ -234,7 +234,7 @@ export async function deleteColumn(columnId) {
         },
       };
     },
-    false
+    false,
   );
 }
 
@@ -282,7 +282,7 @@ export async function createTask(columnId, taskData) {
         },
       };
     },
-    false
+    false,
   );
 }
 
@@ -317,7 +317,7 @@ export async function updateTask(taskData) {
         },
       };
     },
-    false
+    false,
   );
 }
 
@@ -343,7 +343,7 @@ export async function moveTask(updateColumns) {
         },
       };
     },
-    false
+    false,
   );
 
   /**
@@ -396,6 +396,6 @@ export async function deleteTask(columnId, taskId) {
         },
       };
     },
-    false
+    false,
   );
 }

@@ -163,11 +163,11 @@ export function useNavData() {
             path: paths.dashboard.task.list,
             icon: ICONS.task,
           },
-          // {
-          //   title: t('kanban'),
-          //   path: paths.dashboard.kanban,
-          //   icon: ICONS.kanban,
-          // },
+          {
+            title: t('kanban'),
+            path: paths.dashboard.kanban,
+            icon: ICONS.kanban,
+          },
         ],
       },
       {

@@ -57,12 +57,12 @@ const RemarkListView = ({ currentStudent, mutate }) => {
     <>
       <Card spacing={2.5}>
         <CardHeader
-          title="Remarks"
+          title='Remarks'
           action={
             <Button
-              size="small"
-              color="primary"
-              startIcon={<Iconify icon="mingcute:add-line" />}
+              size='small'
+              color='primary'
+              startIcon={<Iconify icon='mingcute:add-line' />}
               onClick={() => {
                 //   setEditAddressId(null);
                 RemarkNewForm.onTrue();
@@ -88,12 +88,12 @@ const RemarkListView = ({ currentStudent, mutate }) => {
                     borderRadius: 1,
                   }}
                 >
-                  <Stack flexGrow={1} spacing={1} variant="outlined">
-                    <Stack direction="row" alignItems="center">
-                      <Typography variant="subtitle2">{item.title}</Typography>
+                  <Stack flexGrow={1} spacing={1} variant='outlined'>
+                    <Stack direction='row' alignItems='center'>
+                      <Typography variant='subtitle2'>{item.title}</Typography>
                     </Stack>
 
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                    <Typography variant='body2' sx={{ color: 'text.secondary' }}>
                       {fDate(item.date)}
                     </Typography>
                   </Stack>
@@ -102,7 +102,7 @@ const RemarkListView = ({ currentStudent, mutate }) => {
                     onClick={() => handleDelete(item._id)}
                     sx={{ position: 'absolute', top: 8, right: 8 }}
                   >
-                    <Iconify icon="solar:trash-bin-trash-bold" />
+                    <Iconify icon='solar:trash-bin-trash-bold' />
                   </IconButton>
                 </Stack>
               ))}

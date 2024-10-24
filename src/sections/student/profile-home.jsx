@@ -35,19 +35,19 @@ export default function ProfileHome({ info, posts }) {
   const renderFollows = (
     <Card sx={{ py: 3, textAlign: 'center', typography: 'h4' }}>
       <Stack
-        direction="row"
-        divider={<Divider orientation="vertical" flexItem sx={{ borderStyle: 'dashed' }} />}
+        direction='row'
+        divider={<Divider orientation='vertical' flexItem sx={{ borderStyle: 'dashed' }} />}
       >
         <Stack width={1}>
           {fNumber(info.totalFollowers)}
-          <Box component="span" sx={{ color: 'text.secondary', typography: 'body2' }}>
+          <Box component='span' sx={{ color: 'text.secondary', typography: 'body2' }}>
             Follower
           </Box>
         </Stack>
 
         <Stack width={1}>
           {fNumber(info.totalFollowing)}
-          <Box component="span" sx={{ color: 'text.secondary', typography: 'body2' }}>
+          <Box component='span' sx={{ color: 'text.secondary', typography: 'body2' }}>
             Following
           </Box>
         </Stack>
@@ -57,44 +57,44 @@ export default function ProfileHome({ info, posts }) {
 
   const renderAbout = (
     <Card>
-      <CardHeader title="About" />
+      <CardHeader title='About' />
 
       <Stack spacing={2} sx={{ p: 3 }}>
         <Box sx={{ typography: 'body2' }}>{info.quote}</Box>
 
-        <Stack direction="row" spacing={2}>
-          <Iconify icon="mingcute:location-fill" width={24} />
+        <Stack direction='row' spacing={2}>
+          <Iconify icon='mingcute:location-fill' width={24} />
 
           <Box sx={{ typography: 'body2' }}>
             {`Live at `}
-            <Link variant="subtitle2" color="inherit">
+            <Link variant='subtitle2' color='inherit'>
               {info.country}
             </Link>
           </Box>
         </Stack>
 
-        <Stack direction="row" sx={{ typography: 'body2' }}>
-          <Iconify icon="fluent:mail-24-filled" width={24} sx={{ mr: 2 }} />
+        <Stack direction='row' sx={{ typography: 'body2' }}>
+          <Iconify icon='fluent:mail-24-filled' width={24} sx={{ mr: 2 }} />
           {info.email}
         </Stack>
 
-        <Stack direction="row" spacing={2}>
-          <Iconify icon="ic:round-business-center" width={24} />
+        <Stack direction='row' spacing={2}>
+          <Iconify icon='ic:round-business-center' width={24} />
 
           <Box sx={{ typography: 'body2' }}>
             {info.role} {`at `}
-            <Link variant="subtitle2" color="inherit">
+            <Link variant='subtitle2' color='inherit'>
               {info.company}
             </Link>
           </Box>
         </Stack>
 
-        <Stack direction="row" spacing={2}>
-          <Iconify icon="ic:round-business-center" width={24} />
+        <Stack direction='row' spacing={2}>
+          <Iconify icon='ic:round-business-center' width={24} />
 
           <Box sx={{ typography: 'body2' }}>
             {`Studied at `}
-            <Link variant="subtitle2" color="inherit">
+            <Link variant='subtitle2' color='inherit'>
               {info.school}
             </Link>
           </Box>
@@ -109,7 +109,7 @@ export default function ProfileHome({ info, posts }) {
         multiline
         fullWidth
         rows={4}
-        placeholder="Share what you are thinking here..."
+        placeholder='Share what you are thinking here...'
         sx={{
           p: 2,
           mb: 3,
@@ -118,36 +118,36 @@ export default function ProfileHome({ info, posts }) {
         }}
       />
 
-      <Stack direction="row" alignItems="center" justifyContent="space-between">
-        <Stack direction="row" spacing={1} alignItems="center" sx={{ color: 'text.secondary' }}>
-          <Fab size="small" color="inherit" variant="softExtended" onClick={handleAttach}>
-            <Iconify icon="solar:gallery-wide-bold" width={24} sx={{ color: 'success.main' }} />
+      <Stack direction='row' alignItems='center' justifyContent='space-between'>
+        <Stack direction='row' spacing={1} alignItems='center' sx={{ color: 'text.secondary' }}>
+          <Fab size='small' color='inherit' variant='softExtended' onClick={handleAttach}>
+            <Iconify icon='solar:gallery-wide-bold' width={24} sx={{ color: 'success.main' }} />
             Image/Video
           </Fab>
 
-          <Fab size="small" color="inherit" variant="softExtended">
-            <Iconify icon="solar:videocamera-record-bold" width={24} sx={{ color: 'error.main' }} />
+          <Fab size='small' color='inherit' variant='softExtended'>
+            <Iconify icon='solar:videocamera-record-bold' width={24} sx={{ color: 'error.main' }} />
             Streaming
           </Fab>
         </Stack>
 
-        <Button variant="contained">Post</Button>
+        <Button variant='contained'>Post</Button>
       </Stack>
 
-      <input ref={fileRef} type="file" style={{ display: 'none' }} />
+      <input ref={fileRef} type='file' style={{ display: 'none' }} />
     </Card>
   );
 
   const renderSocials = (
     <Card>
-      <CardHeader title="Social" />
+      <CardHeader title='Social' />
 
       <Stack spacing={2} sx={{ p: 3 }}>
         {_socials.map((link) => (
           <Stack
             key={link.name}
             spacing={2}
-            direction="row"
+            direction='row'
             sx={{ wordBreak: 'break-all', typography: 'body2' }}
           >
             <Iconify
@@ -158,7 +158,7 @@ export default function ProfileHome({ info, posts }) {
                 color: link.color,
               }}
             />
-            <Link color="inherit">
+            <Link color='inherit'>
               {link.value === 'facebook' && info.socialLinks.facebook}
               {link.value === 'instagram' && info.socialLinks.instagram}
               {link.value === 'linkedin' && info.socialLinks.linkedin}

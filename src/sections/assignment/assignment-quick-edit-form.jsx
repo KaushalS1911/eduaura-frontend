@@ -5,7 +5,6 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import Box from '@mui/material/Box';
-import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -94,9 +93,9 @@ export default function AssignmentQuickEditForm({ currentUser, open, onClose, mu
     }
   });
   const OPTIONS = [
-    { value: 'completed', label: 'Completed' },
-    { value: 'pending', label: 'Pending' },
-    { value: 'not_completed', label: 'Not Completed' },
+    { value: 'Completed', label: 'Completed' },
+    { value: 'Pending', label: 'Pending' },
+    { value: 'Not Completed', label: 'Not Completed' },
   ];
   return (
     <Dialog
