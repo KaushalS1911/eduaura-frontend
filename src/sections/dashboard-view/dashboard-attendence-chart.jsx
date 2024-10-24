@@ -82,7 +82,7 @@ export default function DashboardAttendenceChart({ title, subheader, total, char
 
   return (
     <Card {...other}>
-      <CardHeader title={title} subheader={subheader} sx={{ mb: 5 }} />
+      <CardHeader title={title} sx={{ mb: 5 }} />
       <StyledChart
         dir="ltr"
         type="radialBar"
