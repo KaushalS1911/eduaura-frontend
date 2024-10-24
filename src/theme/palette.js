@@ -70,6 +70,14 @@ export const error = {
   darker: '#7A0916',
   contrastText: '#FFFFFF',
 };
+export const info2 = {
+  lighter: '#000',
+  light: '#000',
+  main: '#000',
+  dark: '#000',
+  darker: '#000',
+  contrastText: '#000',
+};
 
 export const common = {
   black: '#000000',
@@ -95,6 +103,7 @@ const base = {
   error,
   grey,
   common,
+  info2,
   divider: alpha(grey[500], 0.2),
   action,
 };

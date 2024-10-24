@@ -34,6 +34,7 @@ export default function DashboardAttendenceChart({ title, subheader, total, char
     colors = [
       [theme.palette.primary.light, theme.palette.primary.main],
       [theme.palette.warning.light, theme.palette.warning.main],
+      [theme.palette.info.light, theme.palette.info.main],
       [theme.palette.error.light, theme.palette.error.main],
     ],
     series,
@@ -66,7 +67,7 @@ export default function DashboardAttendenceChart({ title, subheader, total, char
     },
     plotOptions: {
       radialBar: {
-        hollow: { size: '55%' },
+        hollow: { size: '45%' },
         dataLabels: {
           value: { offsetY: 16 },
           total: {
@@ -82,7 +83,6 @@ export default function DashboardAttendenceChart({ title, subheader, total, char
   return (
     <Card {...other}>
       <CardHeader title={title} subheader={subheader} sx={{ mb: 5 }} />
-
       <StyledChart
         dir="ltr"
         type="radialBar"

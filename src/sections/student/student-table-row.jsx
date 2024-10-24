@@ -24,6 +24,8 @@ import { useRouter } from 'src/routes/hooks';
 import { getResponsibilityValue } from '../../permission/permission';
 import { useGetConfigs } from '../../api/config';
 import { useAuthContext } from '../../auth/hooks';
+import { Link } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 // ----------------------------------------------------------------------
 
@@ -48,9 +50,15 @@ export default function StudentTableRow({ row, selected, onEditRow, onSelectRow,
         <TableCell>{row.enrollment_no}</TableCell>
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
           <Avatar alt={`${firstName} ${lastName}`} src={profile_pic} sx={{ mr: 2 }} />
-
           <ListItemText
-            primary={`${firstName} ${lastName}`}
+            primary={
+              <Link to={paths.dashboard.student.edit(row._id)}
+                    style={{ textDecoration: 'none', fontWeight: 'bold', color: 'inherit' }}
+
+              >
+                {`${firstName} ${lastName}`}
+              </Link>
+            }
             secondary={email}
             primaryTypographyProps={{ typography: 'body2' }}
             secondaryTypographyProps={{
@@ -98,16 +106,6 @@ export default function StudentTableRow({ row, selected, onEditRow, onSelectRow,
         arrow='right-top'
         sx={{ width: 140 }}
       >
-        {getResponsibilityValue('update_student', configs, user)
-        && <MenuItem
-          onClick={() => {
-            onEditRow();
-            popover.onClose();
-          }}
-        >
-          <Iconify icon='solar:pen-bold' />
-          Edit
-        </MenuItem>}
         {getResponsibilityValue('print_student_detail', configs, user)
         && <MenuItem
           onClick={() => {
