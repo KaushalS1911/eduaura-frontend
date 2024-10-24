@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 
 import { fetcher } from '../utils/axios';
 import { useAuthContext } from '../auth/hooks/index.js';
+
 // get all student
 
 export function useGetStudents() {
@@ -21,7 +22,7 @@ export function useGetStudents() {
       studentsEmpty: !isLoading && !data?.students.length,
       mutate,
     }),
-    [data?.students, error, isLoading, isValidating, mutate]
+    [data?.students, error, isLoading, isValidating, mutate],
   );
 
   return memoizedValue;
@@ -39,7 +40,7 @@ export function useGetStudentsList(id) {
       studentsEmpty: !isLoading && !data?.students.length,
       mutate,
     }),
-    [data?.students, error, isLoading, isValidating, mutate]
+    [data?.students, error, isLoading, isValidating, mutate],
   );
   return memoizedValue;
 }

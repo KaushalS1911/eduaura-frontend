@@ -32,7 +32,7 @@ export default function StudentCard({ user }) {
         />
 
         <Avatar
-          alt="image"
+          alt='image'
           src={user.profile_pic}
           sx={{
             width: 64,
@@ -47,9 +47,9 @@ export default function StudentCard({ user }) {
         />
 
         <Image
-          src="https://api-dev-minimal-v510.vercel.app/assets/images/cover/cover_1.jpg"
-          alt="cover_image"
-          ratio="16/9"
+          src='https://api-dev-minimal-v510.vercel.app/assets/images/cover/cover_1.jpg'
+          alt='cover_image'
+          ratio='16/9'
           overlay={alpha(theme.palette.grey[900], 0.48)}
         />
       </Box>
@@ -68,26 +68,26 @@ export default function StudentCard({ user }) {
         <Box
           columnGap={2}
           rowGap={2}
-          display="grid"
+          display='grid'
           gridTemplateColumns={{
             xs: 'repeat(1, 1fr)',
             lg: 'repeat(2, 2fr)',
           }}
         >
           <Grid>
-            <Typography variant="h5" component="div" sx={{ mb: 0.5, color: 'text.secondary' }}>
+            <Typography variant='h5' component='div' sx={{ mb: 0.5, color: 'text.secondary' }}>
               Email
             </Typography>
-            <Typography variant="caption" component="div">
+            <Typography variant='caption' component='div'>
               {user.email}
             </Typography>
           </Grid>
 
           <Grid>
-            <Typography variant="h5" component="div" sx={{ mb: 0.5, color: 'text.secondary' }}>
+            <Typography variant='h5' component='div' sx={{ mb: 0.5, color: 'text.secondary' }}>
               Contact
             </Typography>
-            <Typography variant="caption" component="div">
+            <Typography variant='caption' component='div'>
               {user.contact}
             </Typography>
           </Grid>

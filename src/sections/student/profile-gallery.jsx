@@ -26,13 +26,13 @@ export default function ProfileGallery({ gallery }) {
 
   return (
     <>
-      <Typography variant="h4" sx={{ my: 5 }}>
+      <Typography variant='h4' sx={{ my: 5 }}>
         Gallery
       </Typography>
 
       <Box
         gap={3}
-        display="grid"
+        display='grid'
         gridTemplateColumns={{
           xs: 'repeat(1, 1fr)',
           sm: 'repeat(2, 1fr)',
@@ -41,8 +41,8 @@ export default function ProfileGallery({ gallery }) {
       >
         {gallery.map((image) => (
           <Card key={image.id} sx={{ cursor: 'pointer', color: 'common.white' }}>
-            <IconButton color="inherit" sx={{ position: 'absolute', top: 8, right: 8, zIndex: 9 }}>
-              <Iconify icon="eva:more-vertical-fill" />
+            <IconButton color='inherit' sx={{ position: 'absolute', top: 8, right: 8, zIndex: 9 }}>
+              <Iconify icon='eva:more-vertical-fill' />
             </IconButton>
 
             <ListItemText
@@ -70,8 +70,8 @@ export default function ProfileGallery({ gallery }) {
             />
 
             <Image
-              alt="gallery"
-              ratio="1/1"
+              alt='gallery'
+              ratio='1/1'
               src={image.imageUrl}
               onClick={() => lightbox.onOpen(image.imageUrl)}
               overlay={`linear-gradient(to bottom, ${alpha(theme.palette.grey[900], 0)} 0%, ${

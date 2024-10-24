@@ -112,7 +112,7 @@ export default function StudentAccountGeneral({ id }) {
             amount_paid: Number(student.fee_detail.amount_paid),
             discount: Number(student.fee_detail.discount),
           });
-          setProfilePic(student.profile_pic)
+          setProfilePic(student.profile_pic);
         }
       } catch (err) {
         console.log('ERROR : ', err);
@@ -139,7 +139,7 @@ export default function StudentAccountGeneral({ id }) {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
-        }
+        },
       );
       return response.data;
     } catch (error) {
@@ -164,7 +164,7 @@ export default function StudentAccountGeneral({ id }) {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
-        }
+        },
       );
       return response.data;
     } catch (error) {
@@ -202,8 +202,7 @@ export default function StudentAccountGeneral({ id }) {
         const response = await updateStudent(addStudent);
         enqueueSnackbar(response.message, { variant: 'success' });
         reset();
-      }
-      else {
+      } else {
         const response = await postStudent(addStudent);
         enqueueSnackbar(response.message, { variant: 'success' });
         reset();
@@ -212,7 +211,7 @@ export default function StudentAccountGeneral({ id }) {
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   const handleDrop = useCallback(
     (acceptedFiles) => {
@@ -226,23 +225,23 @@ export default function StudentAccountGeneral({ id }) {
         setValue('photoURL', newFile, { shouldValidate: true });
       }
     },
-    [setValue]
+    [setValue],
   );
 
   const uploadStudentImage = (
     <>
       {mdUp && (
         <Grid item md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
+          <Typography variant='h6' sx={{ mb: 0.5 }}>
             Personal Details
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
             Basic info, profile pic, Name, Course, Enrollment no...
           </Typography>
 
           <Card sx={{ pt: 5, px: 3, mt: 5 }}>
             <Box sx={{ mb: 5 }}>
-              <RHFUploadAvatar name="profile_pic" onDrop={handleDrop} />
+              <RHFUploadAvatar name='profile_pic' onDrop={handleDrop} />
             </Box>
           </Card>
         </Grid>
@@ -250,38 +249,38 @@ export default function StudentAccountGeneral({ id }) {
 
       <Grid item xs={12} md={8}>
         <Card>
-          {!mdUp && <CardHeader title="Personal Details" />}
+          {!mdUp && <CardHeader title='Personal Details' />}
 
           <Stack spacing={3} sx={{ p: 3 }}>
             <Box
               columnGap={2}
               rowGap={3}
-              display="grid"
+              display='grid'
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
                 md: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField name="firstName" label="First Name" />
-              <RHFTextField name="lastName" label="Last Name" />
-              <RHFTextField name="email" label="Email Address" />
-              <RHFTextField name="contact" label="Phone Number" />
+              <RHFTextField name='firstName' label='First Name' />
+              <RHFTextField name='lastName' label='Last Name' />
+              <RHFTextField name='email' label='Email Address' />
+              <RHFTextField name='contact' label='Phone Number' />
               <RHFAutocomplete
-                name="gender"
-                label="Gender"
-                placeholder="Choose a gender"
+                name='gender'
+                label='Gender'
+                placeholder='Choose a gender'
                 options={STUDENT_GENDER}
                 getOptionLabel={(option) => option}
                 isOptionEqualToValue={(option, value) => option === value}
               />
               <Stack spacing={1.5}>
                 <Controller
-                  name="dob"
+                  name='dob'
                   control={control}
                   render={({ field, fieldState: { error } }) => (
                     <DatePicker
                       {...field}
-                      label="Date of Birth"
+                      label='Date of Birth'
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -294,23 +293,23 @@ export default function StudentAccountGeneral({ id }) {
                   )}
                 />
               </Stack>
-              <RHFTextField name="education" label="Education" />
-              <RHFTextField name="school_college" label="School/College" />
+              <RHFTextField name='education' label='Education' />
+              <RHFTextField name='school_college' label='School/College' />
               <RHFAutocomplete
-                name="course"
-                label="Course"
-                placeholder="Choose a course"
+                name='course'
+                label='Course'
+                placeholder='Choose a course'
                 options={courses.map((course) => course.label)}
                 isOptionEqualToValue={(option, value) => option === value}
               />
               <Stack spacing={1.5}>
                 <Controller
-                  name="joining_date"
+                  name='joining_date'
                   control={control}
                   render={({ field, fieldState: { error } }) => (
                     <DatePicker
                       {...field}
-                      label="Joining Date"
+                      label='Joining Date'
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -323,8 +322,8 @@ export default function StudentAccountGeneral({ id }) {
                   )}
                 />
               </Stack>
-              <RHFTextField name="blood_group" label="Blood Group" />
-              <RHFTextField name="enrollment_no" label="Enrollment No" />
+              <RHFTextField name='blood_group' label='Blood Group' />
+              <RHFTextField name='enrollment_no' label='Enrollment No' />
             </Box>
           </Stack>
         </Card>
@@ -336,10 +335,10 @@ export default function StudentAccountGeneral({ id }) {
     <>
       {mdUp && (
         <Grid item md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
+          <Typography variant='h6' sx={{ mb: 0.5 }}>
             Address Details
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
             Address info, country, state, city...
           </Typography>
         </Grid>
@@ -347,21 +346,21 @@ export default function StudentAccountGeneral({ id }) {
 
       <Grid item xs={12} md={8}>
         <Card>
-          {!mdUp && <CardHeader title="Address Details" />}
+          {!mdUp && <CardHeader title='Address Details' />}
           <Stack spacing={3} sx={{ p: 3, mt: 4 }}>
             <Box
               rowGap={3}
               columnGap={2}
-              display="grid"
+              display='grid'
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
                 sm: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField name="address_1" label="Address 1" />
-              <RHFTextField name="address_2" label="Address 2" />
+              <RHFTextField name='address_1' label='Address 1' />
+              <RHFTextField name='address_2' label='Address 2' />
               <Controller
-                name="country"
+                name='country'
                 control={control}
                 render={({ field }) => (
                   <Autocomplete
@@ -370,13 +369,13 @@ export default function StudentAccountGeneral({ id }) {
                     onChange={(event, value) => field.onChange(value)}
                     isOptionEqualToValue={(option, value) => option === value}
                     renderInput={(params) => (
-                      <TextField {...params} label="Country" variant="outlined" />
+                      <TextField {...params} label='Country' variant='outlined' />
                     )}
                   />
                 )}
               />
               <Controller
-                name="state"
+                name='state'
                 control={control}
                 render={({ field }) => (
                   <Autocomplete
@@ -384,20 +383,20 @@ export default function StudentAccountGeneral({ id }) {
                     options={
                       watch('country')
                         ? countrystatecity
-                            .find((country) => country.name === watch('country'))
-                            ?.states.map((state) => state.name) || []
+                        .find((country) => country.name === watch('country'))
+                        ?.states.map((state) => state.name) || []
                         : []
                     }
                     onChange={(event, value) => field.onChange(value)}
                     isOptionEqualToValue={(option, value) => option === value}
                     renderInput={(params) => (
-                      <TextField {...params} label="State" variant="outlined" />
+                      <TextField {...params} label='State' variant='outlined' />
                     )}
                   />
                 )}
               />
               <Controller
-                name="city"
+                name='city'
                 control={control}
                 render={({ field }) => (
                   <Autocomplete
@@ -405,20 +404,20 @@ export default function StudentAccountGeneral({ id }) {
                     options={
                       watch('state')
                         ? countrystatecity
-                            .find((country) => country.name === watch('country'))
-                            ?.states.find((state) => state.name === watch('state'))
-                            ?.cities.map((city) => city.name) || []
+                        .find((country) => country.name === watch('country'))
+                        ?.states.find((state) => state.name === watch('state'))
+                        ?.cities.map((city) => city.name) || []
                         : []
                     }
                     onChange={(event, value) => field.onChange(value)}
                     isOptionEqualToValue={(option, value) => option === value}
                     renderInput={(params) => (
-                      <TextField {...params} label="City" variant="outlined" />
+                      <TextField {...params} label='City' variant='outlined' />
                     )}
                   />
                 )}
               />
-              <RHFTextField name="zipcode" label="Zip Code" />
+              <RHFTextField name='zipcode' label='Zip Code' />
             </Box>
           </Stack>
         </Card>
@@ -430,10 +429,10 @@ export default function StudentAccountGeneral({ id }) {
     <>
       {mdUp && (
         <Grid item md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
+          <Typography variant='h6' sx={{ mb: 0.5 }}>
             Fees Details
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <Typography variant='body2' sx={{ color: 'text.secondary' }}>
             Fees Total Amount, Amount Paid, Discount...
           </Typography>
         </Grid>
@@ -441,20 +440,20 @@ export default function StudentAccountGeneral({ id }) {
 
       <Grid item xs={12} md={8}>
         <Card>
-          {!mdUp && <CardHeader title="Fees Details" />}
+          {!mdUp && <CardHeader title='Fees Details' />}
           <Stack spacing={3} sx={{ p: 3 }}>
             <Box
               columnGap={2}
               rowGap={3}
-              display="grid"
+              display='grid'
               gridTemplateColumns={{
                 xs: 'repeat(1, 1fr)',
                 md: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField name="total_amount" label="Total Amount" />
-              <RHFTextField name="amount_paid" label="Amount Paid" />
-              <RHFTextField name="discount" label="Discount" />
+              <RHFTextField name='total_amount' label='Total Amount' />
+              <RHFTextField name='amount_paid' label='Amount Paid' />
+              <RHFTextField name='discount' label='Discount' />
             </Box>
           </Stack>
         </Card>
@@ -466,8 +465,8 @@ export default function StudentAccountGeneral({ id }) {
     <>
       {mdUp && <Grid item md={4} />}
       <Grid item xs={12} md={8} sx={{ display: 'flex', justifyContent: 'end' }}>
-        <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
-          {id ? "Update Student" : "Add Student"}
+        <LoadingButton type='submit' variant='contained' size='large' loading={isSubmitting}>
+          {id ? 'Update Student' : 'Add Student'}
         </LoadingButton>
       </Grid>
     </>

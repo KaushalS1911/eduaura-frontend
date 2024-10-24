@@ -1,15 +1,9 @@
 import Container from '@mui/material/Container';
-
 import { paths } from 'src/routes/paths';
-
 import { useSettingsContext } from 'src/components/settings';
-
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-
 import StudentCreateView from 'src/sections/student/view/student-create-view';
-import { useParams } from 'src/routes/hooks';
 import { useGetSingleStudent } from 'src/api/student';
-import { useEffect, useState } from 'react';
 
 // ----------------------------------------------------------------------
 
@@ -20,7 +14,7 @@ export default function StudentEditView({ id }) {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Edit Student"
+        heading='Edit Student'
         links={[
           {
             name: 'Dashboard',
@@ -39,8 +33,6 @@ export default function StudentEditView({ id }) {
           mb: { xs: 3, md: 5 },
         }}
       />
-
-
       {data && <StudentCreateView currentStudent={data} mutate={mutate} />}
     </Container>
   );

@@ -92,7 +92,7 @@ export default function StudentAccountNotifications() {
             <Grid xs={12} md={8}>
               <Stack spacing={1} sx={{ p: 3, borderRadius: 2, bgcolor: 'background.neutral' }}>
                 <Controller
-                  name="selected"
+                  name='selected'
                   control={control}
                   render={({ field }) => (
                     <>
@@ -100,7 +100,7 @@ export default function StudentAccountNotifications() {
                         <FormControlLabel
                           key={item.id}
                           label={item.label}
-                          labelPlacement="start"
+                          labelPlacement='start'
                           control={
                             <Switch
                               checked={field.value.includes(item.id)}
@@ -122,7 +122,7 @@ export default function StudentAccountNotifications() {
           </Grid>
         ))}
 
-        <LoadingButton type="submit" variant="contained" loading={isSubmitting} sx={{ ml: 'auto' }}>
+        <LoadingButton type='submit' variant='contained' loading={isSubmitting} sx={{ ml: 'auto' }}>
           Save Changes
         </LoadingButton>
       </Stack>

@@ -9,7 +9,7 @@ export function useGetVisits() {
 
   const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/v2/${user?.company_id}/visit`;
 
-  const { data, isLoading, error, isValidating ,mutate} = useSWR(URL, fetcher);
+  const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
   const memoizedValue = useMemo(
     () => ({
       visit: data?.data || [],
@@ -17,9 +17,9 @@ export function useGetVisits() {
       visitError: error,
       visitValidating: isValidating,
       visitEmpty: !isLoading && !data?.data.length,
-      mutate
+      mutate,
     }),
-    [data?.data, error, isLoading, isValidating]
+    [data?.data, error, isLoading, isValidating],
   );
 
   return memoizedValue;

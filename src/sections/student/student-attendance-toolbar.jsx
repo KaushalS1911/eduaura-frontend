@@ -25,11 +25,11 @@ import InvoicePDF from '../invoice/invoice-pdf';
 // ----------------------------------------------------------------------
 
 export default function StudentAttendanceToolbar({
-  invoice,
-  currentStatus,
-  statusOptions,
-  onChangeStatus,
-}) {
+                                                   invoice,
+                                                   currentStatus,
+                                                   statusOptions,
+                                                   onChangeStatus,
+                                                 }) {
   const router = useRouter();
 
   const view = useBoolean();
@@ -46,16 +46,16 @@ export default function StudentAttendanceToolbar({
         alignItems={{ xs: 'flex-end', sm: 'center' }}
         sx={{ mb: { xs: 3, md: 5 } }}
       >
-        <Stack direction="row" spacing={1} flexGrow={1} sx={{ width: 1 }}>
-          <Tooltip title="Edit">
+        <Stack direction='row' spacing={1} flexGrow={1} sx={{ width: 1 }}>
+          <Tooltip title='Edit'>
             <IconButton onClick={handleEdit}>
-              <Iconify icon="solar:pen-bold" />
+              <Iconify icon='solar:pen-bold' />
             </IconButton>
           </Tooltip>
 
-          <Tooltip title="View">
+          <Tooltip title='View'>
             <IconButton onClick={view.onTrue}>
-              <Iconify icon="solar:eye-bold" />
+              <Iconify icon='solar:eye-bold' />
             </IconButton>
           </Tooltip>
 
@@ -65,33 +65,33 @@ export default function StudentAttendanceToolbar({
             style={{ textDecoration: 'none' }}
           >
             {({ loading }) => (
-              <Tooltip title="Download">
+              <Tooltip title='Download'>
                 <IconButton>
                   {loading ? (
-                    <CircularProgress size={24} color="inherit" />
+                    <CircularProgress size={24} color='inherit' />
                   ) : (
-                    <Iconify icon="eva:cloud-download-fill" />
+                    <Iconify icon='eva:cloud-download-fill' />
                   )}
                 </IconButton>
               </Tooltip>
             )}
           </PDFDownloadLink>
 
-          <Tooltip title="Print">
+          <Tooltip title='Print'>
             <IconButton>
-              <Iconify icon="solar:printer-minimalistic-bold" />
+              <Iconify icon='solar:printer-minimalistic-bold' />
             </IconButton>
           </Tooltip>
 
-          <Tooltip title="Send">
+          <Tooltip title='Send'>
             <IconButton>
-              <Iconify icon="iconamoon:send-fill" />
+              <Iconify icon='iconamoon:send-fill' />
             </IconButton>
           </Tooltip>
 
-          <Tooltip title="Share">
+          <Tooltip title='Share'>
             <IconButton>
-              <Iconify icon="solar:share-bold" />
+              <Iconify icon='solar:share-bold' />
             </IconButton>
           </Tooltip>
         </Stack>
@@ -99,7 +99,7 @@ export default function StudentAttendanceToolbar({
         <TextField
           fullWidth
           select
-          label="Status"
+          label='Status'
           value={currentStatus}
           onChange={onChangeStatus}
           sx={{
@@ -121,13 +121,13 @@ export default function StudentAttendanceToolbar({
               p: 1.5,
             }}
           >
-            <Button color="inherit" variant="contained" onClick={view.onFalse}>
+            <Button color='inherit' variant='contained' onClick={view.onFalse}>
               Close
             </Button>
           </DialogActions>
 
           <Box sx={{ flexGrow: 1, height: 1, overflow: 'hidden' }}>
-            <PDFViewer width="100%" height="100%" style={{ border: 'none' }}>
+            <PDFViewer width='100%' height='100%' style={{ border: 'none' }}>
               <InvoicePDF invoice={invoice} currentStatus={currentStatus} />
             </PDFViewer>
           </Box>

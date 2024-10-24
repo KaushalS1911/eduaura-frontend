@@ -23,22 +23,22 @@ import CountrySelect from 'src/components/country-select';
 // ----------------------------------------------------------------------
 
 export default function ExaminationFilters({
-  open,
-  onOpen,
-  onClose,
-  //
-  filters,
-  onFilters,
-  //
-  canReset,
-  onResetFilters,
-  //
-  roleOptions,
-  locationOptions,
-  benefitOptions,
-  experienceOptions,
-  employmentTypeOptions,
-}) {
+                                             open,
+                                             onOpen,
+                                             onClose,
+                                             //
+                                             filters,
+                                             onFilters,
+                                             //
+                                             canReset,
+                                             onResetFilters,
+                                             //
+                                             roleOptions,
+                                             locationOptions,
+                                             benefitOptions,
+                                             experienceOptions,
+                                             employmentTypeOptions,
+                                           }) {
   const handleFilterEmploymentTypes = useCallback(
     (newValue) => {
       const checked = filters.employmentTypes.includes(newValue)
@@ -46,28 +46,28 @@ export default function ExaminationFilters({
         : [...filters.employmentTypes, newValue];
       onFilters('employmentTypes', checked);
     },
-    [filters.employmentTypes, onFilters]
+    [filters.employmentTypes, onFilters],
   );
 
   const handleFilterExperience = useCallback(
     (newValue) => {
       onFilters('experience', newValue);
     },
-    [onFilters]
+    [onFilters],
   );
 
   const handleFilterRoles = useCallback(
     (newValue) => {
       onFilters('roles', newValue);
     },
-    [onFilters]
+    [onFilters],
   );
 
   const handleFilterLocations = useCallback(
     (newValue) => {
       onFilters('locations', newValue);
     },
-    [onFilters]
+    [onFilters],
   );
 
   const handleFilterBenefits = useCallback(
@@ -77,37 +77,37 @@ export default function ExaminationFilters({
         : [...filters.benefits, newValue];
       onFilters('benefits', checked);
     },
-    [filters.benefits, onFilters]
+    [filters.benefits, onFilters],
   );
 
   const renderHead = (
     <Stack
-      direction="row"
-      alignItems="center"
-      justifyContent="space-between"
+      direction='row'
+      alignItems='center'
+      justifyContent='space-between'
       sx={{ py: 2, pr: 1, pl: 2.5 }}
     >
-      <Typography variant="h6" sx={{ flexGrow: 1 }}>
+      <Typography variant='h6' sx={{ flexGrow: 1 }}>
         Filters
       </Typography>
 
-      <Tooltip title="Reset">
+      <Tooltip title='Reset'>
         <IconButton onClick={onResetFilters}>
-          <Badge color="error" variant="dot" invisible={!canReset}>
-            <Iconify icon="solar:restart-bold" />
+          <Badge color='error' variant='dot' invisible={!canReset}>
+            <Iconify icon='solar:restart-bold' />
           </Badge>
         </IconButton>
       </Tooltip>
 
       <IconButton onClick={onClose}>
-        <Iconify icon="mingcute:close-line" />
+        <Iconify icon='mingcute:close-line' />
       </IconButton>
     </Stack>
   );
 
   const renderEmploymentTypes = (
     <Stack>
-      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+      <Typography variant='subtitle2' sx={{ mb: 1 }}>
         Employment Types
       </Typography>
       {employmentTypeOptions.map((option) => (
@@ -127,7 +127,7 @@ export default function ExaminationFilters({
 
   const renderExperience = (
     <Stack>
-      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+      <Typography variant='subtitle2' sx={{ mb: 1 }}>
         Experience
       </Typography>
       {experienceOptions.map((option) => (
@@ -152,7 +152,7 @@ export default function ExaminationFilters({
 
   const renderRoles = (
     <Stack>
-      <Typography variant="subtitle2" sx={{ mb: 1.5 }}>
+      <Typography variant='subtitle2' sx={{ mb: 1.5 }}>
         Roles
       </Typography>
       <Autocomplete
@@ -162,7 +162,7 @@ export default function ExaminationFilters({
         getOptionLabel={(option) => option}
         value={filters.roles}
         onChange={(event, newValue) => handleFilterRoles(newValue)}
-        renderInput={(params) => <TextField placeholder="Select Roles" {...params} />}
+        renderInput={(params) => <TextField placeholder='Select Roles' {...params} />}
         renderOption={(props, option) => (
           <li {...props} key={option}>
             {option}
@@ -174,8 +174,8 @@ export default function ExaminationFilters({
               {...getTagProps({ index })}
               key={option}
               label={option}
-              size="small"
-              variant="soft"
+              size='small'
+              variant='soft'
             />
           ))
         }
@@ -185,7 +185,7 @@ export default function ExaminationFilters({
 
   const renderLocations = (
     <Stack>
-      <Typography variant="subtitle2" sx={{ mb: 1.5 }}>
+      <Typography variant='subtitle2' sx={{ mb: 1.5 }}>
         Locations
       </Typography>
 
@@ -203,7 +203,7 @@ export default function ExaminationFilters({
 
   const renderBenefits = (
     <Stack>
-      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+      <Typography variant='subtitle2' sx={{ mb: 1 }}>
         Benefits
       </Typography>
       {benefitOptions.map((option) => (
@@ -225,10 +225,10 @@ export default function ExaminationFilters({
     <>
       <Button
         disableRipple
-        color="inherit"
+        color='inherit'
         endIcon={
-          <Badge color="error" variant="dot" invisible={!canReset}>
-            <Iconify icon="ic:round-filter-list" />
+          <Badge color='error' variant='dot' invisible={!canReset}>
+            <Iconify icon='ic:round-filter-list' />
           </Badge>
         }
         onClick={onOpen}
@@ -237,7 +237,7 @@ export default function ExaminationFilters({
       </Button>
 
       <Drawer
-        anchor="right"
+        anchor='right'
         open={open}
         onClose={onClose}
         slotProps={{

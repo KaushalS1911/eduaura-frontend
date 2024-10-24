@@ -1,56 +1,45 @@
 import PropTypes from 'prop-types';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
-import ListItemText from '@mui/material/ListItemText';
-import { useBoolean } from 'src/hooks/use-boolean';
-import { fDate, fTime } from 'src/utils/format-time';
+import { fDate } from 'src/utils/format-time';
 import Label from 'src/components/label';
-import { usePopover } from 'src/components/custom-popover';
 
 // ----------------------------------------------------------------------
 
-export default function StudentAttendanceTableRow({
+export default function StudentAssignmentTableRow({
                                                     row,
                                                     selected,
                                                     index,
                                                   }) {
-  const { date, status } = row;
+  const { status, remarks } = row;
 
   return (
     <>
       <TableRow hover selected={selected}>
         <TableCell>{index + 1}</TableCell>
-        <TableCell>
-          <ListItemText
-            primary={fDate(date)}
-            secondary={fTime(date)}
-            primaryTypographyProps={{ typography: 'body2', noWrap: true }}
-            secondaryTypographyProps={{
-              mt: 0.5,
-              component: 'span',
-              typography: 'caption',
-            }}
-          />
-        </TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{row?.assignmentdata?.title}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{row?.assignmentdata?.desc}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{fDate(row?.assignmentdata?.date)}</TableCell>
         <TableCell>
           <Label
             variant='soft'
             color={
-              (status === 'present' && 'success') ||
-              (status === 'late' && 'warning') ||
-              (status === 'absent' && 'error') ||
+              (status === 'Completed' && 'success') ||
+              (status === 'Pending' && 'warning') ||
+              (status === 'Not Completed' && 'error') ||
               'default'
             }
           >
             {status}
           </Label>
         </TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{remarks}</TableCell>
       </TableRow>
     </>
   );
 }
 
-StudentAttendanceTableRow.propTypes = {
+StudentAssignmentTableRow.propTypes = {
   onDeleteRow: PropTypes.func,
   onEditRow: PropTypes.func,
   onSelectRow: PropTypes.func,

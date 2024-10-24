@@ -78,7 +78,7 @@ export const paths = {
     root: ROOTS.DASHBOARD,
     calendar: `${ROOTS.DASHBOARD}/calendar`,
     setting: `${ROOTS.DASHBOARD}/setting`,
-    // kanban: `${ROOTS.DASHBOARD}/kanban`,
+    kanban: `${ROOTS.DASHBOARD}/kanban`,
 
     general: {
       fees: `${ROOTS.DASHBOARD}/fees`,

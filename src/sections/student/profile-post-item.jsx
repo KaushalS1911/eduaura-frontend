@@ -61,7 +61,7 @@ export default function ProfilePostItem({ post }) {
         </Avatar>
       }
       title={
-        <Link color="inherit" variant="subtitle1">
+        <Link color='inherit' variant='subtitle1'>
           {user?.displayName}
         </Link>
       }
@@ -72,7 +72,7 @@ export default function ProfilePostItem({ post }) {
       }
       action={
         <IconButton>
-          <Iconify icon="eva:more-vertical-fill" />
+          <Iconify icon='eva:more-vertical-fill' />
         </IconButton>
       }
     />
@@ -81,7 +81,7 @@ export default function ProfilePostItem({ post }) {
   const renderCommentList = (
     <Stack spacing={1.5} sx={{ px: 3, pb: 2 }}>
       {post.comments.map((comment) => (
-        <Stack key={comment.id} direction="row" spacing={2}>
+        <Stack key={comment.id} direction='row' spacing={2}>
           <Avatar alt={comment.author.name} src={comment.author.avatarUrl} />
 
           <Paper
@@ -94,7 +94,7 @@ export default function ProfilePostItem({ post }) {
             <Stack
               sx={{ mb: 0.5 }}
               alignItems={{ sm: 'center' }}
-              justifyContent="space-between"
+              justifyContent='space-between'
               direction={{ xs: 'column', sm: 'row' }}
             >
               <Box sx={{ typography: 'subtitle2' }}>{comment.author.name}</Box>
@@ -114,8 +114,8 @@ export default function ProfilePostItem({ post }) {
   const renderInput = (
     <Stack
       spacing={2}
-      direction="row"
-      alignItems="center"
+      direction='row'
+      alignItems='center'
       sx={{
         p: (theme) => theme.spacing(0, 3, 3, 3),
       }}
@@ -126,16 +126,16 @@ export default function ProfilePostItem({ post }) {
         fullWidth
         value={message}
         inputRef={commentRef}
-        placeholder="Write a comment…"
+        placeholder='Write a comment…'
         onChange={handleChangeMessage}
         endAdornment={
-          <InputAdornment position="end" sx={{ mr: 1 }}>
-            <IconButton size="small" onClick={handleAttach}>
-              <Iconify icon="solar:gallery-add-bold" />
+          <InputAdornment position='end' sx={{ mr: 1 }}>
+            <IconButton size='small' onClick={handleAttach}>
+              <Iconify icon='solar:gallery-add-bold' />
             </IconButton>
 
-            <IconButton size="small">
-              <Iconify icon="eva:smiling-face-fill" />
+            <IconButton size='small'>
+              <Iconify icon='eva:smiling-face-fill' />
             </IconButton>
           </InputAdornment>
         }
@@ -147,14 +147,14 @@ export default function ProfilePostItem({ post }) {
         }}
       />
 
-      <input type="file" ref={fileRef} style={{ display: 'none' }} />
+      <input type='file' ref={fileRef} style={{ display: 'none' }} />
     </Stack>
   );
 
   const renderActions = (
     <Stack
-      direction="row"
-      alignItems="center"
+      direction='row'
+      alignItems='center'
       sx={{
         p: (theme) => theme.spacing(2, 3, 3, 3),
       }}
@@ -163,9 +163,9 @@ export default function ProfilePostItem({ post }) {
         control={
           <Checkbox
             defaultChecked
-            color="error"
-            icon={<Iconify icon="solar:heart-bold" />}
-            checkedIcon={<Iconify icon="solar:heart-bold" />}
+            color='error'
+            icon={<Iconify icon='solar:heart-bold' />}
+            checkedIcon={<Iconify icon='solar:heart-bold' />}
           />
         }
         label={fShortenNumber(post.personLikes.length)}
@@ -190,11 +190,11 @@ export default function ProfilePostItem({ post }) {
       <Box sx={{ flexGrow: 1 }} />
 
       <IconButton onClick={handleClickComment}>
-        <Iconify icon="solar:chat-round-dots-bold" />
+        <Iconify icon='solar:chat-round-dots-bold' />
       </IconButton>
 
       <IconButton>
-        <Iconify icon="solar:share-bold" />
+        <Iconify icon='solar:share-bold' />
       </IconButton>
     </Stack>
   );
@@ -204,7 +204,7 @@ export default function ProfilePostItem({ post }) {
       {renderHead}
 
       <Typography
-        variant="body2"
+        variant='body2'
         sx={{
           p: (theme) => theme.spacing(3, 3, 2, 3),
         }}
@@ -213,7 +213,7 @@ export default function ProfilePostItem({ post }) {
       </Typography>
 
       <Box sx={{ p: 1 }}>
-        <Image alt={post.media} src={post.media} ratio="16/9" sx={{ borderRadius: 1.5 }} />
+        <Image alt={post.media} src={post.media} ratio='16/9' sx={{ borderRadius: 1.5 }} />
       </Box>
 
       {renderActions}

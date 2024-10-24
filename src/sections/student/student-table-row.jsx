@@ -3,7 +3,6 @@ import moment from 'moment';
 
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
-import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
@@ -29,7 +28,6 @@ import { useAuthContext } from '../../auth/hooks';
 
 export default function StudentTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
   const { firstName, lastName, profile_pic, course, joining_date, email, contact } = row;
-
   const confirm = useBoolean();
   const { configs } = useGetConfigs();
   const { user } = useAuthContext();
@@ -44,11 +42,9 @@ export default function StudentTableRow({ row, selected, onEditRow, onSelectRow,
         && <TableCell padding='checkbox'>
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell>}
-
         <TableCell>{row.enrollment_no}</TableCell>
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
           <Avatar alt={`${firstName} ${lastName}`} src={profile_pic} sx={{ mr: 2 }} />
-
           <ListItemText
             primary={`${firstName} ${lastName}`}
             secondary={email}
@@ -59,15 +55,11 @@ export default function StudentTableRow({ row, selected, onEditRow, onSelectRow,
             }}
           />
         </TableCell>
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{contact}</TableCell>
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{course}</TableCell>
-
         <TableCell sx={{ whiteSpace: 'nowrap' }}>
           {moment(joining_date).format('DD/MM/YYYY')}
         </TableCell>
-
         <TableCell>
           <Label
             variant='soft'
@@ -82,16 +74,27 @@ export default function StudentTableRow({ row, selected, onEditRow, onSelectRow,
             {row.status}
           </Label>
         </TableCell>
-
+        <TableCell>
+          <Label
+            variant='soft'
+            color={
+              row.fee_detail.installments.every((installment) => installment.status === 'paid')
+                ? 'success'
+                : 'warning'
+            }
+          >
+            {row.fee_detail.installments.every((installment) => installment.status === 'paid')
+              ? 'completed'
+              : 'pending'}
+          </Label>
+        </TableCell>
         <TableCell align='right' sx={{ px: 1, whiteSpace: 'nowrap' }}>
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
             <Iconify icon='eva:more-vertical-fill' />
           </IconButton>
         </TableCell>
       </TableRow>
-
       <StudentQuickEditForm currentUser={row} open={quickEdit.value} onClose={quickEdit.onFalse} />
-
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
@@ -119,7 +122,6 @@ export default function StudentTableRow({ row, selected, onEditRow, onSelectRow,
           View Detail
         </MenuItem>}
       </CustomPopover>
-
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}

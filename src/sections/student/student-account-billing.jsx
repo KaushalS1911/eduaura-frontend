@@ -8,7 +8,7 @@ import StudentAccountBillingAddress from './student-account-billing-address';
 
 export default function StudentAccountBillingAddress({ addressBook }) {
   return (
-    <Container maxWidth="xl">
+    <Container maxWidth='xl'>
       <StudentAccountBillingAddress addressBook={addressBook} />
     </Container>
   );

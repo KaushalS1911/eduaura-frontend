@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import Box from '@mui/material/Box';
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import ExaminationItem from './examination-item';
-import { useGetExam } from 'src/api/examination';
 
 export default function ExaminationList({ currentStudentExams }) {
   const router = useRouter();
@@ -13,14 +12,14 @@ export default function ExaminationList({ currentStudentExams }) {
     (id) => {
       router.push(paths.dashboard.student.details(id));
     },
-    [router]
+    [router],
   );
 
   const handleEdit = useCallback(
     (id) => {
       router.push(paths.dashboard.student.edit(id));
     },
-    [router]
+    [router],
   );
 
   const handleDelete = useCallback((id) => {
@@ -31,7 +30,7 @@ export default function ExaminationList({ currentStudentExams }) {
     <>
       <Box
         gap={3}
-        display="grid"
+        display='grid'
         gridTemplateColumns={{
           xs: 'repeat(1, 1fr)',
           sm: 'repeat(2, 1fr)',
@@ -48,19 +47,6 @@ export default function ExaminationList({ currentStudentExams }) {
           />
         ))}
       </Box>
-
-      {/* Uncomment and modify this block if pagination is needed */}
-      {/* {currentStudentExams.length > 8 && (
-        <Pagination
-          count={Math.ceil(currentStudentExams.length / 8)}
-          sx={{
-            mt: 8,
-            [`& .${paginationClasses.ul}`]: {
-              justifyContent: 'center',
-            },
-          }}
-        />
-      )} */}
     </>
   );
 }

@@ -27,22 +27,22 @@ const TABS = [
   {
     value: 'profile',
     label: 'Profile',
-    icon: <Iconify icon="solar:user-id-bold" width={24} />,
+    icon: <Iconify icon='solar:user-id-bold' width={24} />,
   },
   {
     value: 'followers',
     label: 'Followers',
-    icon: <Iconify icon="solar:heart-bold" width={24} />,
+    icon: <Iconify icon='solar:heart-bold' width={24} />,
   },
   {
     value: 'friends',
     label: 'Friends',
-    icon: <Iconify icon="solar:users-group-rounded-bold" width={24} />,
+    icon: <Iconify icon='solar:users-group-rounded-bold' width={24} />,
   },
   {
     value: 'gallery',
     label: 'Gallery',
-    icon: <Iconify icon="solar:gallery-wide-bold" width={24} />,
+    icon: <Iconify icon='solar:gallery-wide-bold' width={24} />,
   },
 ];
 
@@ -68,7 +68,7 @@ export default function StudentProfileView() {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Student Profile"
+        heading='Student Profile'
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
           { name: 'Student', href: paths.dashboard.student.list },

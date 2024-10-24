@@ -44,7 +44,7 @@ export default function StudentAccountBillingPlan({ cardList, addressBook, plans
         setSelectedPlan(newValue);
       }
     },
-    [plans]
+    [plans],
   );
 
   const handleSelectAddress = useCallback((newValue) => {
@@ -59,7 +59,7 @@ export default function StudentAccountBillingPlan({ cardList, addressBook, plans
     <Grid xs={12} md={4} key={plan.subscription}>
       <Stack
         component={Paper}
-        variant="outlined"
+        variant='outlined'
         onClick={() => handleSelectPlan(plan.subscription)}
         sx={{
           p: 2.5,
@@ -76,8 +76,8 @@ export default function StudentAccountBillingPlan({ cardList, addressBook, plans
       >
         {plan.primary && (
           <Label
-            color="info"
-            startIcon={<Iconify icon="eva:star-fill" />}
+            color='info'
+            startIcon={<Iconify icon='eva:star-fill' />}
             sx={{ position: 'absolute', top: 8, right: 8 }}
           >
             Current
@@ -101,11 +101,11 @@ export default function StudentAccountBillingPlan({ cardList, addressBook, plans
           {plan.subscription}
         </Box>
 
-        <Stack direction="row" alignItems="center" sx={{ typography: 'h4' }}>
+        <Stack direction='row' alignItems='center' sx={{ typography: 'h4' }}>
           {plan.price || 'Free'}
 
           {!!plan.price && (
-            <Box component="span" sx={{ typography: 'body2', color: 'text.disabled', ml: 0.5 }}>
+            <Box component='span' sx={{ typography: 'body2', color: 'text.disabled', ml: 0.5 }}>
               /mo
             </Box>
           )}
@@ -117,7 +117,7 @@ export default function StudentAccountBillingPlan({ cardList, addressBook, plans
   return (
     <>
       <Card>
-        <CardHeader title="Plan" />
+        <CardHeader title='Plan' />
 
         <Grid container spacing={2} sx={{ p: 3 }}>
           {renderPlans}
@@ -140,7 +140,7 @@ export default function StudentAccountBillingPlan({ cardList, addressBook, plans
             <Grid xs={12} md={8}>
               <Button
                 onClick={openAddress.onTrue}
-                endIcon={<Iconify width={16} icon="eva:arrow-ios-downward-fill" />}
+                endIcon={<Iconify width={16} icon='eva:arrow-ios-downward-fill' />}
                 sx={{ typography: 'subtitle2', p: 0, borderRadius: 0 }}
               >
                 {selectedAddress?.name}
@@ -173,7 +173,7 @@ export default function StudentAccountBillingPlan({ cardList, addressBook, plans
             <Grid xs={12} md={8}>
               <Button
                 onClick={openCards.onTrue}
-                endIcon={<Iconify width={16} icon="eva:arrow-ios-downward-fill" />}
+                endIcon={<Iconify width={16} icon='eva:arrow-ios-downward-fill' />}
                 sx={{ typography: 'subtitle2', p: 0, borderRadius: 0 }}
               >
                 {selectedCard?.cardNumber}
@@ -184,9 +184,9 @@ export default function StudentAccountBillingPlan({ cardList, addressBook, plans
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <Stack spacing={1.5} direction="row" justifyContent="flex-end" sx={{ p: 3 }}>
-          <Button variant="outlined">Cancel Plan</Button>
-          <Button variant="contained">Upgrade Plan</Button>
+        <Stack spacing={1.5} direction='row' justifyContent='flex-end' sx={{ p: 3 }}>
+          <Button variant='outlined'>Cancel Plan</Button>
+          <Button variant='contained'>Upgrade Plan</Button>
         </Stack>
       </Card>
 
@@ -206,8 +206,8 @@ export default function StudentAccountBillingPlan({ cardList, addressBook, plans
         onSelect={handleSelectAddress}
         action={
           <Button
-            size="small"
-            startIcon={<Iconify icon="mingcute:add-line" />}
+            size='small'
+            startIcon={<Iconify icon='mingcute:add-line' />}
             sx={{ alignSelf: 'flex-end' }}
           >
             New

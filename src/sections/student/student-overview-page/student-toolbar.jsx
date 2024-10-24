@@ -24,12 +24,12 @@ import StudentOverviewPDF from './student-overview-pdf';
 // ----------------------------------------------------------------------
 
 export default function StudentToolbar({
-  studentData,
-  installmentsData,
-  currentStudentExams,
-  attendanceCounts,
-  configs,
-}) {
+                                         studentData,
+                                         installmentsData,
+                                         currentStudentExams,
+                                         attendanceCounts,
+                                         configs,
+                                       }) {
   const router = useRouter();
 
   const view = useBoolean();
@@ -42,10 +42,10 @@ export default function StudentToolbar({
         alignItems={{ xs: 'flex-end', sm: 'center' }}
         sx={{ mb: { xs: 3, md: 5 } }}
       >
-        <Stack direction="row" spacing={1} flexGrow={1} sx={{ width: 1 }}>
-          <Tooltip title="View">
+        <Stack direction='row' spacing={1} flexGrow={1} sx={{ width: 1 }}>
+          <Tooltip title='View'>
             <IconButton onClick={view.onTrue}>
-              <Iconify icon="solar:eye-bold" />
+              <Iconify icon='solar:eye-bold' />
             </IconButton>
           </Tooltip>
           <PDFDownloadLink
@@ -62,12 +62,12 @@ export default function StudentToolbar({
             style={{ textDecoration: 'none' }}
           >
             {({ loading }) => (
-              <Tooltip title="Download">
+              <Tooltip title='Download'>
                 <IconButton>
                   {loading ? (
-                    <CircularProgress size={24} color="inherit" />
+                    <CircularProgress size={24} color='inherit' />
                   ) : (
-                    <Iconify icon="eva:cloud-download-fill" />
+                    <Iconify icon='eva:cloud-download-fill' />
                   )}
                 </IconButton>
               </Tooltip>
@@ -83,12 +83,12 @@ export default function StudentToolbar({
               p: 1.5,
             }}
           >
-            <Button color="inherit" variant="contained" onClick={view.onFalse}>
+            <Button color='inherit' variant='contained' onClick={view.onFalse}>
               Close
             </Button>
           </DialogActions>
           <Box sx={{ flexGrow: 1, height: 1, overflow: 'hidden' }}>
-            <PDFViewer width="100%" height="100%" style={{ border: 'none' }}>
+            <PDFViewer width='100%' height='100%' style={{ border: 'none' }}>
               <StudentOverviewPDF
                 studentData={studentData}
                 installmentsData={installmentsData}

@@ -31,10 +31,10 @@ export default function ExaminationSearch({ query, results, onSearch, hrefItem }
       }
     }
   };
-  
+
   return (
     <>
-    {/* // <Autocomplete
+      {/* // <Autocomplete
     //   sx={{ width: { xs: 1, sm: 260 } }}
     //   autoHighlight
     //   popupIcon={null}
@@ -83,20 +83,20 @@ export default function ExaminationSearch({ query, results, onSearch, hrefItem }
     //     );
     //   }}
     // /> */}
-      
-    <TextField
-      fullWidth
-      // value={filters.name}
-      // onChange={handleFilterName}
-      placeholder="Search customer or invoice number..."
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
-          </InputAdornment>
-        ),
-      }}
-    />
+
+      <TextField
+        fullWidth
+        // value={filters.name}
+        // onChange={handleFilterName}
+        placeholder='Search customer or invoice number...'
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position='start'>
+              <Iconify icon='eva:search-fill' sx={{ color: 'text.disabled' }} />
+            </InputAdornment>
+          ),
+        }}
+      />
     </>
   );
 }

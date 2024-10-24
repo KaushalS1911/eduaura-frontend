@@ -11,12 +11,15 @@ import { useResponsive } from 'src/hooks/use-responsive';
 export default function ExpenseCreatePage() {
   const { user } = useAuthContext();
   const { configs, mutate } = useGetConfigs();
-
-
   const [inputVal, setInputVal] = useState('');
   const { enqueueSnackbar } = useSnackbar();
 
   const handleClick = () => {
+    if (!inputVal.trim()) {
+      enqueueSnackbar('Expense name cannot be empty', { variant: 'error' });
+      return;
+    }
+
     const URL = `${import.meta.env.VITE_AUTH_API}/api/company/${user?.company_id}/configs/${configs?._id}`;
     const payload = {
       ...configs,
@@ -55,7 +58,7 @@ export default function ExpenseCreatePage() {
       <Box sx={{ width: '100%', maxWidth: '100%', padding: '10px' }}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <CardHeader title="Add Our Expenses" />
+            <CardHeader title='Add Our Expenses' />
           </Grid>
           <Grid item md={4} xs={12}>
             <Box
@@ -69,9 +72,9 @@ export default function ExpenseCreatePage() {
               <Grid item>
                 <TextField
                   fullWidth
-                  variant="outlined"
+                  variant='outlined'
                   onChange={(e) => setInputVal(e.target.value)}
-                  label="Expenses"
+                  label='Expenses'
                   value={inputVal}
                   sx={{
                     fontSize: '16px',
@@ -79,7 +82,7 @@ export default function ExpenseCreatePage() {
                 />
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: '20px' }}>
                   <Button
-                    variant="contained"
+                    variant='contained'
                     // color="primary"
                     onClick={handleClick}
                   >
@@ -95,7 +98,7 @@ export default function ExpenseCreatePage() {
                 <Box
                   columnGap={2}
                   rowGap={2}
-                  display="grid"
+                  display='grid'
                   gridTemplateColumns={{
                     xs: 'repeat(1, 1fr)',
                     sm: 'repeat(2, 1fr)',
@@ -103,34 +106,34 @@ export default function ExpenseCreatePage() {
                   }}
                 >
                   {configs?.expenses &&
-                    configs?.expenses.length !== 0 &&
-                    configs?.expenses.map((expense, index) => (
-                      <Grid
-                        container
-                        sx={{
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          width: '100%',
-                          boxShadow: 4,
-                          borderRadius: 1,
-                          p: 2,
-                          m: 1,
-                        }}
-                        key={index}
-                      >
-                        <Grid item>
-                          <Typography sx={{ fontSize: '14px' }}>{expense}</Typography>
-                        </Grid>
-                        <Grid item>
-                          <Box
-                            sx={{ color: 'error.main', cursor: 'pointer' }}
-                            onClick={() => handleDelete(expense)}
-                          >
-                            <Iconify icon="solar:trash-bin-trash-bold" />
-                          </Box>
-                        </Grid>
+                  configs?.expenses.length !== 0 &&
+                  configs?.expenses.map((expense, index) => (
+                    <Grid
+                      container
+                      sx={{
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        width: '100%',
+                        boxShadow: 4,
+                        borderRadius: 1,
+                        p: 2,
+                        m: 1,
+                      }}
+                      key={index}
+                    >
+                      <Grid item>
+                        <Typography sx={{ fontSize: '14px' }}>{expense}</Typography>
                       </Grid>
-                    ))}
+                      <Grid item>
+                        <Box
+                          sx={{ color: 'error.main', cursor: 'pointer' }}
+                          onClick={() => handleDelete(expense)}
+                        >
+                          <Iconify icon='solar:trash-bin-trash-bold' />
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  ))}
                 </Box>
               </Stack>
             </Card>

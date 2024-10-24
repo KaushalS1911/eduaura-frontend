@@ -11,16 +11,16 @@ import StudentCard from './student-card';
 // ----------------------------------------------------------------------
 
 export default function StudentCardList() {
-  const { students ,mutate} = useGetStudents();
+  const { students, mutate } = useGetStudents();
 
-  useEffect(()=>{
+  useEffect(() => {
     mutate();
-  },[mutate])
+  }, [mutate]);
 
   return (
     <Box
       gap={3}
-      display="grid"
+      display='grid'
       gridTemplateColumns={{
         xs: 'repeat(1, 1fr)',
         sm: 'repeat(2, 1fr)',

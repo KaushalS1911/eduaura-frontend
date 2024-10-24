@@ -15,11 +15,12 @@ export function useGetAssignment(company_id) {
       assignmentEmpty: !isLoading && !data?.data?.assignments?.length,
       mutate,
     }),
-    [data?.data?.assignments, error, isLoading, isValidating, mutate]
+    [data?.data?.assignments, error, isLoading, isValidating, mutate],
   );
 
   return memoizedValue;
 }
+
 export function useGetSingleAssignment(BactchAssignmentID) {
   const URL = `${import.meta.env.VITE_AUTH_API}/api/company/assignment/${BactchAssignmentID}`;
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
@@ -32,7 +33,7 @@ export function useGetSingleAssignment(BactchAssignmentID) {
       batchAssignmentDataEmpty: !isLoading && !data?.data?.assignments?.length,
       mutate,
     }),
-    [data?.data?.assignments, error, isLoading, isValidating, mutate]
+    [data?.data?.assignments, error, isLoading, isValidating, mutate],
   );
 
   return memoizedValue;

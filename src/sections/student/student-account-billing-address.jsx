@@ -36,7 +36,7 @@ export default function StudentAccountBillingAddress({ addressBook = [] }) {
       popover.onOpen(event);
       setAddressId(id);
     },
-    [popover]
+    [popover],
   );
 
   const handleClose = useCallback(() => {
@@ -54,12 +54,12 @@ export default function StudentAccountBillingAddress({ addressBook = [] }) {
     <>
       <Card>
         <CardHeader
-          title="Guardian Details"
+          title='Guardian Details'
           action={
             <Button
-              size="small"
-              color="primary"
-              startIcon={<Iconify icon="mingcute:add-line" />}
+              size='small'
+              color='primary'
+              startIcon={<Iconify icon='mingcute:add-line' />}
               onClick={() => {
                 setEditAddressId(null);
                 GuardianNewForm.onTrue();
@@ -73,7 +73,7 @@ export default function StudentAccountBillingAddress({ addressBook = [] }) {
         <Stack spacing={2.5} sx={{ p: 3 }}>
           {addressBook.map((address) => (
             <GuardianItem
-              variant="outlined"
+              variant='outlined'
               key={address.id}
               address={address}
               action={
@@ -83,7 +83,7 @@ export default function StudentAccountBillingAddress({ addressBook = [] }) {
                   }}
                   sx={{ position: 'absolute', top: 8, right: 8 }}
                 >
-                  <Iconify icon="eva:more-vertical-fill" />
+                  <Iconify icon='eva:more-vertical-fill' />
                 </IconButton>
               }
               sx={{
@@ -97,7 +97,7 @@ export default function StudentAccountBillingAddress({ addressBook = [] }) {
 
       <CustomPopover open={popover.open} onClose={handleClose}>
         <MenuItem onClick={handleEdit}>
-          <Iconify icon="solar:pen-bold" />
+          <Iconify icon='solar:pen-bold' />
           Edit
         </MenuItem>
 
@@ -108,7 +108,7 @@ export default function StudentAccountBillingAddress({ addressBook = [] }) {
           }}
           sx={{ color: 'error.main' }}
         >
-          <Iconify icon="solar:trash-bin-trash-bold" />
+          <Iconify icon='solar:trash-bin-trash-bold' />
           Delete
         </MenuItem>
       </CustomPopover>

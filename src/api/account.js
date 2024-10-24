@@ -1,12 +1,10 @@
 import useSWR from 'swr';
 import { useMemo } from 'react';
-
 import { fetcher } from '../utils/axios';
 import { useAuthContext } from 'src/auth/hooks';
 
 export function useGetAccount(startDate, endDate) {
   const { user } = useAuthContext();
-  // `https://server-eduaura-pyjuy.ondigitalocean.app/api/company/${user?.company_id}/account?startDate=${startDate}&endDate=${endDate}`;
   const URL = `https://server-eduaura-pyjuy.ondigitalocean.app/api/company/${user?.company_id}/account`;
 
   const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);

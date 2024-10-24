@@ -19,7 +19,7 @@ export function useGetLabels() {
       labelsValidating: isValidating,
       labelsEmpty: !isLoading && !data?.labels.length,
     }),
-    [data?.labels, error, isLoading, isValidating]
+    [data?.labels, error, isLoading, isValidating],
   );
 
   return memoizedValue;
@@ -65,7 +65,7 @@ export function useGetMail(mailId) {
       mailError: error,
       mailValidating: isValidating,
     }),
-    [data?.mail, error, isLoading, isValidating]
+    [data?.mail, error, isLoading, isValidating],
   );
 
   return memoizedValue;

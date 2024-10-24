@@ -29,7 +29,7 @@ export default function StudentAccountChangePassword() {
       .test(
         'no-match',
         'New password must be different than old password',
-        (value, { parent }) => value !== parent.oldPassword
+        (value, { parent }) => value !== parent.oldPassword,
       ),
     confirmNewPassword: Yup.string().oneOf([Yup.ref('newPassword')], 'Passwords must match'),
   });
@@ -66,13 +66,13 @@ export default function StudentAccountChangePassword() {
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Stack component={Card} spacing={3} sx={{ p: 3 }}>
         <RHFTextField
-          name="oldPassword"
+          name='oldPassword'
           type={password.value ? 'text' : 'password'}
-          label="Old Password"
+          label='Old Password'
           InputProps={{
             endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={password.onToggle} edge="end">
+              <InputAdornment position='end'>
+                <IconButton onClick={password.onToggle} edge='end'>
                   <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
                 </IconButton>
               </InputAdornment>
@@ -81,34 +81,34 @@ export default function StudentAccountChangePassword() {
         />
 
         <RHFTextField
-          name="newPassword"
-          label="New Password"
+          name='newPassword'
+          label='New Password'
           type={password.value ? 'text' : 'password'}
           InputProps={{
             endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={password.onToggle} edge="end">
+              <InputAdornment position='end'>
+                <IconButton onClick={password.onToggle} edge='end'>
                   <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
                 </IconButton>
               </InputAdornment>
             ),
           }}
           helperText={
-            <Stack component="span" direction="row" alignItems="center">
-              <Iconify icon="eva:info-fill" width={16} sx={{ mr: 0.5 }} /> Password must be minimum
+            <Stack component='span' direction='row' alignItems='center'>
+              <Iconify icon='eva:info-fill' width={16} sx={{ mr: 0.5 }} /> Password must be minimum
               6+
             </Stack>
           }
         />
 
         <RHFTextField
-          name="confirmNewPassword"
+          name='confirmNewPassword'
           type={password.value ? 'text' : 'password'}
-          label="Confirm New Password"
+          label='Confirm New Password'
           InputProps={{
             endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={password.onToggle} edge="end">
+              <InputAdornment position='end'>
+                <IconButton onClick={password.onToggle} edge='end'>
                   <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
                 </IconButton>
               </InputAdornment>
@@ -116,7 +116,7 @@ export default function StudentAccountChangePassword() {
           }}
         />
 
-        <LoadingButton type="submit" variant="contained" loading={isSubmitting} sx={{ ml: 'auto' }}>
+        <LoadingButton type='submit' variant='contained' loading={isSubmitting} sx={{ ml: 'auto' }}>
           Save Changes
         </LoadingButton>
       </Stack>

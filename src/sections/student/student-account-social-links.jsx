@@ -50,7 +50,7 @@ export default function StudentAccountSocialLinks({ socialLinks }) {
             name={link}
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">
+                <InputAdornment position='start'>
                   <Iconify
                     width={24}
                     icon={
@@ -74,7 +74,7 @@ export default function StudentAccountSocialLinks({ socialLinks }) {
           />
         ))}
 
-        <LoadingButton type="submit" variant="contained" loading={isSubmitting} sx={{ ml: 'auto' }}>
+        <LoadingButton type='submit' variant='contained' loading={isSubmitting} sx={{ ml: 'auto' }}>
           Save Changes
         </LoadingButton>
       </Stack>
