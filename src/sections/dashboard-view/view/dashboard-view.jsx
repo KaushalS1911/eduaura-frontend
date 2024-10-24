@@ -196,27 +196,14 @@ export default function DashboardView() {
         </Grid>}
         {getResponsibilityValue('view_student', configs, user) && <Grid xs={12} md={4}>
           <Stack spacing={3}>
-            <DashboardAttendenceChart
-              title="Student's Status "
-              total={parseInt(dashboardData?.students)}
+            <AnalyticsCurrentVisits
+              title="Current Visits"
               chart={{
                 series: [
-                  {
-                    label: 'Completed',
-                    value: students.some(student => student.status === 'completed') ? students.filter(student => student.status === 'completed').length : 0,
-                  },
-                  {
-                    label: 'Running',
-                    value: students.some(student => student.status === 'running') ? students.filter(student => student.status === 'running').length : 0,
-                  },
-                  {
-                    label: 'Training',
-                    value: students.some(student => student.status === 'training') ? students.filter(student => student.status === 'training').length : 0,
-                  },
-                  {
-                    label: 'Leaved',
-                    value: students.some(student => student.status === 'leaved') ? students.filter(student => student.status === 'leaved').length : 0,
-                  },
+                  { label: 'Completed', value: students.some(student => student.status === 'completed') ? students.filter(student => student.status === 'completed').length : 0 },
+                  { label: 'Running', value: students.some(student => student.status === 'running') ? students.filter(student => student.status === 'running').length : 0 },
+                  { label: 'Training', value: students.some(student => student.status === 'training') ? students.filter(student => student.status === 'training').length : 0 },
+                  { label: 'Leaved', value: students.some(student => student.status === 'leaved') ? students.filter(student => student.status === 'leaved').length : 0 },
                 ],
               }}
             />
