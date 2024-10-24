@@ -22,6 +22,7 @@ import { useGetInquiryOverview } from '../../../api/inquiry_overview';
 import { useGetInquiry } from '../../../api/inquiry';
 import DashboardUpcomingInquiry from '../dashboard-upcoming-inquiry';
 import { getResponsibilityValue } from '../../../permission/permission';
+import { useGetStudents } from '../../../api/student';
 
 export default function DashboardView() {
   const theme = useTheme();
@@ -35,12 +36,14 @@ export default function DashboardView() {
   const [labs, setLabs] = useState(0);
   const { demos } = useGetDemos();
   const { dashboard } = useGetDashboardData();
+  const { students } = useGetStudents();
   const { courses } = useGetCourses();
   const { attendance } = useGetAttendance();
   const { configs } = useGetConfigs();
   const { visit } = useGetVisitsOverview();
   const { inquiryOverview } = useGetInquiryOverview();
   const { inquiry } = useGetInquiry();
+  console.log(students);
 
   useEffect(() => {
     if (demos) {
@@ -54,6 +57,9 @@ export default function DashboardView() {
     }
     if (courses) {
       setCourse(courses);
+    }
+    if (attendance) {
+      setAttendence(attendance);
     }
     if (attendance) {
       setAttendence(attendance);
@@ -82,11 +88,34 @@ export default function DashboardView() {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <Grid container spacing={3}>
+        {/*<Grid xs={12} sm={6} md={3}>*/}
+        {/*  {getResponsibilityValue('view_student', configs, user) && <DashboardCount*/}
+        {/*    title='Students'*/}
+        {/*    total={dashboardData?.students}*/}
+        {/*    icon={<img alt='icon' src='/assets/icons/glass/ic_glass_bag.png' />}*/}
+        {/*  />}*/}
+        {/*</Grid>*/}
         <Grid xs={12} sm={6} md={3}>
           {getResponsibilityValue('view_student', configs, user) && <DashboardCount
-            title='Students'
-            total={dashboardData?.students}
-            icon={<img alt='icon' src='/assets/icons/glass/ic_glass_bag.png' />}
+            title='Present Students'
+            color={"success"}
+            total={attendence?.present == 0 ? 0 : attendence?.present || 0}
+            // icon={<img alt='icon' src='/assets/icons/glass/ic_glass_bag.png' />}
+          />}
+        </Grid><Grid xs={12} sm={6} md={3}>
+        {getResponsibilityValue('view_student', configs, user) && <DashboardCount
+          title='Absent Students'
+          color={"error"}
+          total={attendence?.absent == 0 ? 0 : attendence?.absent || 0}
+          // icon={<img alt='icon' src='/assets/icons/glass/ic_glass_bag.png' />}
+        />}
+      </Grid>
+        <Grid xs={12} sm={6} md={3}>
+          {getResponsibilityValue('view_student', configs, user) && <DashboardCount
+            title='Late Students'
+            color={"warning"}
+            total={attendence?.late == 0 ? 0 : attendence?.late || 0}
+            // icon={<img alt='icon' src='/assets/icons/glass/ic_glass_bag.png' />}
           />}
         </Grid>
         <Grid xs={12} sm={6} md={3}>
@@ -94,23 +123,23 @@ export default function DashboardView() {
             title='Developers'
             total={dashboardData?.developers}
             color='info'
-            icon={<img alt='icon' src='/assets/icons/glass/ic_glass_users.png' />}
+            // icon={<img alt='icon' src='/assets/icons/glass/ic_glass_users.png' />}
           />}
         </Grid>
         <Grid xs={12} sm={6} md={3}>
           {getResponsibilityValue('view_faculties', configs, user) && <DashboardCount
             title='Faculties'
             total={dashboardData?.faculties}
-            color='warning'
-            icon={<img alt='icon' src='/assets/icons/glass/ic_glass_buy.png' />}
+            color='secondary'
+            // icon={<img alt='icon' src='/assets/icons/glass/ic_glass_buy.png' />}
           />}
         </Grid>
         <Grid xs={12} sm={6} md={3}>
           {getResponsibilityValue('view_labs', configs, user) && <DashboardCount
             title='Labs'
             total={labs}
-            color='error'
-            icon={<img alt='icon' src='/assets/icons/glass/ic_glass_message.png' />}
+            color='info2'
+            // icon={<img alt='icon' src='/assets/icons/glass/ic_glass_message.png' />}
           />}
         </Grid>
         {getResponsibilityValue('view_visit-inquiry', configs, user) && <Grid xs={12} md={8}>
@@ -169,16 +198,27 @@ export default function DashboardView() {
         {getResponsibilityValue('view_attendance', configs, user) && <Grid xs={12} md={4}>
           <Stack spacing={3}>
             <DashboardAttendenceChart
-              title="Today's Attendance"
+              title="Student's Status "
               total={parseInt(dashboardData?.students)}
               chart={{
                 series: [
                   {
-                    label: 'Present',
-                    value: attendence?.present == 0 ? 0 : attendence?.present || 0,
+                    label: 'completed',
+                    value: students.some(student => student.status === 'completed') ? students.filter(student => student.status === 'completed').length : 0,
+
+                  }, {
+                    label: 'Running',
+                    value: students.some(student => student.status === 'running') ? students.filter(student => student.status === 'running').length : 0,
+
                   },
-                  { label: 'Late', value: attendence?.late == 0 ? 0 : attendence?.late || 0 },
-                  { label: 'Absent', value: attendence?.absent == 0 ? 0 : attendence?.absent || 0 },
+                  {
+                    label: 'training',
+                    value: students.some(student => student.status === 'training') ? students.filter(student => student.status === 'training').length : 0,
+                  },
+                  {
+                    label: 'leaved',
+                    value: students.some(student => student.status === 'leaved') ? students.filter(student => student.status === 'leaved').length : 0,
+                  },
                 ],
               }}
             />

@@ -22,6 +22,8 @@ import EmployeeQuickEditForm from './employee-quick-edit-form';
 import { useGetConfigs } from '../../api/config';
 import { useAuthContext } from '../../auth/hooks';
 import { getResponsibilityValue } from '../../permission/permission';
+import { Link } from 'react-router-dom';
+import { paths } from '../../routes/paths';
 
 // ----------------------------------------------------------------------
 
@@ -57,8 +59,14 @@ export default function EmployeeTableRow({
           <Avatar alt={`${firstName} ${lastName}`} src={avatar_url} sx={{ mr: 2 }} />
 
           <ListItemText
-            primary={`${firstName} ${lastName}`}
-            secondary={email}
+            primary={
+              <Link to={paths.dashboard.employee.edit(row._id)}
+                    style={{ textDecoration: 'none', fontWeight: 'bold', color: 'inherit' }}
+
+              >
+                {`${firstName} ${lastName}`}
+              </Link>
+            }            secondary={email}
             primaryTypographyProps={{ typography: 'body2' }}
             secondaryTypographyProps={{
               component: 'span',
